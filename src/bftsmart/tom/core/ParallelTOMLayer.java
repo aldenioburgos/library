@@ -60,6 +60,7 @@ public final class ParallelTOMLayer extends TOMLayer {
 
    
      private void startDeliveryThread(ServiceReplica receiver, Recoverable recoverer){
+
         this.dt = new ParallelDeliveryThread(this, receiver, recoverer, this.controller); // Create delivery thread
         this.dt.start();
     }

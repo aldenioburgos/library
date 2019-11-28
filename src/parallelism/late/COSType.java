@@ -7,9 +7,6 @@ package parallelism.late;
 
 
 public enum COSType {
-	coarseLockGraph, fineLockGraph, lockFreeGraph
+	coarseLockGraph, fineLockGraph, lockFreeGraph, multipleLockFreeGraph
 }
 
-/*public enum COSType {
-	coarseLock, fineLock, hohGetWaitFree, hohHelpedRemove, helpedRemoveGetWaitFree, lockFree
-}*/

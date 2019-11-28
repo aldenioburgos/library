@@ -5,78 +5,75 @@
  */
 package parallelism.late;
 
-import parallelism.late.graph.COS;
 import parallelism.MessageContextPair;
 import parallelism.ParallelMapping;
+import parallelism.hibrid.MultipleLockFreeGraph;
+import parallelism.late.graph.COS;
 import parallelism.late.graph.CoarseGrainedLock;
 import parallelism.late.graph.FineGrainedLock;
 import parallelism.late.graph.LockFreeGraph;
 import parallelism.scheduler.Scheduler;
 
+import java.util.Objects;
+
 /**
- *
  * @author eduardo
  */
-public class CBASEScheduler implements Scheduler{
+public class CBASEScheduler implements Scheduler {
 
     private COS cos;
     private int numWorkers;
-    
-     private ConflictDefinition conflictDef;
-    
+
+    private ConflictDefinition conflictDef;
+
     public CBASEScheduler(int numWorkers, COSType cosType) {
         this(null, numWorkers, cosType);
     }
 
     public CBASEScheduler(ConflictDefinition cd, int numWorkers, COSType cosType) {
-        //cos = new COS(150,graphType,this);
         int limit = 150;
-        if(cosType == null || cosType == COSType.coarseLockGraph){
+        if (cosType == null || cosType == COSType.coarseLockGraph) {
             this.cos = new CoarseGrainedLock(limit, this);
-        }else if(cosType == COSType.fineLockGraph){
+        } else if (cosType == COSType.fineLockGraph) {
             this.cos = new FineGrainedLock(limit, this);
-        }else if (cosType == COSType.lockFreeGraph){
+        } else if (cosType == COSType.lockFreeGraph) {
             this.cos = new LockFreeGraph(limit, this);
-        }else{
-           this.cos = new CoarseGrainedLock(limit, this);
+        } else if (cosType == COSType.multipleLockFreeGraph) {
+            this.cos = new MultipleLockFreeGraph(limit, this);
+        } else {
+            this.cos = new CoarseGrainedLock(limit, this);
         }
         this.numWorkers = numWorkers;
-        if(cd == null){
-            this.conflictDef = new DefaultConflictDefinition();
-        }else{
-            this.conflictDef = cd;
-        }
-        
+        this.conflictDef = Objects.requireNonNullElseGet(cd, DefaultConflictDefinition::new);
     }
 
-    
-    public boolean isDependent(MessageContextPair thisRequest, MessageContextPair otherRequest){
-        if(thisRequest.classId == ParallelMapping.CONFLICT_RECONFIGURATION || 
-                otherRequest.classId == ParallelMapping.CONFLICT_RECONFIGURATION){
+
+    public boolean isDependent(MessageContextPair thisRequest, MessageContextPair otherRequest) {
+        if (thisRequest.classId == ParallelMapping.CONFLICT_RECONFIGURATION || otherRequest.classId == ParallelMapping.CONFLICT_RECONFIGURATION) {
             return true;
         }
         return this.conflictDef.isDependent(thisRequest, otherRequest);
     }
-    
-    
+
+
     @Override
     public int getNumWorkers() {
         return this.numWorkers;
     }
-    
-    
+
+
     @Override
     public void schedule(MessageContextPair request) {
+        System.out.println("CBASEScheduler.schedule requested in " + Thread.currentThread());
         try {
             cos.insert(request);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
-        
     }
 
-    public Object get(){
-        
+    public Object get() {
+        System.out.println("CBASEScheduler.get requested in " + Thread.currentThread());
         try {
             return cos.get();
         } catch (InterruptedException ex) {
@@ -84,15 +81,16 @@ public class CBASEScheduler implements Scheduler{
             return null;
         }
     }
-    
-    public void remove(Object requestRequest){
+
+    public void remove(Object requestRequest) {
+        System.out.println("CBASEScheduler.remove requested in " + Thread.currentThread());
         try {
             cos.remove(requestRequest);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
     }
-    
+
     @Override
     public void scheduleReplicaReconfiguration() {
         MessageContextPair m = new MessageContextPair(null, ParallelMapping.CONFLICT_RECONFIGURATION, -1, null);
@@ -103,7 +101,6 @@ public class CBASEScheduler implements Scheduler{
     public ParallelMapping getMapping() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
-    
+
+
 }

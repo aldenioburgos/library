@@ -5,44 +5,23 @@
  */
 package parallelism;
 
-import bftsmart.consensus.messages.MessageFactory;
-import bftsmart.consensus.roles.Acceptor;
-import bftsmart.consensus.roles.Proposer;
 import bftsmart.tom.MessageContext;
-import bftsmart.tom.ReplicaContext;
 import bftsmart.tom.ServiceReplica;
-import bftsmart.tom.core.ExecutionManager;
-import bftsmart.tom.core.ParallelTOMLayer;
 import bftsmart.tom.core.messages.TOMMessage;
-
 import bftsmart.tom.core.messages.TOMMessageType;
 import bftsmart.tom.leaderchange.CertifiedDecision;
 import bftsmart.tom.server.Executable;
 import bftsmart.tom.server.Recoverable;
 import bftsmart.tom.server.SingleExecutable;
-import bftsmart.tom.util.ShutdownHookThread;
 import bftsmart.tom.util.TOMUtil;
 import bftsmart.util.MultiOperationRequest;
 import bftsmart.util.ThroughputStatistics;
-import demo.list.ListClientMO;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.CyclicBarrier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import parallelism.scheduler.DefaultScheduler;
 import parallelism.scheduler.Scheduler;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 /**
- *
  * @author alchieri
  */
 public class SequentialServiceReplica extends ServiceReplica {
@@ -53,34 +32,20 @@ public class SequentialServiceReplica extends ServiceReplica {
     protected Map<String, MultiOperationCtx> ctxs = new Hashtable<>();
 
     public SequentialServiceReplica(int id, Executable executor, Recoverable recoverer) {
-        //this(id, executor, recoverer, new DefaultScheduler(initialWorkers));
         super(id, executor, recoverer);
         statistics = new ThroughputStatistics(id, 1, "results_" + id + ".txt", "");
-
     }
 
     @Override
     public void receiveMessages(int consId[], int regencies[], int leaders[], CertifiedDecision[] cDecs, TOMMessage[][] requests) {
+        // remove finished
+        ctxs.keySet().removeIf(key -> ctxs.get(key).finished);
 
-        Iterator<String> it = ctxs.keySet().iterator();
-
-        while (it.hasNext()) {
-            String next = it.next();
-            MultiOperationCtx cx = ctxs.get(next);
-
-            if (cx.finished) {
-                it.remove();
-            }
-
-        }
-
-        //int numRequests = 0;
         int consensusCount = 0;
-        boolean noop = true;
+        boolean noop;
 
         for (TOMMessage[] requestsFromConsensus : requests) {
             TOMMessage firstRequest = requestsFromConsensus[0];
-            //int requestCount = 0;
             noop = true;
             for (TOMMessage request : requestsFromConsensus) {
 
@@ -89,41 +54,18 @@ public class SequentialServiceReplica extends ServiceReplica {
                 if (request.getViewID() == SVController.getCurrentViewId()) {
                     if (request.getReqType() == TOMMessageType.ORDERED_REQUEST) {
                         noop = false;
-                        //numRequests++;
-                        /*MessageContext msgCtx = new MessageContext(request.getSender(), request.getViewID(),
-                                request.getReqType(), request.getSession(), request.getSequence(), request.getOperationId(),
-                                request.getReplyServer(), request.serializedMessageSignature, firstRequest.timestamp,
-                                request.numOfNonces, request.seed, regencies[consensusCount], leaders[consensusCount],
-                                consId[consensusCount], cDecs[consensusCount].getConsMessages(), firstRequest, false);
-
-                        if (requestCount + 1 == requestsFromConsensus.length) {
-
-                            msgCtx.setLastInBatch();
-                        }
-                        request.deliveryTime = System.nanoTime();
-                         */
-
                         MultiOperationRequest reqs = new MultiOperationRequest(request.getContent());
-
                         MultiOperationCtx ctx = new MultiOperationCtx(reqs.operations.length, request);
-
-                        //this.ctxs.put(request.toString(), ctx);
                         statistics.start();
-
                         for (int i = 0; i < reqs.operations.length; i++) {
                             MessageContextPair msg = new MessageContextPair(request, reqs.operations[i].classId, i, reqs.operations[i].data);
                             msg.resp = ((SingleExecutable) executor).executeOrdered(msg.operation, null);
                             ctx.add(msg.index, msg.resp);
                             statistics.computeStatistics(0, 1);
-
                         }
-                        ctx.request.reply = new TOMMessage(id, ctx.request.getSession(),
-                                ctx.request.getSequence(), ctx.response.serialize(), SVController.getCurrentViewId());
-                        //bftsmart.tom.util.Logger.println("(ParallelServiceReplica.receiveMessages) sending reply to "+ msg.message.getSender());
+                        ctx.request.reply = new TOMMessage(id, ctx.request.getSession(), ctx.request.getSequence(), ctx.response.serialize(), SVController.getCurrentViewId());
                         replier.manageReply(ctx.request, null);
-
                     } else if (request.getReqType() == TOMMessageType.RECONFIG) {
-
                         SVController.enqueueUpdate(request);
                     } else {
                         throw new RuntimeException("Should never reach here! ");
@@ -132,11 +74,12 @@ public class SequentialServiceReplica extends ServiceReplica {
                 } else if (request.getViewID() < SVController.getCurrentViewId()) {
                     // message sender had an old view, resend the message to
                     // him (but only if it came from consensus an not state transfer)
-                    tomLayer.getCommunication().send(new int[]{request.getSender()}, new TOMMessage(SVController.getStaticConf().getProcessId(),
-                            request.getSession(), request.getSequence(), TOMUtil.getBytes(SVController.getCurrentView()), SVController.getCurrentViewId()));
-
+                    var sender = SVController.getStaticConf().getProcessId();
+                    var content = TOMUtil.getBytes(SVController.getCurrentView());
+                    var view = SVController.getCurrentViewId();
+                    var targets = new int[]{request.getSender()};
+                    tomLayer.getCommunication().send(targets, new TOMMessage(sender, request.getSession(), request.getSequence(), content, view));
                 }
-                //requestCount++;
             }
 
             //System.out.println("BATCH SIZE: "+requestCount);
@@ -192,7 +135,7 @@ public class SequentialServiceReplica extends ServiceReplica {
         }
     }
 
-    /**
+    /*
      * This method initializes the object
      *
      * @param cs Server side communication System
@@ -238,6 +181,6 @@ public class SequentialServiceReplica extends ServiceReplica {
 
         replicaCtx = new ReplicaContext(cs, SVController);
     }*/
-  
+
 
 }

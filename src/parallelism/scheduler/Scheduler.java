@@ -10,12 +10,15 @@ import parallelism.ParallelMapping;
 
 
 /**
- *
  * @author eduardo
  */
 public interface Scheduler {
-    public void schedule(MessageContextPair request);
-    public ParallelMapping getMapping();
-    public void scheduleReplicaReconfiguration();
-    public int getNumWorkers();
+
+    void schedule(MessageContextPair request);
+
+    ParallelMapping getMapping();
+
+    void scheduleReplicaReconfiguration();
+
+    int getNumWorkers();
 }

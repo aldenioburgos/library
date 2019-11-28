@@ -7,22 +7,21 @@ package parallelism.scheduler;
 
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.core.messages.TOMMessageType;
-import java.util.concurrent.BlockingQueue;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import parallelism.ClassToThreads;
 import parallelism.MessageContextPair;
 import parallelism.ParallelMapping;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author eduardo
  */
 public class DefaultScheduler implements Scheduler {
 
     protected ParallelMapping mapping;
-        
+
     public DefaultScheduler(int numberWorkers, ClassToThreads[] cToT) {
         this.mapping = new ParallelMapping(numberWorkers, cToT);
     }
@@ -40,7 +39,7 @@ public class DefaultScheduler implements Scheduler {
     @Override
     public void scheduleReplicaReconfiguration() {
         TOMMessage reconf = new TOMMessage(0, 0, 0, 0, null, 0, TOMMessageType.ORDERED_REQUEST, ParallelMapping.CONFLICT_RECONFIGURATION);
-        MessageContextPair m = new MessageContextPair(reconf, ParallelMapping.CONFLICT_RECONFIGURATION,-1,null);
+        MessageContextPair m = new MessageContextPair(reconf, ParallelMapping.CONFLICT_RECONFIGURATION, -1, null);
         BlockingQueue[] q = this.getMapping().getAllQueues();
         try {
             for (BlockingQueue q1 : q) {
@@ -54,22 +53,20 @@ public class DefaultScheduler implements Scheduler {
     @Override
     public void schedule(MessageContextPair request) {
         try {
-            
             ClassToThreads ct = this.mapping.getClass(request.classId);
-            if(ct == null){
-                //TRATAR COMO CONFLICT ALL
-                //criar uma classe que sincroniza tudo
-                System.err.println("CLASStoTHREADs MAPPING NOT FOUND");
+            if (ct == null) {
+                throw new RuntimeException("CLASStoTHREADs MAPPING NOT FOUND");
             }
-            
-            if(ct.type == ClassToThreads.CONC){//conc
-                ct.queues[ct.executorIndex].put(request);
-                ct.executorIndex = (ct.executorIndex+1)% ct.queues.length;
-                
-            }else{ //sync
-                for (BlockingQueue q : ct.queues) {
-                    q.put(request);
-                }
+
+            switch (ct.type) {
+                case ClassToThreads.CONC:
+                    ct.putInNextQueue(request);
+                    break;
+                case ClassToThreads.SYNC:
+                    ct.putInAllQueues(request);
+                    break;
+                default:
+                    throw new RuntimeException("Unknown Class to Thread type.");
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();

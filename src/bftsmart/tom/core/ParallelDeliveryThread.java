@@ -12,20 +12,20 @@
  */
 package bftsmart.tom.core;
 
-import java.util.logging.Level;
-
 import bftsmart.reconfiguration.ServerViewController;
 import bftsmart.tom.ServiceReplica;
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.core.messages.TOMMessageType;
 import bftsmart.tom.server.Recoverable;
-import java.util.concurrent.BrokenBarrierException;
 import parallelism.ParallelServiceReplica;
+
+import java.util.concurrent.BrokenBarrierException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class implements a thread which will deliver totally ordered requests to
  * the application
- *
  */
 public final class ParallelDeliveryThread extends DeliveryThread {
 
@@ -37,39 +37,36 @@ public final class ParallelDeliveryThread extends DeliveryThread {
      */
     public ParallelDeliveryThread(TOMLayer tomLayer, ServiceReplica receiver, Recoverable recoverer, ServerViewController controller) {
         super(tomLayer, receiver, recoverer, controller);
+        System.out.println("BRTSmart Delivery Thread Created: "+toString());
     }
 
     private void processReconfigMessages(int consId) {
-        try {
-            ((ParallelServiceReplica) this.receiver).getReconfBarrier().await();
-        } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(ParallelDeliveryThread.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (BrokenBarrierException ex) {
-            java.util.logging.Logger.getLogger(ParallelDeliveryThread.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        awaitOnReceiverReconfBarrier();
 
         byte[] response = controller.executeUpdates(consId);
         TOMMessage[] dests = controller.clearUpdates();
 
         if (controller.getCurrentView().isMember(receiver.getId())) {
-            for (int i = 0; i < dests.length; i++) {
-                tomLayer.getCommunication().send(new int[]{dests[i].getSender()},
-                        new TOMMessage(controller.getStaticConf().getProcessId(),
-                                dests[i].getSession(), dests[i].getSequence(), response,
-                                controller.getCurrentViewId(), TOMMessageType.RECONFIG));
+            for (TOMMessage dest : dests) {
+                var targets = new int[]{dest.getSender()};
+                var sender = controller.getStaticConf().getProcessId();
+                var view = controller.getCurrentViewId();
+                tomLayer.getCommunication().send(targets, new TOMMessage(sender, dest.getSession(), dest.getSequence(), response, view, TOMMessageType.RECONFIG));
             }
-
             tomLayer.getCommunication().updateServersConnections();
         } else {
             receiver.restart();
         }
+        awaitOnReceiverReconfBarrier();
+    }
 
+    private void awaitOnReceiverReconfBarrier() {
         try {
             ((ParallelServiceReplica) this.receiver).getReconfBarrier().await();
         } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(ParallelDeliveryThread.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ParallelDeliveryThread.class.getName()).log(Level.SEVERE, null, ex);
         } catch (BrokenBarrierException ex) {
-            java.util.logging.Logger.getLogger(ParallelDeliveryThread.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ParallelDeliveryThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

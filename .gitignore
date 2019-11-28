@@ -1,2 +1,7 @@
 /dist/
 /build/
+/.idea/
+/target/
+/*.txt
+/*.log
+/config/currentView

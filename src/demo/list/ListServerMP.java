@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2007-2013 Alysson Bessani, Eduardo Alchieri, Paulo Sousa, and
  * the authors indicated in the @author tags
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -34,18 +34,6 @@ import java.util.logging.Level;
 
 public final class ListServerMP implements SingleExecutable {
 
-    //private int interval;
-    //private float maxTp = -1;
-    // private boolean context;
-    private int iterations = 0;
-    private long throughputMeasurementStartTime = System.currentTimeMillis();
-
-    private long start = 0;
-
-    private ServiceReplica replica;
-    //private StateManager stateManager;
-    //private ReplicaContext replicaContext;
-
     private List<Integer> l1 = new LinkedList<Integer>();
     private List<Integer> l2 = new LinkedList<Integer>();
     private List<Integer> l3 = new LinkedList<Integer>();
@@ -54,14 +42,8 @@ public final class ListServerMP implements SingleExecutable {
     private List<Integer> l6 = new LinkedList<Integer>();
     private List<Integer> l7 = new LinkedList<Integer>();
     private List<Integer> l8 = new LinkedList<Integer>();
-
-    //private int myId;
-    private PrintWriter pw;
-
-    private boolean closed = false;
-
-    //int exec = BFTList.ADD;
-    int numberpartitions = 2;
+    private int numberpartitions;
+    private ServiceReplica replica;
 
     public ListServerMP(int id, int initThreads, int entries, int numberPartitions, boolean cbase) {
 
@@ -76,7 +58,7 @@ public final class ListServerMP implements SingleExecutable {
             ConflictDefinition cd = new ConflictDefinition() {
                 @Override
                 public boolean isDependent(MessageContextPair r1, MessageContextPair r2) {
-                                 
+
                     switch (r1.classId) {
                         case MultipartitionMapping.GR:
                             if (r2.classId == MultipartitionMapping.GW
@@ -89,47 +71,48 @@ public final class ListServerMP implements SingleExecutable {
                                     || r2.classId == MultipartitionMapping.W7
                                     || r2.classId == MultipartitionMapping.W8) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.R1:
-                            if (r2.classId == MultipartitionMapping.GW
-                                    || r2.classId == MultipartitionMapping.W1) {
+                            if (r2.classId == MultipartitionMapping.GW || r2.classId == MultipartitionMapping.W1) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.R2:
-                            if (r2.classId == MultipartitionMapping.GW
-                                    || r2.classId == MultipartitionMapping.W2) {
+                            if (r2.classId == MultipartitionMapping.GW || r2.classId == MultipartitionMapping.W2) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.R3:
-                            if (r2.classId == MultipartitionMapping.GW
-                                    || r2.classId == MultipartitionMapping.W3) {
+                            if (r2.classId == MultipartitionMapping.GW || r2.classId == MultipartitionMapping.W3) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.R4:
-                            if (r2.classId == MultipartitionMapping.GW
-                                    || r2.classId == MultipartitionMapping.W4) {
+                            if (r2.classId == MultipartitionMapping.GW || r2.classId == MultipartitionMapping.W4) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.R5:
-                            if (r2.classId == MultipartitionMapping.GW
-                                    || r2.classId == MultipartitionMapping.W5) {
+                            if (r2.classId == MultipartitionMapping.GW || r2.classId == MultipartitionMapping.W5) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.R6:
-                            if (r2.classId == MultipartitionMapping.GW
-                                    || r2.classId == MultipartitionMapping.W6) {
+                            if (r2.classId == MultipartitionMapping.GW || r2.classId == MultipartitionMapping.W6) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.R7:
-                            if (r2.classId == MultipartitionMapping.GW
-                                    || r2.classId == MultipartitionMapping.W7) {
+                            if (r2.classId == MultipartitionMapping.GW || r2.classId == MultipartitionMapping.W7) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.R8:
-                            if (r2.classId == MultipartitionMapping.GW
-                                    || r2.classId == MultipartitionMapping.W8) {
+                            if (r2.classId == MultipartitionMapping.GW || r2.classId == MultipartitionMapping.W8) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.GW:
                             return true;
                         case MultipartitionMapping.W1:
@@ -138,60 +121,67 @@ public final class ListServerMP implements SingleExecutable {
                                     || r2.classId == MultipartitionMapping.R1
                                     || r2.classId == MultipartitionMapping.W1) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.W2:
                             if (r2.classId == MultipartitionMapping.GR
                                     || r2.classId == MultipartitionMapping.GW
                                     || r2.classId == MultipartitionMapping.R2
                                     || r2.classId == MultipartitionMapping.W2) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.W3:
                             if (r2.classId == MultipartitionMapping.GR
                                     || r2.classId == MultipartitionMapping.GW
                                     || r2.classId == MultipartitionMapping.R3
                                     || r2.classId == MultipartitionMapping.W3) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.W4:
                             if (r2.classId == MultipartitionMapping.GR
                                     || r2.classId == MultipartitionMapping.GW
                                     || r2.classId == MultipartitionMapping.R4
                                     || r2.classId == MultipartitionMapping.W4) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.W5:
                             if (r2.classId == MultipartitionMapping.GR
                                     || r2.classId == MultipartitionMapping.GW
                                     || r2.classId == MultipartitionMapping.R5
                                     || r2.classId == MultipartitionMapping.W5) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.W6:
                             if (r2.classId == MultipartitionMapping.GR
                                     || r2.classId == MultipartitionMapping.GW
                                     || r2.classId == MultipartitionMapping.R6
                                     || r2.classId == MultipartitionMapping.W6) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.W7:
                             if (r2.classId == MultipartitionMapping.GR
                                     || r2.classId == MultipartitionMapping.GW
                                     || r2.classId == MultipartitionMapping.R7
                                     || r2.classId == MultipartitionMapping.W7) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         case MultipartitionMapping.W8:
                             if (r2.classId == MultipartitionMapping.GR
                                     || r2.classId == MultipartitionMapping.GW
                                     || r2.classId == MultipartitionMapping.R8
                                     || r2.classId == MultipartitionMapping.W8) {
                                 return true;
-                            }   break;
+                            }
+                            break;
                         default:
                             break;
                     }
-
                     return false;
                 }
             };
@@ -199,35 +189,21 @@ public final class ListServerMP implements SingleExecutable {
         } else {
             System.out.println("Replica in parallel execution model.");
 
-             if (numberPartitions == 1) {
-                 
-             }else if (numberPartitions == 2) {
+            if (numberPartitions == 1) {
+
+            } else if (numberPartitions == 2) {
                 if (initThreads == 2) {
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T2());
                 } else if (initThreads == 4) {
                     System.out.println("4T-2S normal");
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T4TunnedW1());
-                    
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T4TunnedR1());
-                    
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T4());
-                    //System.out.println("Naive 4T-2S");
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getNaiveP2T4());
                 } else if (initThreads == 8) {
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T8TunnedW1());
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T8TunnedR1());
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T8());
                 } else if (initThreads == 10) {
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getP2T10());
                 } else {
                     initThreads = 12;
-                    //System.out.println("CONFIGURADO PARA 12 WRITE");
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T12TunnedW1());
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T12TunnedR1());
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T12());
-
                     System.out.println("Vai testar RW");
-
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P2T12RW());
                 }
             } else if (numberPartitions == 4) {
@@ -236,10 +212,8 @@ public final class ListServerMP implements SingleExecutable {
                 } else if (initThreads == 4) {
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P4T4());
                 } else if (initThreads == 8) {
-                    //System.out.println("Naive 8T-4S");
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getM2P4T8());
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getNaiveP4T8());
-                }else if (initThreads == 10) {
+                } else if (initThreads == 10) {
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getP4T10());
                 } else {
                     initThreads = 12;
@@ -249,12 +223,10 @@ public final class ListServerMP implements SingleExecutable {
                 if (initThreads == 6) {
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getP6T6());
                 } else if (initThreads == 12) {
-                    //System.out.println("Naive 12T-6S");
-                    //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getP6T12());
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getNaiveP6T12());
                 } else if (initThreads == 10) {
                     replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getP6T10());
-                }else {
+                } else {
                     System.exit(0);
                 }
             } else if (initThreads == 8) {
@@ -262,7 +234,6 @@ public final class ListServerMP implements SingleExecutable {
             } else if (initThreads == 10) {
                 replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getP8T10());
             } else if (initThreads == 16) {
-                //replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getP8T16());
                 System.out.println("Naive 16T-8S");
                 replica = new ParallelServiceReplica(id, this, null, initThreads, MultipartitionMapping.getNaiveP8T16());
             } else {
@@ -271,9 +242,6 @@ public final class ListServerMP implements SingleExecutable {
 
         }
 
-//        this.interval = interval;
-        //this.context = context;
-        //this.myId = id;
         for (int i = 0; i < entries; i++) {
             l1.add(i);
             l2.add(i);
@@ -283,18 +251,8 @@ public final class ListServerMP implements SingleExecutable {
             l6.add(i);
             l7.add(i);
             l8.add(i);
-            //System.out.println("adicionando key: "+i);
         }
 
-        /*try {
-            File f = new File("resultado_" + id + ".txt");
-            FileWriter fw = new FileWriter(f);
-            pw = new PrintWriter(fw);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
-        }*/
         System.out.println("Server initialization complete!");
     }
 
@@ -306,8 +264,6 @@ public final class ListServerMP implements SingleExecutable {
         return execute(command, msgCtx);
     }
 
-    //long lastChange = 0;
-    //int c = 0;
     public boolean add(Integer value, int pId) {
         boolean ret = false;
         if (pId == MultipartitionMapping.W1) {
@@ -398,34 +354,12 @@ public final class ListServerMP implements SingleExecutable {
 
     public byte[] execute(byte[] command, MessageContext msgCtx) {
 
-        //System.out.println("Vai executar uma operação");
-        /*boolean set = false;
-        if (start == 0) {
-            set = true;
-            start = System.currentTimeMillis();
-            throughputMeasurementStartTime = start;
-        }*/
-        //computeStatistics(msgCtx);
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(command);
             ByteArrayOutputStream out = null;
             byte[] reply = null;
             int cmd = new DataInputStream(in).readInt();
 
-            /*if (set) {
-                exec = cmd;
-            }
-
-            if (cmd != exec && (System.currentTimeMillis() - lastChange) > 30000) {
-
-                if (cmd == BFTList.ADD) {
-                    pw.println("***************** Vai mudar para ADD ***************");
-                } else if (cmd == BFTList.CONTAINS) {
-                    pw.println("***************** Vai mudar para CONTAINS ***************");
-                }
-                exec = cmd;
-                lastChange = System.currentTimeMillis();
-            }*/
             switch (cmd) {
                 case MultipartitionMapping.W1:
                     Integer value = (Integer) new ObjectInputStream(in).readObject();
@@ -615,14 +549,14 @@ public final class ListServerMP implements SingleExecutable {
                         }
 
                     } else if (this.numberpartitions == 6) {
-                        if (l1.contains(value) && l2.contains(value) && l3.contains(value) && l4.contains(value) 
+                        if (l1.contains(value) && l2.contains(value) && l3.contains(value) && l4.contains(value)
                                 && l5.contains(value) && l6.contains(value)) {
                             out1.writeBoolean(true);
                         } else {
                             out1.writeBoolean(false);
                         }
                     } else { // 8 partitions 
-                        if (l1.contains(value) && l2.contains(value) && l3.contains(value) && l4.contains(value) 
+                        if (l1.contains(value) && l2.contains(value) && l3.contains(value) && l4.contains(value)
                                 && l5.contains(value) && l6.contains(value) && l7.contains(value) && l8.contains(value)) {
                             out1.writeBoolean(true);
                         } else {

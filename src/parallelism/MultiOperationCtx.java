@@ -11,16 +11,13 @@ import bftsmart.util.MultiOperationResponse;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
  * @author eduardo
  */
 public class MultiOperationCtx {
     
-    public TOMMessage request;
-    public MultiOperationResponse response;
-    
     public AtomicInteger interger = new AtomicInteger();
-    
+    public MultiOperationResponse response;
+    public TOMMessage request;
     public boolean finished = false;
     
     public MultiOperationCtx(int size, TOMMessage request){
@@ -30,7 +27,6 @@ public class MultiOperationCtx {
     
     public void add(int index, byte[] resp){
         this.response.add(index, resp);
-        //return this.response.isComplete();
     }
     
     

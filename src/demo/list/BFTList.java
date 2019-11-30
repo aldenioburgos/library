@@ -16,17 +16,16 @@ import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  * @author alchieri
  */
 public class BFTList<V> implements List<V> {
-
-    static final int CONTAINS = 1;
-    static final int ADD = 2;
-    static final int GET = 3;
-    static final int REMOVE = 4;
-    static final int SIZE = 5;
-
+    public static final int CONTAINS = 1;
+    public static final int ADD = 2;
+    public static final int GET = 3;
+    public static final int REMOVE = 4;
+    public static final int SIZE = 5;
     protected ParallelServiceProxy proxy;
     protected boolean parallel;
 
@@ -124,6 +123,12 @@ public class BFTList<V> implements List<V> {
             return null;
         }
     }
+
+
+    /*
+     * Métodos auxiliares
+     */
+
 
 
     private V convertToObject(byte[] data) throws IOException, ClassNotFoundException {

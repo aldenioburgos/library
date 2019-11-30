@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 
 /**
  * Example client
- *
  */
 public class ListClientMOMP {
 
@@ -73,7 +72,6 @@ public class ListClientMOMP {
         }
 
         for (int i = 0; i < numThreads; i++) {
-
             c[i].start();
         }
 
@@ -97,8 +95,6 @@ public class ListClientMOMP {
                 ex.printStackTrace(System.err);
             }
         }
-
-        //System.exit(0);
     }
 
     public static void stop() {
@@ -115,10 +111,6 @@ public class ListClientMOMP {
 
         public static int op = BFTList.ADD;
 
-        //boolean verbose;
-        //boolean dos;
-        //ServiceProxy proxy;
-        //byte[] request;
         BFTListMOMP<Integer> store;
 
         int maxIndex;
@@ -130,33 +122,16 @@ public class ListClientMOMP {
 
         public Client(int id, int numberOfRqs, int opPerReq, int interval, int maxIndex, int partitions, boolean parallel) {
             super("Client " + id);
-
             this.id = id;
             this.numberOfReqs = numberOfRqs;
             this.opPerReq = opPerReq;
-
             this.interval = interval;
-
             this.partitions = partitions;
-
-            //this.verbose = false;
-            //this.proxy = new ServiceProxy(id);
-            //this.request = new byte[this.requestSize];
             this.maxIndex = maxIndex;
-
-            store = new BFTListMOMP<Integer>(id, parallel);
-            //this.dos = dos;
+            this.store = new BFTListMOMP<Integer>(id, parallel);
         }
 
-        /*  private boolean insertValue(int index) {
-
-            return store.add(index);
-
-        }*/
         public void run() {
-
-            //System.out.println("Warm up...");
-            //int req = 0;
             if (weight) {
                 weighting();
 

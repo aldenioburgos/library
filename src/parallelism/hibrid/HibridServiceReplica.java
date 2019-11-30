@@ -3,25 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package parallelism;
+package parallelism.hibrid;
 
-import bftsmart.consensus.messages.MessageFactory;
-import bftsmart.consensus.roles.Acceptor;
-import bftsmart.consensus.roles.Proposer;
 import bftsmart.tom.MessageContext;
-import bftsmart.tom.ReplicaContext;
 import bftsmart.tom.ServiceReplica;
-import bftsmart.tom.core.ExecutionManager;
-import bftsmart.tom.core.ParallelTOMLayer;
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.leaderchange.CertifiedDecision;
 import bftsmart.tom.server.Executable;
 import bftsmart.tom.server.Recoverable;
 import bftsmart.tom.server.SingleExecutable;
-import bftsmart.tom.util.ShutdownHookThread;
 import bftsmart.tom.util.TOMUtil;
 import bftsmart.util.MultiOperationRequest;
 import bftsmart.util.ThroughputStatistics;
+import parallelism.*;
 import parallelism.scheduler.DefaultScheduler;
 import parallelism.scheduler.Scheduler;
 
@@ -32,23 +26,21 @@ import java.util.concurrent.CyclicBarrier;
 
 
 /**
- * @author alchieri
+ * @author aldenio
  */
-public class ParallelServiceReplica extends ServiceReplica {
+public class HibridServiceReplica extends ServiceReplica {
 
     public ThroughputStatistics statistics;
     protected Scheduler scheduler;
     protected Map<String, MultiOperationCtx> ctxs = new Hashtable<>();
 
-    public ParallelServiceReplica(int id, Executable executor, Recoverable recoverer, int initialWorkers) {
+    public HibridServiceReplica(int id, Executable executor, Recoverable recoverer, int numPartitions, int initialWorkers) {
         super(id, executor, recoverer);
         if (initialWorkers <= 0) {
             initialWorkers = 1;
         }
-        int[] ids = new int[initialWorkers];
-        for (int i = 0; i < ids.length; i++) {
-            ids[i] = i;
-        }
+        int[] ids = createArrayOfIndexes(initialWorkers);
+
         ClassToThreads[] cts = new ClassToThreads[2];
         cts[0] = new ClassToThreads(ParallelMapping.CONC_ALL, ClassToThreads.CONC, ids);
         cts[1] = new ClassToThreads(ParallelMapping.SYNC_ALL, ClassToThreads.SYNC, ids);
@@ -56,13 +48,21 @@ public class ParallelServiceReplica extends ServiceReplica {
         initWorkers(this.scheduler.getNumWorkers(), id);
     }
 
-    public ParallelServiceReplica(int id, Executable executor, Recoverable recoverer, Scheduler scheduler) {
+    private int[] createArrayOfIndexes(int numOfIndexes) {
+        int[] ids = new int[numOfIndexes];
+        for (int i = 0; i < ids.length; i++) {
+            ids[i] = i;
+        }
+        return ids;
+    }
+
+    public HibridServiceReplica(int id, Executable executor, Recoverable recoverer, Scheduler scheduler) {
         super(id, executor, recoverer);
         this.scheduler = scheduler;
         initWorkers(this.scheduler.getNumWorkers(), id);
     }
 
-    public ParallelServiceReplica(int id, Executable executor, Recoverable recoverer, int initialWorkers, ClassToThreads[] cts) {
+    public HibridServiceReplica(int id, Executable executor, Recoverable recoverer, int initialWorkers, ClassToThreads[] cts) {
         super(id, executor, recoverer);
         if (initialWorkers <= 0) {
             initialWorkers = 1;
@@ -90,9 +90,8 @@ public class ParallelServiceReplica extends ServiceReplica {
     @Override
     public void receiveMessages(int consId[], int regencies[], int leaders[], CertifiedDecision[] cDecs, TOMMessage[][] requests) {
 
-        System.out.println("ParallelServiceReplica received message in " + Thread.currentThread());
-
         ctxs.keySet().removeIf(key -> ctxs.get(key).finished);
+
         int consensusCount = 0;
 
         for (TOMMessage[] requestsFromConsensus : requests) {

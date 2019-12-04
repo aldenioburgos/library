@@ -11,18 +11,9 @@ package parallelism;
  */
 public class ExecutionFIFOQueue<E>{
 
-  
      /** Head of linked list */
     public FIFOQueue.Node<E> head = null;
 
-    /** Tail of linked list */
-    //public FIFOQueue.Node<E> last = null;
-    
-  
-
-    public ExecutionFIFOQueue() {
-    
-    }
 
     public int getSize(){
          FIFOQueue.Node<E> atual = head;

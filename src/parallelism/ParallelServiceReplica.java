@@ -5,20 +5,13 @@
  */
 package parallelism;
 
-import bftsmart.consensus.messages.MessageFactory;
-import bftsmart.consensus.roles.Acceptor;
-import bftsmart.consensus.roles.Proposer;
 import bftsmart.tom.MessageContext;
-import bftsmart.tom.ReplicaContext;
 import bftsmart.tom.ServiceReplica;
-import bftsmart.tom.core.ExecutionManager;
-import bftsmart.tom.core.ParallelTOMLayer;
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.leaderchange.CertifiedDecision;
 import bftsmart.tom.server.Executable;
 import bftsmart.tom.server.Recoverable;
 import bftsmart.tom.server.SingleExecutable;
-import bftsmart.tom.util.ShutdownHookThread;
 import bftsmart.tom.util.TOMUtil;
 import bftsmart.util.MultiOperationRequest;
 import bftsmart.util.ThroughputStatistics;
@@ -39,6 +32,13 @@ public class ParallelServiceReplica extends ServiceReplica {
     public ThroughputStatistics statistics;
     protected Scheduler scheduler;
     protected Map<String, MultiOperationCtx> ctxs = new Hashtable<>();
+
+    /**
+     * Construtor criado para pular as inicializações dessa classe.
+     */
+    public ParallelServiceReplica(int id, Executable executor, Recoverable recoverer) {
+        super(id, executor, recoverer);
+    }
 
     public ParallelServiceReplica(int id, Executable executor, Recoverable recoverer, int initialWorkers) {
         super(id, executor, recoverer);
@@ -99,37 +99,8 @@ public class ParallelServiceReplica extends ServiceReplica {
             TOMMessage firstRequest = requestsFromConsensus[0];
             boolean noop = true;
             for (TOMMessage request : requestsFromConsensus) {
-
                 bftsmart.tom.util.Logger.println("(ServiceReplica.receiveMessages) Processing TOMMessage from client " + request.getSender() + " with sequence number " + request.getSequence() + " for session " + request.getSession() + " decided in consensus " + consId[consensusCount]);
-
-                if (request.getViewID() == SVController.getCurrentViewId()) {
-                    switch (request.getReqType()) {
-                        case RECONFIG:
-                            SVController.enqueueUpdate(request);
-                            break;
-                        case ORDERED_REQUEST: {
-                            noop = false;
-                            MultiOperationRequest reqs = new MultiOperationRequest(request.getContent());
-                            MultiOperationCtx ctx = new MultiOperationCtx(reqs.operations.length, request);
-                            this.ctxs.put(request.toString(), ctx);
-                            statistics.start();
-                            for (int i = 0; i < reqs.operations.length; i++) {
-                                this.scheduler.schedule(new MessageContextPair(request, reqs.operations[i].classId, i, reqs.operations[i].data));
-                            }
-                            break;
-                        }
-                        default:
-                            throw new RuntimeException("Unknown Request Type.");
-                    }
-                } else if (request.getViewID() < SVController.getCurrentViewId()) {
-                    // message sender had an old view, resend the message to
-                    // him (but only if it came from consensus an not state transfer)
-                    var sender = SVController.getStaticConf().getProcessId();
-                    var content = TOMUtil.getBytes(SVController.getCurrentView());
-                    var view = SVController.getCurrentViewId();
-                    var targets = new int[]{request.getSender()};
-                    tomLayer.getCommunication().send(targets, new TOMMessage(sender, request.getSession(), request.getSequence(), content, view));
-                }
+                noop &= processRequest(request);
             }
 
             // This happens when a consensus finishes but there are no requests to deliver
@@ -137,35 +108,7 @@ public class ParallelServiceReplica extends ServiceReplica {
             // operation contained in the batch. The recoverer must be notified about this,
             // hence the invocation of "noop"
             if (noop && this.recoverer != null) {
-
-                bftsmart.tom.util.Logger.println("(ServiceReplica.receiveMessages) Delivering a no-op to the recoverer");
-
-                System.out.println(" --- A consensus instance finished, but there were no commands to deliver to the application.");
-                System.out.println(" --- Notifying recoverable about a blank consensus.");
-
-                byte[][] batch = null;
-                MessageContext[] msgCtx = null;
-                if (requestsFromConsensus.length > 0) {
-                    //Make new batch to deliver
-                    batch = new byte[requestsFromConsensus.length][];
-                    msgCtx = new MessageContext[requestsFromConsensus.length];
-
-                    //Put messages in the batch
-                    int line = 0;
-                    for (TOMMessage m : requestsFromConsensus) {
-                        batch[line] = m.getContent();
-
-                        msgCtx[line] = new MessageContext(m.getSender(), m.getViewID(),
-                                m.getReqType(), m.getSession(), m.getSequence(), m.getOperationId(),
-                                m.getReplyServer(), m.serializedMessageSignature, firstRequest.timestamp,
-                                m.numOfNonces, m.seed, regencies[consensusCount], leaders[consensusCount],
-                                consId[consensusCount], cDecs[consensusCount].getConsMessages(), firstRequest, true);
-                        msgCtx[line].setLastInBatch();
-
-                        line++;
-                    }
-                }
-                this.recoverer.noOp(consId[consensusCount], batch, msgCtx);
+                processNoop(consId, regencies, leaders, cDecs, consensusCount, requestsFromConsensus, firstRequest);
             }
             consensusCount++;
         }
@@ -174,7 +117,74 @@ public class ParallelServiceReplica extends ServiceReplica {
         }
     }
 
+    private boolean processRequest(TOMMessage request) {
+        boolean noop = true;
+        if (request.getViewID() == SVController.getCurrentViewId()) {
+            switch (request.getReqType()) {
+                case RECONFIG:
+                    SVController.enqueueUpdate(request);
+                    break;
+                case ORDERED_REQUEST: {
+                    noop = false;
+                    processOrderedRequest(request);
+                    break;
+                }
+                default:
+                    throw new RuntimeException("Unknown Request Type.");
+            }
+        } else if (request.getViewID() < SVController.getCurrentViewId()) {
+            // message sender had an old view, resend the message to
+            // him (but only if it came from consensus an not state transfer)
+            var sender = SVController.getStaticConf().getProcessId();
+            var content = TOMUtil.getBytes(SVController.getCurrentView());
+            var view = SVController.getCurrentViewId();
+            var targets = new int[]{request.getSender()};
+            tomLayer.getCommunication().send(targets, new TOMMessage(sender, request.getSession(), request.getSequence(), content, view));
+        }
+        return noop;
+    }
 
+    protected void processOrderedRequest(TOMMessage request) {
+        MultiOperationRequest reqs = new MultiOperationRequest(request.getContent());
+        MultiOperationCtx ctx = new MultiOperationCtx(reqs.operations.length, request);
+        this.ctxs.put(request.toString(), ctx);
+        statistics.start();
+        for (int i = 0; i < reqs.operations.length; i++) {
+            this.scheduler.schedule(new MessageContextPair(request, reqs.operations[i].classId, i, reqs.operations[i].data));
+        }
+    }
+
+    private void processNoop(int[] consId, int[] regencies, int[] leaders, CertifiedDecision[] cDecs, int consensusCount, TOMMessage[] requestsFromConsensus, TOMMessage firstRequest) {
+        bftsmart.tom.util.Logger.println("(ServiceReplica.receiveMessages) Delivering a no-op to the recoverer");
+
+        System.out.println(" --- A consensus instance finished, but there were no commands to deliver to the application.");
+        System.out.println(" --- Notifying recoverable about a blank consensus.");
+
+        byte[][] batch = null;
+        MessageContext[] msgCtx = null;
+        if (requestsFromConsensus.length > 0) {
+            //Make new batch to deliver
+            batch = new byte[requestsFromConsensus.length][];
+            msgCtx = new MessageContext[requestsFromConsensus.length];
+
+            //Put messages in the batch
+            int line = 0;
+            for (TOMMessage m : requestsFromConsensus) {
+                batch[line] = m.getContent();
+
+                msgCtx[line] = new MessageContext(m.getSender(), m.getViewID(),
+                        m.getReqType(), m.getSession(), m.getSequence(), m.getOperationId(),
+                        m.getReplyServer(), m.serializedMessageSignature, firstRequest.timestamp,
+                        m.numOfNonces, m.seed, regencies[consensusCount], leaders[consensusCount],
+                        consId[consensusCount], cDecs[consensusCount].getConsMessages(), firstRequest, true);
+                msgCtx[line].setLastInBatch();
+
+                line++;
+            }
+        }
+        this.recoverer.noOp(consId[consensusCount], batch, msgCtx);
+
+    }
 
 
     private class ServiceReplicaWorker extends Thread {

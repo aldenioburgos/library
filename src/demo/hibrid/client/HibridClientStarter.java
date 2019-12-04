@@ -14,7 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package demo.account.hibrid;
+package demo.hibrid.client;
 
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 /**
  * Example client
  */
-public class AccountClientStarter {
+public class HibridClientStarter {
     private static int i;
 
     public static void main(String[] args) throws Exception {
@@ -34,32 +34,38 @@ public class AccountClientStarter {
             int interval = Integer.parseInt(args[i++]);
             int maxListIndex = Integer.parseInt(args[i++]);
             int numOperationsPerRequest = Integer.parseInt(args[i++]);
-            int percWrites = Integer.parseInt(args[i++]);
             int numPartitions = Integer.parseInt(args[i++]);
             // get array of args
-            int[] percentualDistributionOfOperationsAmongPartition = getPercentualArrayOrArgs(args, numPartitions, "percentuais de distribuição das operações entre as partições");
+            int[] percentualDistributionOfOperationsAmongPartition = getPercentualArrayOrArgs(args, numPartitions, "percentuais de distribuição das operações entre as partições", true);
             // get array of args
-            int[] percentualOfPartitionsEnvolved = getPercentualArrayOrArgs(args, numPartitions, "percentuais de partições envolvidas nas operações");
+            int[] percentualOfPartitionsEnvolved = getPercentualArrayOrArgs(args, numPartitions, "percentuais de partições envolvidas nas operações", true);
+            // get array of args
+            int[] percentualOfWritesPerPartition = getPercentualArrayOrArgs(args, numPartitions,"percentual de operações de escrita por partição", false);
+
             // create and run the client
-            new AccountClientHibrid(clientProcessId, numThreads, numRequests, interval, maxListIndex, numOperationsPerRequest, percWrites, numPartitions, percentualDistributionOfOperationsAmongPartition, percentualOfPartitionsEnvolved);
+            new HibridListClient(clientProcessId, numThreads, numRequests, interval, maxListIndex, numOperationsPerRequest, numPartitions, percentualDistributionOfOperationsAmongPartition, percentualOfPartitionsEnvolved, percentualOfWritesPerPartition);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            System.out.println("Usage: ... AccountClientStarter <process_id> <number_of_threads> <number_of_operations> <operations_per_request> <interval_beetween_requests> <max_account_number> <%_of_writes> <number_of_partitions> <% of op/partition> <%_of_partitions_envolved>");
-            System.out.println("ex 1: java demo.account.hibrid.AccountClientStarter 1 2 10000 50 5 100000 4 25 25 25 25 10 10 10 10 ");
-            System.out.println("O exemplo 1 também pode ser escrito assim: java demo.account.hibrid.AccountClientStarter 1 2 10000 50 5 100000 4 25 ... 10 ...");
-            System.out.println("ex 2: java demo.account.hibrid.AccountClientStarter 1 2 10000 50 5 100000 4 100 0 ...  20 ... ");
+            System.out.println("Usage: ... AccountClientStarter <process_id> <number_of_threads> <number_of_operations> <operations_per_request> <interval_beetween_requests> <max_account_number> <number_of_partitions> <% of op/partition> <%_of_partitions_envolved> <% of writes/partition>");
+            System.out.println("ex 1: java demo.hibrid.AccountClientStarter 1 2 10000 50 0 100000 4 25 25 25 25 10 10 10 10 ");
+            System.out.println("O exemplo 1 também pode ser escrito assim: java demo.hibrid.AccountClientStarter 1 2 10000 50 5 100000 4 25 ... 10 ...");
+            System.out.println("ex 2: java demo.hibrid.AccountClientStarter 1 2 10000 50 0 100000 4 100 0 ...  20 ... 10 ...");
             e.printStackTrace();
             System.exit(-1);
         }
     }
 
 
-    private static int[] getPercentualArrayOrArgs(String[] args, int numPartitions, String name) {
+    private static int[] getPercentualArrayOrArgs(String[] args, int numPartitions, String name, boolean aSomaEh100) {
         int[] parcentualArrayOfArgs = new int[numPartitions];
         for (int j = 0; j < numPartitions; j++) {
             if (args[i].equals("...")) {
                 if (j == 0) {
-                    Arrays.fill(parcentualArrayOfArgs, 100 / numPartitions);
-                } else if (j > 0) {
+                    if (aSomaEh100) {
+                        Arrays.fill(parcentualArrayOfArgs, 100 / numPartitions);
+                    } else {
+                        throw new IllegalArgumentException("Não é possível definir os valores do array");
+                    }
+                } else {
                     Arrays.fill(parcentualArrayOfArgs, j, numPartitions, Integer.parseInt(args[i - 1]));
                 }
                 i++;
@@ -68,8 +74,9 @@ public class AccountClientStarter {
                 parcentualArrayOfArgs[j] = Integer.parseInt(args[i++]);
             }
         }
-        validatePercentualArrayOfArgs(parcentualArrayOfArgs, name);
-
+        if (aSomaEh100) {
+            validatePercentualArrayOfArgs(parcentualArrayOfArgs, name);
+        }
         return parcentualArrayOfArgs;
     }
 

@@ -7,7 +7,6 @@ package parallelism.late;
 
 import parallelism.MessageContextPair;
 import parallelism.ParallelMapping;
-import parallelism.hibrid.MultipleLockFreeGraph;
 import parallelism.late.graph.COS;
 import parallelism.late.graph.CoarseGrainedLock;
 import parallelism.late.graph.FineGrainedLock;
@@ -38,8 +37,6 @@ public class CBASEScheduler implements Scheduler {
             this.cos = new FineGrainedLock(limit, this);
         } else if (cosType == COSType.lockFreeGraph) {
             this.cos = new LockFreeGraph(limit, this);
-        } else if (cosType == COSType.multipleLockFreeGraph) {
-            this.cos = new MultipleLockFreeGraph(limit, this);
         } else {
             this.cos = new CoarseGrainedLock(limit, this);
         }

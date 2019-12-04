@@ -5,16 +5,15 @@
  */
 package parallelism;
 
-
 import bftsmart.tom.core.messages.TOMMessage;
 
 /**
+ *
  * @author eduardo
  */
 public class MessageContextPair {
     public TOMMessage request;
     public int classId;
-    public int partitionId;
     public byte[] operation;
     public int index;
     public byte[] resp;
@@ -26,11 +25,4 @@ public class MessageContextPair {
         this.operation = operation;
     }
 
-    public MessageContextPair(TOMMessage request, int classId, int partitionId, int index, byte[] operation) {
-        this.request = request;
-        this.classId = classId;
-        this.partitionId = partitionId;
-        this.operation = operation;
-        this.index = index;
-    }
 }

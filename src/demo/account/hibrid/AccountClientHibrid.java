@@ -17,7 +17,9 @@
 package demo.account.hibrid;
 
 
+import demo.account.hibrid.commands.Account;
 import demo.account.hibrid.commands.AccountCommand;
+import demo.account.hibrid.commands.CheckBalance;
 import demo.account.hibrid.commands.Transfer;
 
 import java.io.IOException;
@@ -27,11 +29,10 @@ import java.util.*;
  * Example client
  */
 public class AccountClientHibrid {
-    private Map<Integer, List<AccountCommand>> sentOperations = new HashMap<>();
     private boolean stop = false;
     private final int clientProcessId;
     private final int numThreads;
-    private final int numRequests;
+    private final int numOperations;
     private final int interval;
     private final int percWrites;
     private final int maxListIndex;
@@ -42,7 +43,7 @@ public class AccountClientHibrid {
 
     public AccountClientHibrid(int clientProcessId,
                                int numThreads,
-                               int numRequests,
+                               int numOperations,
                                int interval,
                                int percWrites,
                                int maxListIndex,
@@ -52,11 +53,11 @@ public class AccountClientHibrid {
                                int[] percentualOfPartitionsEnvolvedPerOperation) {
         this.clientProcessId = clientProcessId;
         this.numThreads = numThreads;
-        this.numRequests = numRequests;
+        this.numOperations = numOperations;
+        this.numOperationsPerRequest = numOperationsPerRequest;
         this.interval = interval;
         this.percWrites = percWrites;
         this.maxListIndex = maxListIndex;
-        this.numOperationsPerRequest = numOperationsPerRequest;
         this.numPartitions = numPartitions;
         this.percentualDistributionOfOperationsAmongPartition = pileValues(percentualDistributionOfOperationsAmongPartition);
         this.percentualOfPartitionsEnvolvedPerOperation = pileValues(percentualOfPartitionsEnvolvedPerOperation);
@@ -71,7 +72,7 @@ public class AccountClientHibrid {
     private int[] pileValues(int[] origin) {
         int[] array = Arrays.copyOf(origin, origin.length);
         for (int i = 1; i < array.length; i++) {
-            array[i] = array[i - 1] + array[i];
+            array[i] = (array[i - 1] < 100) ? array[i - 1] + array[i] : 0;
         }
         return array;
     }
@@ -96,8 +97,8 @@ public class AccountClientHibrid {
     }
 
     private int calcNumRequestsForWorker(int i) {
-        int exactDivision = numRequests / numThreads;
-        int remainder = numRequests % numThreads;
+        int exactDivision = numOperations / numThreads;
+        int remainder = numOperations % numThreads;
         if (remainder == 0 || i != 0) {
             return exactDivision;
         }
@@ -106,7 +107,7 @@ public class AccountClientHibrid {
 
 
     public class AccountClientWorker extends Thread {
-        private final int numberOfReqs;
+        private final int numOperations;
         private final int id;
         private final BFTAccountHibrid server;
         private final Random rand = new Random();
@@ -114,28 +115,29 @@ public class AccountClientHibrid {
         public AccountClientWorker(int id, int numberOfRqs) throws IOException {
             super("Client Worker " + id);
             this.id = id;
-            this.numberOfReqs = numberOfRqs;
+            this.numOperations = numberOfRqs;
             this.server = new BFTAccountHibrid(id);
         }
 
         @Override
         public void run() {
-            System.out.println("Executing experiment for " + numberOfReqs + " ops");
-
-
-            for (int i = 0; i < numberOfReqs && !stop; i++) {
-                if (isWriteOp()) {
-                    int[] accountsSelected = selectAccounts();
-                    int ammount = defineAmmount(accountsSelected[0]);
-                    var transfer = createTransfer(accountsSelected, ammount);
-                    var response = server.execute(transfer);
-                } else {
-                    int[] partitionsSelected = selectPartitions(1);
-                    int[] accountsSelected = selectAccounts(partitionsSelected);
-
+            System.out.println("Executing Client Worker "+id+" with " + numOperations + " ops.");
+            for (int i = 0; i < numOperations && !stop; i =+ numOperationsPerRequest) {
+                int numOpToExecute = Math.min(numOperations - i, numOperationsPerRequest);
+                var operations = new AccountCommand[numOpToExecute];
+                for (int j = 0; j < operations.length; j++) {
+                    if (isWriteOp()) {
+                        Account[] accountsSelected = selectAccounts();
+                        operations[j] = createTransfer(accountsSelected, 1);
+                    } else {
+                        int selectedPartition = selectPartition();
+                        Account selectedAccount = selectAccount(selectedPartition);
+                        operations[j] = new CheckBalance(selectedAccount);
+                    }
                 }
-
-                //TODO continuar daqui.
+                var responses = server.execute(operations);
+                System.out.println("Client Worker "+id+": operations" + Arrays.deepToString(operations));
+                System.out.println("Client Worker "+id+": responses " + Arrays.deepToString(responses));
                 if (interval > 0) {
                     try {
                         Thread.sleep(interval);
@@ -147,48 +149,59 @@ public class AccountClientHibrid {
         }
 
         private boolean isWriteOp() {
-            return (rand.nextInt(101) <= percWrites);
+            return (rand.nextInt(100) < percWrites);
         }
 
-        private Transfer createTransfer(int[] accountsEnvolved, int ammount) {
+        private Transfer createTransfer(Account[] accountsEnvolved, int ammount) {
             return new Transfer(accountsEnvolved[0], ammount, Arrays.copyOfRange(accountsEnvolved, 1, accountsEnvolved.length));
         }
 
-        private int defineAmmount(int accountToDebit) {
-            return 1;
+        private Account[] selectAccounts() {
+            int numPartitionsEnvolved = numPartitionsEnvolved();
+            var accounts = new Account[numPartitionsEnvolved];
+            int[] partitionsSelected = selectPartitions(numPartitionsEnvolved);
+            for (int i = 0; i < numPartitionsEnvolved; i++) {
+                accounts[i] = selectAccount(partitionsSelected[i]);
+            }
+            return accounts;
         }
 
-        private int[] selectAccounts() {
-            int numPartitionsEnvolved = numPartitionsEnvolved();
-            int[] partitionsSelected = selectPartitions(numPartitionsEnvolved);
-
+        private int numPartitionsEnvolved() {
+            var selector = rand.nextInt(100);
+            for (int i = 0; i < percentualOfPartitionsEnvolvedPerOperation.length; i++) {
+                if (selector < percentualOfPartitionsEnvolvedPerOperation[i]) {
+                    return i;
+                }
+            }
+            return 0;
         }
 
         private int[] selectPartitions(int numPartitionsEnvolved) {
             var partitions = new int[numPartitionsEnvolved];
-            for (int i = 0; i < partitions.length i++) {
+            for (int i = 0; i < partitions.length; i++) {
                 partitions[i] = selectPartition();
             }
+            return partitions;
         }
 
         private int selectPartition() {
-            var selector = rand.nextInt(101);
+            var selector = rand.nextInt(100);
             for (int i = 0; i < percentualDistributionOfOperationsAmongPartition.length; i++) {
-                if (selector <= percentualDistributionOfOperationsAmongPartition[i]) {
+                if (selector < percentualDistributionOfOperationsAmongPartition[i]) {
                     return i;
                 }
             }
             return 0;
         }
 
-        private int numPartitionsEnvolved() {
-            var selector = rand.nextInt(101);
-            for (int i = 0; i < percentualOfPartitionsEnvolvedPerOperation.length; i++) {
-                if (selector <= percentualOfPartitionsEnvolvedPerOperation[i]) {
-                    return i;
-                }
+        private Account selectAccount(int partition) {
+            int division = maxListIndex / numPartitions;
+            int remainder = maxListIndex % numPartitions;
+            if (remainder == 0 || partition < (numPartitions - 1)) {
+                return new Account(partition,rand.nextInt(division) + (partition * division));
+            } else {
+                return new Account(partition, rand.nextInt(division + remainder) + (partition * division));
             }
-            return 0;
         }
     }
 

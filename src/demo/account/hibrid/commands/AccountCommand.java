@@ -1,8 +1,15 @@
 package demo.account.hibrid.commands;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public interface AccountCommand extends Serializable {
+public abstract class AccountCommand implements Serializable {
 
-    int getSinteticValue(); //TODO encontrar um nome melhor para esse método.
+    protected static AtomicInteger idGenerator = new AtomicInteger(0);
+    protected int id;
+
+
+    public int getId() {
+        return id;
+    }
 }

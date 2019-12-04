@@ -1,17 +1,28 @@
 package demo.account.hibrid.commands;
 
-public class Debit implements AccountCommand {
+public class Debit extends AccountCommand {
 
-    private final int account;
-    private final int value;
+    private Account account;
+    private int value;
 
-    public Debit(int account, int value) {
+    public Debit() {
+    }
+
+    public Debit(Account account, int value) {
+        this.id = idGenerator.getAndAdd(1);
         this.account = account;
         this.value = value;
     }
 
+    public Account getAccount() {
+        return account;
+    }
 
-    public int getSinteticValue() {
-        return -value;
+    public int getValue() {
+        return value;
+    }
+
+    int getPartition() {
+        return account.getPartition();
     }
 }

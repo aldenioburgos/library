@@ -1,21 +1,29 @@
 package demo.account.hibrid.commands;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
-public class Transfer implements AccountCommand{
+public class Transfer extends AccountCommand {
 
-    private final Debit debit;
-    private final Credit[] credits;
+    private Debit debit;
+    private Credit[] credits;
 
-    public Transfer(int from, int value, int... to) {
-        this.debit = new Debit(from, value * to.length);
-        var auxCredits = new ArrayList<Credit>(to.length);
-        Arrays.stream(to).forEach(it -> auxCredits.add(new Credit(it, value)));
-        this.credits = auxCredits.toArray(new Credit[0]);
+    public Transfer() {
     }
 
-    public int getSinteticValue(){
-        return Math.abs(debit.getSinteticValue());
+    public Transfer(Account from, int value, Account[] to) {
+        this.id = idGenerator.getAndAdd(1);
+        this.debit = new Debit(from, value * to.length);
+        this.credits = new Credit[to.length];
+        this.credits = Arrays.stream(to).map(it -> new Credit(it, value)).collect(Collectors.toList()).toArray(new Credit[0]);
+    }
+
+    public int[] getPartitions() {
+        var partitions = new int[credits.length + 1];
+        partitions[0] = debit.getPartition();
+        for (int i = 0; i < credits.length; i++) {
+            partitions[i + 1] = credits[i].getPartition();
+        }
+        return partitions;
     }
 }

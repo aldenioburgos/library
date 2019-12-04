@@ -1,15 +1,14 @@
 package demo.account.hibrid.commands;
 
-public class CheckBalance implements AccountCommand {
+public class CheckBalance extends AccountCommand {
 
-    private final int account;
-    private int balance;
+    private Account account;
 
-    public CheckBalance(int account) {
-        this.account = account;
+    public CheckBalance() {
     }
 
-    public int getSinteticValue(){
-        return balance;
+    public CheckBalance(Account account) {
+        this.id = idGenerator.getAndAdd(1);
+        this.account = account;
     }
 }

@@ -1,16 +1,28 @@
 package demo.account.hibrid.commands;
 
-public class Credit implements AccountCommand {
+public class Credit extends AccountCommand {
 
-    private final int account;
-    private final int value;
+    private Account account;
+    private int value;
 
-    public Credit(int account, int value) {
+    public Credit() {
+    }
+
+    public Credit(Account  account, int value) {
+        this.id = idGenerator.getAndAdd(1);
         this.account = account;
         this.value = value;
     }
 
-    public int getSinteticValue(){
+    public Account getAccount() {
+        return account;
+    }
+
+    public int getValue() {
         return value;
+    }
+
+    public int getPartition() {
+        return account.getPartition();
     }
 }

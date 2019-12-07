@@ -14,20 +14,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author eduardo
  */
 public class MultiOperationCtx {
-    
+
     public AtomicInteger interger = new AtomicInteger();
     public MultiOperationResponse response;
     public TOMMessage request;
     public boolean finished = false;
-    
-    public MultiOperationCtx(int size, TOMMessage request){
+
+    public MultiOperationCtx(int size, TOMMessage request) {
         response = new MultiOperationResponse(size);
         this.request = request;
     }
-    
-    public void add(int index, byte[] resp){
+
+    public void add(int index, byte[] resp) {
         this.response.add(index, resp);
     }
-    
-    
+
 }

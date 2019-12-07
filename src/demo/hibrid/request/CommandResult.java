@@ -8,33 +8,38 @@ import java.io.Serializable;
 public class CommandResult implements Serializable {
 
     private int id;
-    private int index;
+    private boolean[] results;
 
     public CommandResult() {
     }
 
-    public CommandResult(int id, int index) {
+    public CommandResult(int id, boolean[] results) {
         this.id = id;
-        this.index = index;
+        this.results = results;
     }
 
     public int getId() {
         return id;
     }
 
-    public int getIndex() {
-        return index;
+    public boolean[] getResults() {
+        return results;
     }
-
 
     public CommandResult fromBytes(DataInputStream dis) throws IOException {
         this.id = dis.readInt();
-        this.index = dis.readInt();
+        this.results = new boolean[dis.readInt()];
+        for (int i = 0; i < results.length; i++) {
+            results[i] = dis.readBoolean();
+        }
         return this;
     }
 
     public void toBytes(DataOutputStream dos) throws IOException {
         dos.writeInt(id);
-        dos.writeInt(index);
+        dos.writeInt(results.length);
+        for (int i = 0; i < results.length; i++) {
+            dos.writeBoolean(results[i]);
+        }
     }
 }

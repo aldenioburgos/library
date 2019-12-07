@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package parallelism.late;
+package demo.hibrid.server.graph;
 
+/**
+ * @author aldenio
+ */
+public interface  ConflictDefinition<T> {
 
-public enum COSType {
-	coarseLockGraph, fineLockGraph, lockFreeGraph
+      boolean isDependent(T r1, T r2);
+
 }
-

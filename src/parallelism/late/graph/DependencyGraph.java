@@ -23,13 +23,14 @@ public abstract class DependencyGraph extends COS {
     protected vNode tail;                                 // in the list: lower and highest
 
 
+
+
     public DependencyGraph(int limit, CBASEScheduler scheduler) {
         super(limit, scheduler);
-        head = new vNode(null, Vertex.HEAD);
-        tail = new vNode(null, Vertex.TAIL);
+        head = new DependencyGraph.vNode(null, Vertex.HEAD);
+        tail = new DependencyGraph.vNode(null, Vertex.TAIL);
         head.setNext(tail);
     }
-
 
     // ----------------------------------------------------------------------
     // --------- a vertex of the graph - graph kept as a linked list

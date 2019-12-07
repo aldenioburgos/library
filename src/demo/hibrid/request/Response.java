@@ -10,8 +10,9 @@ public class Response {
     public Response() {
     }
 
-    public Response(int id) {
+    public Response(int id, CommandResult[] results) {
         this.id = id;
+        this.results = results;
     }
 
     public int getId() {

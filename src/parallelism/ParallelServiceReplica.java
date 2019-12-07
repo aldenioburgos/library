@@ -221,7 +221,7 @@ public class ParallelServiceReplica extends ServiceReplica {
                                     scheduler.getMapping().getBarrier(msg.classId).await();
                                 } else {
                                     scheduler.getMapping().getBarrier(msg.classId).await();
-                                    //TODO: esse trecho sem nada está estranho!
+
                                     scheduler.getMapping().getBarrier(msg.classId).await();
                                 }
                                 break;
@@ -229,7 +229,7 @@ public class ParallelServiceReplica extends ServiceReplica {
                             default: {
                                 if (msg.classId == ParallelMapping.CONFLICT_RECONFIGURATION) {
                                     scheduler.getMapping().getReconfBarrier().await();
-                                    //TODO: esse trecho sem nada está estranho!
+
                                     scheduler.getMapping().getReconfBarrier().await();
                                 }
                                 break;

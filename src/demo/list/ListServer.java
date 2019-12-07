@@ -57,9 +57,6 @@ public final class ListServer implements SingleExecutable {
                 case "lockFree":
                     new CBASEServiceReplica(id, this, null, initThreads, conflictDef, COSType.lockFreeGraph);
                     break;
-                case "multipleLockFree":
-                    new CBASEServiceReplica(id, this, null, initThreads, conflictDef, COSType.multipleLockFreeGraph);
-                    break;
                 default:
                     new CBASEServiceReplica(id, this, null, initThreads, conflictDef, null);
                     break;

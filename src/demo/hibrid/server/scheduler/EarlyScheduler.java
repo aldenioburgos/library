@@ -2,6 +2,7 @@ package demo.hibrid.server.scheduler;
 
 import demo.hibrid.request.Command;
 import demo.hibrid.server.ServerCommand;
+import demo.hibrid.server.StatisticsCollector;
 
 public class EarlyScheduler {
 
@@ -12,6 +13,7 @@ public class EarlyScheduler {
     }
 
     public void schedule(int requestId, Command[] commands) throws InterruptedException {
+        StatisticsCollector.getInstance().earlySchedulerSchedule = System.currentTimeMillis();
         for (int i = 0; i < commands.length; i++) {
             addToQueues(requestId, commands[i]);
         }

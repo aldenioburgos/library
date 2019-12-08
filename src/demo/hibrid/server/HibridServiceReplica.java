@@ -60,6 +60,7 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         var request = new Request().fromBytes(message.getContent());
         var requestId = request.getId();
         var commands = request.getCommands();
+        StatisticsCollector.getInstance().requestStats[requestId].arrivalTime = System.currentTimeMillis();
         context.put(requestId, new HibridRequestContext(commands.length, message));
         try {
             earlyScheduler.schedule(requestId, commands);

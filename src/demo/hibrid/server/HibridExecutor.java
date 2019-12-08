@@ -4,17 +4,14 @@ import bftsmart.tom.MessageContext;
 import bftsmart.tom.server.SingleExecutable;
 import demo.hibrid.request.Command;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class HibridExecutor implements SingleExecutable {
 
-    private final List<Integer> dataList = new LinkedList<>();
+    private final int  MIN_TIME_TO_EXECUTE_READ;
+    private final int  MIN_TIME_TO_EXECUTE_WRITE;
 
-    public HibridExecutor(int maxIndex) {
-        for (int i = 0; i < maxIndex; i++) {
-            this.dataList.add(i);
-        }
+    public HibridExecutor(int minTimeToExecuteRead, int minTimeToExecuteWrite) {
+        this.MIN_TIME_TO_EXECUTE_READ = minTimeToExecuteRead;
+        this.MIN_TIME_TO_EXECUTE_WRITE = minTimeToExecuteWrite;
     }
 
     @Override
@@ -29,15 +26,11 @@ public class HibridExecutor implements SingleExecutable {
 
 
     public boolean[] execute(Command command) {
-        var indexes = command.getIndexes();
-        var responses = new boolean[indexes.length];
-        for (int i = 0; i < indexes.length; i++) {
-            if (!dataList.contains(-indexes[i])) {
-                responses[i] = false;
-            } else {
-                throw new RuntimeException("Não era para cair aqui, algo deu errado!");
-            }
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + ((command.getType() == Command.ADD)? MIN_TIME_TO_EXECUTE_WRITE: MIN_TIME_TO_EXECUTE_READ);
+        while (System.currentTimeMillis() < endTime) {
+            // Active waiting
         }
-        return responses;
+        return new boolean[command.getIndexes().length];
     }
 }

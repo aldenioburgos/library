@@ -1,6 +1,7 @@
 package demo.hibrid.server.scheduler;
 
 import demo.hibrid.server.ServerCommand;
+import demo.hibrid.server.StatisticsCollector;
 import demo.hibrid.server.graph.COSManager;
 
 import java.util.concurrent.BrokenBarrierException;
@@ -10,9 +11,12 @@ public class LateScheduler extends Thread {
     private COSManager cosManager;
     private QueuesManager queuesManager;
     private int myPartition;
+    private int id;
+
 
     public LateScheduler(COSManager cosManager, QueuesManager queuesManager, int myPartition) {
         super("LateScheduler[" + myPartition + "]");
+        this.id = myPartition;
         this.cosManager = cosManager;
         this.queuesManager = queuesManager;
         this.myPartition = myPartition;
@@ -37,8 +41,11 @@ public class LateScheduler extends Thread {
     public void run() {
         try {
             while (true) {
+                StatisticsCollector.getInstance().lateSchedulerStats[id].takeInit.add(System.currentTimeMillis());
                 var command = queuesManager.takeCommandFrom(myPartition);
+                StatisticsCollector.getInstance().lateSchedulerStats[id].takeEndScheduleInit.add(System.currentTimeMillis());
                 schedule(command);
+                StatisticsCollector.getInstance().lateSchedulerStats[id].scheduleEnd.add(System.currentTimeMillis());
             }
         } catch (InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();

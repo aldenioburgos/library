@@ -66,7 +66,7 @@ public class CBASEServiceReplica extends ParallelServiceReplica {
         private void runConfictReconfiguration() {
             try {
                 getReconfBarrier().await();
-                //TODO: trecho de código que não faz nada!
+                //trecho de código que não faz nada!
                 getReconfBarrier().await();
             } catch (InterruptedException | BrokenBarrierException ex) {
                 ex.printStackTrace();

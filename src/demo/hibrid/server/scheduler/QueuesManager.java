@@ -1,6 +1,7 @@
 package demo.hibrid.server.scheduler;
 
 import demo.hibrid.server.ServerCommand;
+import demo.hibrid.server.StatisticsCollector;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -21,7 +22,9 @@ public class QueuesManager {
     }
 
     public void putCommandIn(int partition, ServerCommand serverCommand) throws InterruptedException {
+        StatisticsCollector.getInstance().QueuesManagerPutCommandInStart.add(System.currentTimeMillis());
         queues[partition].put(serverCommand);
+        StatisticsCollector.getInstance().QueuesManagerPutCommandInEnd.add(System.currentTimeMillis());
     }
 
 }

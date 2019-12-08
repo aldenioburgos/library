@@ -3,14 +3,10 @@ package demo.hibrid.server.graph;
 import demo.hibrid.server.ServerCommand;
 
 import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.Map;
 
 public class COSManager {
 
     private HibridCOS<ServerCommand>[] graphs;
-    private Map<ServerCommand, COSNode<ServerCommand>> reservedNodes = new Hashtable<>(); //TODO avaliar se não haveria outra solução, esse hashtable aqui é sincronizado entre as replicaworkers, pode criar um gargalo.
-
 
     public COSManager(int numGraphs, int maxCOSSize, ConflictDefinition<ServerCommand> conflictDefinition) {
         assert numGraphs > 0 : "Invalid Argument numGraphs = "+numGraphs;
@@ -35,7 +31,6 @@ public class COSManager {
         if (node == null) {
             node = graphs[preferentialPartition].get();
         }
-        reservedNodes.put(node.data, node);
         return node.data;
     }
 
@@ -44,7 +39,7 @@ public class COSManager {
         assert Thread.currentThread().getName().startsWith("HibridServiceReplicaWorker") : "COSManager.remove() foi chamado pela thread " + Thread.currentThread().getName();
         assert serverCommand != null : "Invalid Argument serverCommand = null";
 
-        var node = reservedNodes.remove(serverCommand);
+        var node = serverCommand.getNode();
         var cos = node.cos;
         cos.remove(node);
     }
@@ -56,6 +51,7 @@ public class COSManager {
 
         var cos = graphs[partitionToInsertTheCommand];
         var node = cos.createNode(serverCommand);
+        serverCommand.setNode(node);
         var partitions = serverCommand.getPartitions();
         for (int i = 0; i < partitions.length; i++) {
             var partition = partitions[i];

@@ -7,12 +7,11 @@ package demo.hibrid.server;
 
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.util.ThroughputStatistics;
-import demo.hibrid.request.Command;
 import demo.hibrid.request.CommandResult;
 import demo.hibrid.request.Request;
 import demo.hibrid.request.Response;
 import demo.hibrid.server.graph.ConflictDefinitionDefault;
-import demo.hibrid.server.scheduler.COSManager;
+import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.server.scheduler.EarlyScheduler;
 import demo.hibrid.server.scheduler.LateScheduler;
 import demo.hibrid.server.scheduler.QueuesManager;
@@ -53,7 +52,7 @@ public class HibridServiceReplica extends ParallelServiceReplica {
 
     private void initLateSchedulers() {
         for (int i = 0; i < this.lateSchedulers.length; i++) {
-            this.lateSchedulers[i] = new LateScheduler(cosManager, queuesManager);
+            this.lateSchedulers[i] = new LateScheduler(cosManager, queuesManager, i);
         }
     }
 
@@ -82,8 +81,9 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         public void run() {
             try {
                 while (true) {
-                    ServerCommand serverCommand = cosManager.getFrom(preferentialPartition);
+                    ServerCommand serverCommand = cosManager.get(preferentialPartition);
                     boolean[] results = executor.execute(serverCommand.getCommand());
+                    cosManager.get(preferentialPartition);
                     manageReply(serverCommand, results);
                     statistics.computeStatistics(thread_id, 1);
                 }

@@ -18,10 +18,8 @@ package bftsmart.tom.core;
 
 
 import bftsmart.communication.ServerCommunicationSystem;
-
 import bftsmart.consensus.roles.Acceptor;
 import bftsmart.reconfiguration.ServerViewController;
-
 import bftsmart.tom.ServiceReplica;
 import bftsmart.tom.server.Recoverable;
 import bftsmart.tom.server.RequestVerifier;

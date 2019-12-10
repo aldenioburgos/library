@@ -29,27 +29,36 @@ public class HibridClientStarter {
         try {
             i = 0;
             int clientProcessId = Integer.parseInt(args[i++]);
+            System.out.println("Client process id = " + clientProcessId);
             int numThreads = Integer.parseInt(args[i++]);
-            int numRequests = Integer.parseInt(args[i++]);
-            int interval = Integer.parseInt(args[i++]);
-            int maxListIndex = Integer.parseInt(args[i++]);
+            System.out.println("Number of client threads = " + numThreads);
+            int numOperations = Integer.parseInt(args[i++]);
+            System.out.println("Total number of operations to send = " + numOperations);
             int numOperationsPerRequest = Integer.parseInt(args[i++]);
+            System.out.println("Number of operations per request = " + numOperationsPerRequest);
+            int interval = Integer.parseInt(args[i++]);
+            System.out.println("Interval between requests = " + interval);
+            int maxListIndex = Integer.parseInt(args[i++]);
+            System.out.println("Major server list index = " + maxListIndex);
             int numPartitions = Integer.parseInt(args[i++]);
+            System.out.println("Number of server partitions = " + numPartitions);
             // get array of args
             int[] percentualDistributionOfOperationsAmongPartition = getPercentualArrayOrArgs(args, numPartitions, "percentuais de distribuição das operações entre as partições", true);
+            System.out.println("A distribuição percentual de operações entre as partições será assim : " + Arrays.toString(percentualDistributionOfOperationsAmongPartition));
             // get array of args
             int[] percentualOfPartitionsEnvolved = getPercentualArrayOrArgs(args, numPartitions, "percentuais de partições envolvidas nas operações", true);
+            System.out.println("O percentual de partições envolvidas nas requisições será assim: " + Arrays.toString(percentualOfPartitionsEnvolved));
             // get array of args
-            int[] percentualOfWritesPerPartition = getPercentualArrayOrArgs(args, numPartitions,"percentual de operações de escrita por partição", false);
+            int[] percentualOfWritesPerPartition = getPercentualArrayOrArgs(args, numPartitions, "percentual de operações de escrita por partição", false);
+            System.out.println("O percentual de operações de escrita por partição será assim : " + Arrays.toString(percentualOfWritesPerPartition));
 
             // create and run the client
-            new HibridListClient(clientProcessId, numThreads, numRequests, interval, maxListIndex, numOperationsPerRequest, numPartitions, percentualDistributionOfOperationsAmongPartition, percentualOfPartitionsEnvolved, percentualOfWritesPerPartition);
+            new HibridListClient(clientProcessId, numThreads, numOperations, interval, maxListIndex, numOperationsPerRequest, numPartitions, percentualDistributionOfOperationsAmongPartition, percentualOfPartitionsEnvolved, percentualOfWritesPerPartition);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            System.out.println("Usage: ... AccountClientStarter <process_id> <number_of_threads> <number_of_operations> <operations_per_request> <interval_beetween_requests> <max_account_number> <number_of_partitions> <% of op/partition> <%_of_partitions_envolved> <% of writes/partition>");
+            System.out.println("\n\n\nUsage: ... demo.hibrid.client.HibridClientStarter <process_id> <number_of_threads> <number_of_operations> <operations_per_request> <interval_beetween_requests> <max_server_index> <number_of_partitions> <%_of_op/partition> <%_of_partitions/op> <%_of_writes/partition>");
             System.out.println("ex 1: java demo.hibrid.AccountClientStarter 1 2 10000 50 0 100000 4 25 25 25 25 10 10 10 10 ");
             System.out.println("O exemplo 1 também pode ser escrito assim: java demo.hibrid.AccountClientStarter 1 2 10000 50 5 100000 4 25 ... 10 ...");
             System.out.println("ex 2: java demo.hibrid.AccountClientStarter 1 2 10000 50 0 100000 4 100 0 ...  20 ... 10 ...");
-            e.printStackTrace();
             System.exit(-1);
         }
     }

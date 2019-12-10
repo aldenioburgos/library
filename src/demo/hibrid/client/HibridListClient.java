@@ -69,6 +69,11 @@ public class HibridListClient {
     }
 
     private void start() throws InterruptedException, IOException {
+        (new Timer()).schedule(new TimerTask() {
+            public void run() {
+                stop = false;
+            }
+        }, 5 * 60000); //depois de 5 minutos encerra.
         AccountClientWorker[] workers = new AccountClientWorker[numThreads];
         for (int i = 0; i < numThreads; i++) {
             Thread.sleep(100); //TODO pra que esse tempo aqui mesmo?
@@ -78,13 +83,10 @@ public class HibridListClient {
         Thread.sleep(300); //TODO pra que esse tempo aqui mesmo?
         for (AccountClientWorker worker : workers) {
             worker.start();
+        }
+        for (AccountClientWorker worker : workers) {
             worker.join();
         }
-        (new Timer()).schedule(new TimerTask() {
-            public void run() {
-                stop = false;
-            }
-        }, 5 * 60000); //depois de 5 minutos
     }
 
     private int calcNumRequestsForWorker(int i) {
@@ -103,7 +105,7 @@ public class HibridListClient {
         private final Random rand = new Random();
 
         public AccountClientWorker(int id, int numberOfRqs) throws IOException {
-            super("Client Worker " + id);
+            super("Client "+clientProcessId+" Worker " + id);
             this.id = id;
             this.numOperations = numberOfRqs;
             this.server = new HibridBFTListServerProxy(id);
@@ -121,8 +123,8 @@ public class HibridListClient {
                     int[] selectedIndexes = selectIndexes(selectedPartitions);
                     operations[j] = new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
                 }
-                var responses = server.execute(operations);
                 System.out.println("Client Worker " + id + ": operations" + Arrays.deepToString(operations));
+                var responses = server.execute(clientProcessId, id, operations);
                 System.out.println("Client Worker " + id + ": responses " + Arrays.deepToString(responses));
                 if (interval > 0) {
                     try {

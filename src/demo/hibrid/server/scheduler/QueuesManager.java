@@ -1,7 +1,6 @@
 package demo.hibrid.server.scheduler;
 
 import demo.hibrid.server.ServerCommand;
-import demo.hibrid.server.StatisticsCollector;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -18,13 +17,13 @@ public class QueuesManager {
     }
 
     public ServerCommand takeCommandFrom(int partition) throws InterruptedException{
+        System.out.println( Thread.currentThread().getName()+" asks QueuesManager.takeCommandFrom("+partition+")"); //TODO remover
         return queues[partition].take();
     }
 
     public void putCommandIn(int partition, ServerCommand serverCommand) throws InterruptedException {
-        StatisticsCollector.getInstance().QueuesManagerPutCommandInStart.add(System.currentTimeMillis());
+        System.out.println(Thread.currentThread().getName()+" asks QueuesManager.putCommandIn("+partition+", "+serverCommand+")"); //TODO remover
         queues[partition].put(serverCommand);
-        StatisticsCollector.getInstance().QueuesManagerPutCommandInEnd.add(System.currentTimeMillis());
     }
 
 }

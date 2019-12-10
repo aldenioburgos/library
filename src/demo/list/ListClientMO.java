@@ -20,7 +20,6 @@ package demo.list;
 
 import bftsmart.util.ExtStorage;
 
-import java.io.IOException;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;

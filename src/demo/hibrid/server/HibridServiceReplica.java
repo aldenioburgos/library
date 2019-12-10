@@ -6,28 +6,27 @@
 package demo.hibrid.server;
 
 import bftsmart.tom.core.messages.TOMMessage;
-import bftsmart.util.ThroughputStatistics;
 import demo.hibrid.request.CommandResult;
 import demo.hibrid.request.Request;
 import demo.hibrid.request.Response;
-import demo.hibrid.server.graph.ConflictDefinitionDefault;
 import demo.hibrid.server.graph.COSManager;
+import demo.hibrid.server.graph.ConflictDefinitionDefault;
 import demo.hibrid.server.scheduler.EarlyScheduler;
 import demo.hibrid.server.scheduler.LateScheduler;
 import demo.hibrid.server.scheduler.QueuesManager;
+import demo.hibrid.stats.Stats;
 import parallelism.ParallelServiceReplica;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author eduardo
+ * @author aldenio
  */
 public class HibridServiceReplica extends ParallelServiceReplica {
 
     private final EarlyScheduler earlyScheduler;
     private final QueuesManager queuesManager;
-    private final LateScheduler[] lateSchedulers;
     private final COSManager cosManager;
     private final Map<Integer, HibridRequestContext> context = new HashMap<>();
     private final HibridExecutor executor;
@@ -37,22 +36,20 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         this.executor = executor;
         this.queuesManager = new QueuesManager(numPartitions, maxQueueSize);
         this.earlyScheduler = new EarlyScheduler(queuesManager);
-        this.lateSchedulers = new LateScheduler[numPartitions];
         this.cosManager = new COSManager(numPartitions, maxCOSSize, new ConflictDefinitionDefault());
-        initLateSchedulers();
+        initLateSchedulers(numPartitions);
         initReplicaWorkers(numWorkers, numPartitions);
     }
 
-    private void initReplicaWorkers(int numWorkers, int numPartitions) {
-        statistics = new ThroughputStatistics(id, numWorkers, "results_" + id + ".txt", "");
-        for (int i = 0; i < numWorkers; i++) {
-            new HibridServiceReplicaWorker(i, i % numPartitions).start();
+    private void initLateSchedulers(int numPartitions) {
+        for (int i = 0; i < numPartitions; i++) {
+            new LateScheduler(cosManager, queuesManager, i).start();
         }
     }
 
-    private void initLateSchedulers() {
-        for (int i = 0; i < this.lateSchedulers.length; i++) {
-            this.lateSchedulers[i] = new LateScheduler(cosManager, queuesManager, i);
+    private void initReplicaWorkers(int numWorkers, int numPartitions) {
+        for (int i = 0; i < numWorkers; i++) {
+            new HibridServiceReplicaWorker(i, i % numPartitions).start();
         }
     }
 
@@ -60,9 +57,9 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         var request = new Request().fromBytes(message.getContent());
         var requestId = request.getId();
         var commands = request.getCommands();
-        StatisticsCollector.getInstance().requestStats[requestId].arrivalTime = System.currentTimeMillis();
         context.put(requestId, new HibridRequestContext(commands.length, message));
         try {
+            Stats.messageReceive(request);
             earlyScheduler.schedule(requestId, commands);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -70,31 +67,30 @@ public class HibridServiceReplica extends ParallelServiceReplica {
     }
 
     private class HibridServiceReplicaWorker extends Thread {
-        private int thread_id;
         private int preferentialPartition;
 
-        public HibridServiceReplicaWorker(int thread_id, int preferentialPartition) {
-            super("HibridServiceReplicaWorker[" + id + "," + thread_id + "]");
-            this.thread_id = thread_id;
+        HibridServiceReplicaWorker(int thread_id, int preferentialPartition) {
+            super("HibridServiceReplicaWorker[" + id + ", " + thread_id + "]");
             this.preferentialPartition = preferentialPartition;
         }
 
         public void run() {
             try {
                 while (true) {
+                    var workerInit = System.currentTimeMillis();
                     ServerCommand serverCommand = cosManager.get(preferentialPartition);
+                    Stats.replicaWorkerInit(id, workerInit, serverCommand);
                     boolean[] results = executor.execute(serverCommand.getCommand());
-                    cosManager.get(preferentialPartition);
+                    Stats.replicaWorkerEnd(id, serverCommand);
                     manageReply(serverCommand, results);
-                    statistics.computeStatistics(thread_id, 1);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        protected void manageReply(ServerCommand serverCommand, boolean[] results) {
-            var requestId = serverCommand.getRequestId();
+        private void manageReply(ServerCommand serverCommand, boolean[] results) {
+            var requestId = serverCommand.requestId;
             var commandId = serverCommand.getCommandId();
             var ctx = context.get(requestId);
             ctx.add(new CommandResult(commandId, results));
@@ -102,6 +98,7 @@ public class HibridServiceReplica extends ParallelServiceReplica {
                 var response = new Response(requestId, ctx.getResults());
                 ctx.request.reply = new TOMMessage(id, ctx.request.getSession(), ctx.request.getSequence(), response.toBytes(), SVController.getCurrentViewId());
                 replier.manageReply(ctx.request, null);
+                Stats.messageReply(requestId);
             }
         }
     }

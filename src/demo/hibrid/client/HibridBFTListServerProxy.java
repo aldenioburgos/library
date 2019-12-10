@@ -23,8 +23,8 @@ public class HibridBFTListServerProxy {
         this.proxy = new ParallelServiceProxy(id);
     }
 
-    public CommandResult[] execute(Command... commands) {
-        var request = new Request(commands);
+    public CommandResult[] execute(int clientProcessId, int id, Command... commands) {
+        var request = new Request(clientProcessId, id, commands);
         byte[] requestBytes = request.toBytes();
         byte[] rep = proxy.invokeParallel(requestBytes, 0);
         return (rep == null) ? null : new Response().fromBytes(rep).getResults();

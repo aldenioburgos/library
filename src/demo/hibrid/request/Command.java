@@ -3,6 +3,7 @@ package demo.hibrid.request;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Command {
@@ -71,5 +72,15 @@ public class Command {
         for (int index : indexes) {
             dos.writeInt(index);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Command{" +
+                "id=" + id +
+                ", type=" + type +
+                ", partitions=" + Arrays.toString(partitions) +
+                ", indexes=" + Arrays.toString(indexes) +
+                '}';
     }
 }

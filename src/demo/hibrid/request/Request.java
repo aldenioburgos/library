@@ -1,30 +1,24 @@
 package demo.hibrid.request;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Request {
-    private static final AtomicInteger idGenerator = new AtomicInteger(0);
 
+    private static final AtomicInteger idGenerator = new AtomicInteger(0);
     private int id;
     private Command[] commands;
 
     public Request() {
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public Command[] getCommands() {
-        return commands;
-    }
-
-    public Request(Command[] commands) {
-        this.id = idGenerator.getAndAdd(1);
+    public Request(int clientId, int clientWorkerId, Command... commands) {
+        var counter = idGenerator.getAndAdd(1);
+        this.id = Objects.hash(clientId, clientWorkerId, counter);
         this.commands = commands;
     }
-
 
     public byte[] toBytes() {
         try (var baos = new ByteArrayOutputStream();
@@ -55,4 +49,19 @@ public class Request {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public Command[] getCommands() {
+        return commands;
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "id=" + id +
+                ", commands=" + Arrays.deepToString(commands) +
+                '}';
+    }
 }

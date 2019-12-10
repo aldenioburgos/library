@@ -19,7 +19,6 @@ package demo.list;
 
 import bftsmart.util.Storage;
 
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;

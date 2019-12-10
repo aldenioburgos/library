@@ -21,7 +21,7 @@ public class COSManager {
 
     public ServerCommand get(int preferentialPartition) throws InterruptedException {
         assert Thread.currentThread().getName().startsWith("HibridServiceReplicaWorker") : "COSManager.get() foi chamado pela thread " + Thread.currentThread().getName();
-        assert preferentialPartition > 0 : "Invalid Argument preferentialPartition = " + preferentialPartition;
+        assert preferentialPartition >= 0 : "Invalid Argument preferentialPartition = " + preferentialPartition;
         assert preferentialPartition < graphs.length : "Invalid Argument preferentialPartition = " + preferentialPartition + " >= graphs.length = " + graphs.length;
 
         COSNode<ServerCommand> node = null;

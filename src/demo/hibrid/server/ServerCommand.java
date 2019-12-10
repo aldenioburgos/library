@@ -8,7 +8,7 @@ import java.util.concurrent.CyclicBarrier;
 
 public class ServerCommand {
 
-    private int requestId;
+    public final int requestId;
     private CyclicBarrier barrier;
     private Command command;
     private COSNode<ServerCommand> node;
@@ -27,16 +27,9 @@ public class ServerCommand {
         }
     }
 
-    public int getRequestId() {
-        return requestId;
-    }
 
     public Command getCommand() {
         return command;
-    }
-
-    public int getType() {
-        return command.getType();
     }
 
     public Integer getCommandId() {
@@ -53,5 +46,16 @@ public class ServerCommand {
 
     public COSNode<ServerCommand> getNode() {
         return node;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ServerCommand{" +
+                "requestId=" + requestId +
+                ", barrier=" + barrier +
+                ", command=" + command +
+                ", node=" + node +
+                '}';
     }
 }

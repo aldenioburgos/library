@@ -4,6 +4,8 @@ import demo.hibrid.request.Command;
 import demo.hibrid.server.ServerCommand;
 import demo.hibrid.stats.Stats;
 
+import java.util.Arrays;
+
 public class EarlyScheduler {
 
     private QueuesManager queuesManager;
@@ -13,17 +15,16 @@ public class EarlyScheduler {
     }
 
     public void schedule(int requestId, Command[] commands) throws InterruptedException {
-        for (int i = 0; i < commands.length; i++) {
-            addToQueues(requestId, commands[i]);
+        for (Command command : commands) {
+            addToQueues(requestId, command);
         }
     }
 
     private void addToQueues(int requestId, Command command) throws InterruptedException {
         var serverCommand = new ServerCommand(requestId, command);
         Stats.earlySchedulerInit(serverCommand);
-        var partitions = command.getPartitions();
-        for (int i = 0; i < partitions.length; i++) {
-            queuesManager.putCommandIn(partitions[i], serverCommand);
+        for (int partition : serverCommand.distinctPartitions) {
+            queuesManager.putCommandIn(partition, serverCommand);
         }
         Stats.earlySchedulerEnd(serverCommand);
     }

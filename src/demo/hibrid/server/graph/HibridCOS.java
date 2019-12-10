@@ -6,6 +6,8 @@
 package demo.hibrid.server.graph;
 
 
+import demo.hibrid.server.ServerCommand;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -13,7 +15,7 @@ import java.util.concurrent.Semaphore;
 /**
  * @author eduardo
  */
-public class HibridCOS<T> {
+public class HibridCOS<T extends ServerCommand> { // TODO não precisava extender server command, está aqui só para debug.
 
     private final Semaphore space;                // counting semaphore for size of graph
     private final ConflictDefinition<T> conflictDefinition;
@@ -75,4 +77,12 @@ public class HibridCOS<T> {
         return this.conflictDefinition.isDependent(thisRequest, otherRequest);
     }
 
+    @Override
+    public String toString() {
+        return "HibridCOS{" +
+                "space=" + space.availablePermits() +
+                ", ready=" + ready.availablePermits() +
+                ", nodes=" + nodes +
+                '}';
+    }
 }

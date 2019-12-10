@@ -3,6 +3,7 @@ package demo.hibrid.server;
 import demo.hibrid.request.Command;
 import demo.hibrid.server.graph.COSNode;
 
+import java.util.Arrays;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -13,11 +14,16 @@ public class ServerCommand {
     private Command command;
     private COSNode<ServerCommand> node;
 
+    public final int[] partitions;
+    public final int[] distinctPartitions;
+
     public ServerCommand(int requestId, Command command) {
         this.requestId = requestId;
         this.command = command;
-        if (command.getPartitions().length > 1) {
-            this.barrier = new CyclicBarrier(command.getPartitions().length);
+        this.partitions = command.getPartitions();
+        this.distinctPartitions = Arrays.stream(this.partitions).distinct().toArray();
+        if (distinctPartitions.length > 1) {
+            this.barrier = new CyclicBarrier(distinctPartitions.length);
         }
     }
 
@@ -32,12 +38,8 @@ public class ServerCommand {
         return command;
     }
 
-    public Integer getCommandId() {
+    public int getCommandId() {
         return command.getId();
-    }
-
-    public int[] getPartitions() {
-        return command.getPartitions();
     }
 
     public void setNode(COSNode<ServerCommand> node) {
@@ -53,9 +55,8 @@ public class ServerCommand {
     public String toString() {
         return "ServerCommand{" +
                 "requestId=" + requestId +
-                ", barrier=" + barrier +
-                ", command=" + command +
-                ", node=" + node +
+                ", barrier=" + ((barrier == null) ? " null" : barrier.getNumberWaiting() + " de " + barrier.getParties()) +
+                ", " + command +
                 '}';
     }
 }

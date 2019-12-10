@@ -41,24 +41,35 @@ public class COSManager {
 
         var node = serverCommand.getNode();
         var cos = node.cos;
-        cos.remove(node);
+
+        synchronized (this) { //TODO remover depois.
+            cos.remove(node);
+            System.out.println(this);//TODO remover depois.
+        }
     }
 
 
     public void addTo(int partitionToInsertTheCommand, ServerCommand serverCommand) throws InterruptedException {
         assert Thread.currentThread().getName().startsWith("LateScheduler") : "COSManager.addTo() foi chamado pela thread " + Thread.currentThread().getName();
-        assert Arrays.stream(serverCommand.getPartitions()).anyMatch(it -> it == partitionToInsertTheCommand) : "A partição para inserção do comando não está dentre as partições do comando.";
+        assert Arrays.stream(serverCommand.partitions).anyMatch(it -> it == partitionToInsertTheCommand) : "A partição para inserção do comando não está dentre as partições do comando.";
 
         var cos = graphs[partitionToInsertTheCommand];
         var node = cos.createNode(serverCommand);
         serverCommand.setNode(node);
-        var partitions = serverCommand.getPartitions();
-        for (int i = 0; i < partitions.length; i++) {
-            var partition = partitions[i];
+        for (int partition : serverCommand.distinctPartitions) {
             graphs[partition].addDependencies(node);
         }
-        cos.insert(node);
-        node.checkIfReady();
+        synchronized (this) { //TODO remover depois.
+            cos.insert(node);
+            node.checkIfReady();
+            System.out.println(this);//TODO remover depois.
+        }
     }
 
+    @Override
+    public String toString() {
+        return "COSManager{" +
+                "graphs=" + Arrays.toString(graphs) +
+                '}';
+    }
 }

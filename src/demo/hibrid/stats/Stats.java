@@ -31,6 +31,9 @@ public class Stats {
 
 
     public static Stats createInstance(int numPartitions, int numOperations, int numOperationsPerRequest) {
+        if (numPartitions <= 0 ) throw new IllegalArgumentException("Invalid negative argument numPartitions!");
+        if (numOperations <= 0 ) throw new IllegalArgumentException("Invalid negative argument numOperations!");
+        if (numOperationsPerRequest <= 0 ) throw new IllegalArgumentException("Invalid negative argument numOperationsPerRequest!");
         if (instance == null) {
             instance = new Stats(numPartitions, numOperations, numOperationsPerRequest);
         } else {
@@ -88,7 +91,7 @@ public class Stats {
         instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).lateSchedulerWaitingInit = takeInit;
         instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).lateSchedulerWaitingEnd = lateSchedulerInit;
         instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).lateSchedulerInit = lateSchedulerInit;
-        System.out.println("lateScheduler "+lateSchedulerId+" Init for "+command);
+//        System.out.println("lateScheduler "+lateSchedulerId+" Init for "+command);
     }
 
     public static void lateSchedulerEnd(int id, ServerCommand command) {

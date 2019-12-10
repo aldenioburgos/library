@@ -18,84 +18,102 @@ package demo.hibrid.client;
 
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Example client
  */
 public class HibridClientStarter {
-    private static int i;
+    private enum Parametro {
+        id(true),
+        numthreads(true),
+        numOp(true),
+        numOpPerReq(true),
+        interval(true),
+        maxServerIndex(true),
+        numPartitions(true),
+        distOpPart(false),
+        percPart(false),
+        percWrite(false);
+        final boolean simple;
 
-    public static void main(String[] args) throws Exception {
-        try {
-            i = 0;
-            int clientProcessId = Integer.parseInt(args[i++]);
-            System.out.println("Client process id = " + clientProcessId);
-            int numThreads = Integer.parseInt(args[i++]);
-            System.out.println("Number of client threads = " + numThreads);
-            int numOperations = Integer.parseInt(args[i++]);
-            System.out.println("Total number of operations to send = " + numOperations);
-            int numOperationsPerRequest = Integer.parseInt(args[i++]);
-            System.out.println("Number of operations per request = " + numOperationsPerRequest);
-            int interval = Integer.parseInt(args[i++]);
-            System.out.println("Interval between requests = " + interval);
-            int maxListIndex = Integer.parseInt(args[i++]);
-            System.out.println("Major server list index = " + maxListIndex);
-            int numPartitions = Integer.parseInt(args[i++]);
-            System.out.println("Number of server partitions = " + numPartitions);
-            // get array of args
-            int[] percentualDistributionOfOperationsAmongPartition = getPercentualArrayOrArgs(args, numPartitions, "percentuais de distribuição das operações entre as partições", true);
-            System.out.println("A distribuição percentual de operações entre as partições será assim : " + Arrays.toString(percentualDistributionOfOperationsAmongPartition));
-            // get array of args
-            int[] percentualOfPartitionsEnvolved = getPercentualArrayOrArgs(args, numPartitions, "percentuais de partições envolvidas nas operações", true);
-            System.out.println("O percentual de partições envolvidas nas requisições será assim: " + Arrays.toString(percentualOfPartitionsEnvolved));
-            // get array of args
-            int[] percentualOfWritesPerPartition = getPercentualArrayOrArgs(args, numPartitions, "percentual de operações de escrita por partição", false);
-            System.out.println("O percentual de operações de escrita por partição será assim : " + Arrays.toString(percentualOfWritesPerPartition));
-
-            // create and run the client
-            new HibridListClient(clientProcessId, numThreads, numOperations, interval, maxListIndex, numOperationsPerRequest, numPartitions, percentualDistributionOfOperationsAmongPartition, percentualOfPartitionsEnvolved, percentualOfWritesPerPartition);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            System.out.println("\n\n\nUsage: ... demo.hibrid.client.HibridClientStarter <process_id> <number_of_threads> <number_of_operations> <operations_per_request> <interval_beetween_requests> <max_server_index> <number_of_partitions> <%_of_op/partition> <%_of_partitions/op> <%_of_writes/partition>");
-            System.out.println("ex 1: java demo.hibrid.AccountClientStarter 1 2 10000 50 0 100000 4 25 25 25 25 10 10 10 10 ");
-            System.out.println("O exemplo 1 também pode ser escrito assim: java demo.hibrid.AccountClientStarter 1 2 10000 50 5 100000 4 25 ... 10 ...");
-            System.out.println("ex 2: java demo.hibrid.AccountClientStarter 1 2 10000 50 0 100000 4 100 0 ...  20 ... 10 ...");
-            System.exit(-1);
+        Parametro(boolean simple) {
+            this.simple = simple;
         }
     }
 
+    private static Map<Parametro, Integer> params = new HashMap<>();
+    private static Map<Parametro, int[]> arrParams = new HashMap<>();
 
-    private static int[] getPercentualArrayOrArgs(String[] args, int numPartitions, String name, boolean aSomaEh100) {
-        int[] parcentualArrayOfArgs = new int[numPartitions];
-        for (int j = 0; j < numPartitions; j++) {
-            if (args[i].equals("...")) {
-                if (j == 0) {
-                    if (aSomaEh100) {
-                        Arrays.fill(parcentualArrayOfArgs, 100 / numPartitions);
-                    } else {
-                        throw new IllegalArgumentException("Não é possível definir os valores do array");
-                    }
-                } else {
-                    Arrays.fill(parcentualArrayOfArgs, j, numPartitions, Integer.parseInt(args[i - 1]));
-                }
-                i++;
-                break;
+    public static void main(String[] args) {
+        readParams(Arrays.asList(args));
+        // create and run the client
+        new HibridListClient(
+                params.get(Parametro.id),
+                params.get(Parametro.numthreads),
+                params.get(Parametro.numOp),
+                params.get(Parametro.interval),
+                params.get(Parametro.maxServerIndex),
+                params.get(Parametro.numOpPerReq),
+                params.get(Parametro.numPartitions),
+                arrParams.get(Parametro.distOpPart),
+                arrParams.get(Parametro.percPart),
+                arrParams.get(Parametro.percWrite)
+        );
+    }
+
+    private static void readParams(List<String> args) {
+        for (Parametro p : Parametro.values()) {
+            if (p.simple) {
+                params.put(p, (Integer) get(args, p));
             } else {
-                parcentualArrayOfArgs[j] = Integer.parseInt(args[i++]);
+                arrParams.put(p, (int[]) get(args, p));
             }
         }
-        if (aSomaEh100) {
-            validatePercentualArrayOfArgs(parcentualArrayOfArgs, name);
+    }
+
+    private static Object get(List<String> args, Parametro param) {
+        var argument = args.stream().filter(it -> it.startsWith(param.toString())).findFirst();
+        if (argument.isEmpty()) throw new RuntimeException("Parametro " + param.toString() + " não foi encontrado");
+        var value = argument.get().substring(argument.get().indexOf('=') + 1);
+        if (param.simple) {
+            return Integer.valueOf(value);
+        } else {
+            return getArray(param, value);
+        }
+    }
+
+    private static int[] getArray(Parametro param, String value) {
+        switch (param) {
+            case distOpPart:
+            case percPart:
+                return getPercentualArrayOrArgs(value, params.get(Parametro.numPartitions), true);
+            case percWrite:
+                return getPercentualArrayOrArgs(value, params.get(Parametro.numPartitions), false);
+            default:
+                throw new IllegalArgumentException("Unknown (!simple) argument " + param);
+        }
+    }
+
+    private static int[] getPercentualArrayOrArgs(String value, Integer numPartitions, boolean aSomaEh100) {
+        int[] parcentualArrayOfArgs = new int[numPartitions];
+        String[] itens = value.split(",");
+        for (int i = 0; i < numPartitions; i++) {
+            if (itens[i].equals("...")) {
+                if (i == 0 && aSomaEh100) {
+                    Arrays.fill(parcentualArrayOfArgs, 100 / numPartitions);
+                } else if (i > 0) {
+                    Arrays.fill(parcentualArrayOfArgs, i, numPartitions, Integer.parseInt(itens[i - 1]));
+                } else {
+                    throw new IllegalArgumentException("Não é possível definir os valores do array");
+                }
+                break;
+            } else {
+                parcentualArrayOfArgs[i] = Integer.parseInt(itens[i]);
+            }
         }
         return parcentualArrayOfArgs;
     }
-
-    private static void validatePercentualArrayOfArgs(int[] percentualArrayOfArgs, String name) {
-        if (Arrays.stream(percentualArrayOfArgs).sum() != 100) {
-            throw new IllegalArgumentException("A soma dos " + name + " tem que ser 100.");
-        }
-        if (Arrays.stream(percentualArrayOfArgs).anyMatch(it -> it < 0 || it > 100)) {
-            throw new IllegalArgumentException("Os " + name + " devem ser números inteiros entre 0 e 100.");
-        }
-    }
-
 }

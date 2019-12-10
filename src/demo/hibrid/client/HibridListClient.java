@@ -28,7 +28,7 @@ import java.util.TimerTask;
 /**
  * Example client
  */
-public class HibridListClient {
+class HibridListClient {
     private boolean stop = false;
     private final int clientProcessId;
     private final int numThreads;
@@ -41,7 +41,7 @@ public class HibridListClient {
     private final int[] percentualOfPartitionsEnvolvedPerOperation;
     private final int[] percentualOfWritesPerPartition;
 
-    public HibridListClient(int clientProcessId, int numThreads, int numOperations, int interval, int maxListIndex, int numOperationsPerRequest, int numPartitions, int[] percentualDistributionOfOperationsAmongPartition, int[] percentualOfPartitionsEnvolvedPerOperation, int[] percentualOfWritesPerPartition) {
+    HibridListClient(int clientProcessId, int numThreads, int numOperations, int interval, int maxListIndex, int numOperationsPerRequest, int numPartitions, int[] percentualDistributionOfOperationsAmongPartition, int[] percentualOfPartitionsEnvolvedPerOperation, int[] percentualOfWritesPerPartition) {
         this.clientProcessId = clientProcessId;
         this.numThreads = numThreads;
         this.numOperations = numOperations;
@@ -65,6 +65,7 @@ public class HibridListClient {
         for (int i = 1; i < array.length; i++) {
             array[i] = (array[i - 1] < 100) ? array[i - 1] + array[i] : 0;
         }
+        System.out.println("O array ficou assim: " + Arrays.toString(array));
         return array;
     }
 
@@ -104,8 +105,8 @@ public class HibridListClient {
         private final HibridBFTListServerProxy server;
         private final Random rand = new Random();
 
-        public AccountClientWorker(int id, int numberOfRqs) throws IOException {
-            super("Client "+clientProcessId+" Worker " + id);
+        AccountClientWorker(int id, int numberOfRqs) throws IOException {
+            super("Client " + clientProcessId + " Worker " + id);
             this.id = id;
             this.numOperations = numberOfRqs;
             this.server = new HibridBFTListServerProxy(id);
@@ -123,9 +124,9 @@ public class HibridListClient {
                     int[] selectedIndexes = selectIndexes(selectedPartitions);
                     operations[j] = new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
                 }
-                System.out.println("Client Worker " + id + ": operations" + Arrays.deepToString(operations));
+                System.out.println("Client Worker " + id + ": operations" + Arrays.deepToString(operations)); //TODO remover
                 var responses = server.execute(clientProcessId, id, operations);
-                System.out.println("Client Worker " + id + ": responses " + Arrays.deepToString(responses));
+                System.out.println("Client Worker " + id + ": responses " + Arrays.deepToString(responses)); //TODO remover
                 if (interval > 0) {
                     try {
                         Thread.sleep(interval);
@@ -137,11 +138,19 @@ public class HibridListClient {
         }
 
         private boolean isWriteOperation(int[] selectedPartitions) {
+            var result = true;
             var seletor = rand.nextInt(100);
-            return Arrays.stream(selectedPartitions).allMatch(it -> seletor < it);
+            for (int selectedPartition : selectedPartitions) {
+                if (percentualOfWritesPerPartition[selectedPartition] <= seletor) {
+                    result = false;
+                    break;
+                }
+            }
+            return result;
         }
 
         private int[] selectIndexes(int[] selectedPartitions) {
+            assert selectedPartitions.length > 0 : "Deve haver ao menos uma partição selecionada.";
             var indexes = new int[selectedPartitions.length];
             for (int i = 0; i < selectedPartitions.length; i++) {
                 indexes[i] = selectIndex(selectedPartitions[i]);
@@ -153,10 +162,10 @@ public class HibridListClient {
             var selector = rand.nextInt(100);
             for (int i = 0; i < percentualOfPartitionsEnvolvedPerOperation.length; i++) {
                 if (selector < percentualOfPartitionsEnvolvedPerOperation[i]) {
-                    return i;
+                    return i + 1; // a posição x se refere ao percentual de operações com x+1 partição envolvida;
                 }
             }
-            return 0;
+            throw new RuntimeException("Sempre deve haver ao menos uma partição envolvida.");
         }
 
         private int[] selectPartitions(int numPartitionsEnvolved) {

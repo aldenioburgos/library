@@ -4,6 +4,7 @@ import demo.hibrid.server.ServerCommand;
 import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.stats.Stats;
 
+import java.util.Arrays;
 import java.util.concurrent.BrokenBarrierException;
 
 public class LateScheduler extends Thread {
@@ -28,7 +29,7 @@ public class LateScheduler extends Thread {
         command.awaitAtCyclicBarrierIfNeeded();
 
         // Só o latescheduler escolhido faz a inclusão no COS, o resto espera na próxima barreira.
-        if (myPartition == min(command.getPartitions())) { //TODO aqui estou sempre escolhendo a thread de menor valor em myPartition, mas poderiamos fazer um roundrobin, por exemplo.
+        if (myPartition == min(command.distinctPartitions)) { //TODO aqui estou sempre escolhendo a thread de menor valor em myPartition, mas poderiamos fazer um roundrobin, por exemplo.
             cosManager.addTo(myPartition, command);
         }
 
@@ -55,11 +56,7 @@ public class LateScheduler extends Thread {
 
 
     private int min(int[] commandPartitions) {
-        var min = Integer.MAX_VALUE;
-        for (int i = 0; i < commandPartitions.length; i++) {
-            min = Math.min(min, commandPartitions[i]);
-        }
-        return min;
+        return Arrays.stream(commandPartitions).min().getAsInt();
     }
 
 }

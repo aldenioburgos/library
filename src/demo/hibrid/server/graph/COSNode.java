@@ -1,10 +1,13 @@
 package demo.hibrid.server.graph;
 
+import demo.hibrid.server.ServerCommand;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
-public class COSNode<T> {
+public class COSNode<T extends ServerCommand> { //TODO não precisa extender ServerCommand, isso é só para debug.
     public final T data;// the item kept in the graph LockFreeNode
     final HibridCOS<T> cos;
 
@@ -72,5 +75,16 @@ public class COSNode<T> {
 
     boolean tryReserve() {
         return this.readyAtomic.get() && this.reservedAtomic.compareAndSet(false, true);
+    }
+
+    @Override
+    public String toString() { //TODO remover
+        return "COSNode{" +
+                "data=" + data +
+                ", reservedAtomic=" + reservedAtomic +
+                ", removedAtomic=" + removedAtomic +
+                ", readyAtomic=" + readyAtomic +
+                ", dependsOn=" + dependsOn.stream().map(it -> it.data.getCommandId()).collect(Collectors.toList()) +
+                '}';
     }
 }

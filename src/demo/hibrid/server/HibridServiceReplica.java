@@ -33,6 +33,11 @@ public class HibridServiceReplica extends ParallelServiceReplica {
 
     public HibridServiceReplica(int id, HibridExecutor executor, int numPartitions, int maxQueueSize, int numWorkers, int maxCOSSize) {
         super(id, executor, null);
+        if (executor == null) throw new IllegalArgumentException("Invalid null argument Executor.");
+        if (numPartitions <= 0) throw new IllegalArgumentException("Invalid zero or negative argument numPartitions.");
+        if (maxQueueSize <= 0) throw new IllegalArgumentException("Invalid zero or negative argument maxQueueSize.");
+        if (numWorkers <= 0) throw new IllegalArgumentException("Invalid zero or negative argument numWorkers.");
+        if (maxCOSSize <= 0) throw new IllegalArgumentException("Invalid zero or negative argument maxCOSSize.");
         this.executor = executor;
         this.queuesManager = new QueuesManager(numPartitions, maxQueueSize);
         this.earlyScheduler = new EarlyScheduler(queuesManager);
@@ -93,7 +98,10 @@ public class HibridServiceReplica extends ParallelServiceReplica {
             var requestId = serverCommand.requestId;
             var commandId = serverCommand.getCommandId();
             var ctx = context.get(requestId);
-            ctx.add(new CommandResult(commandId, results));
+            var commandResult = new CommandResult(commandId, results);
+            ctx.add(commandResult);
+            System.out.println("REPLY => " +commandResult +" for "+ serverCommand);
+            System.out.println("CTX => "+ ctx);
             if (ctx.finished()) {
                 var response = new Response(requestId, ctx.getResults());
                 ctx.request.reply = new TOMMessage(id, ctx.request.getSession(), ctx.request.getSequence(), response.toBytes(), SVController.getCurrentViewId());

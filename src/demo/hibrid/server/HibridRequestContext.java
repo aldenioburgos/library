@@ -3,6 +3,7 @@ package demo.hibrid.server;
 import bftsmart.tom.core.messages.TOMMessage;
 import demo.hibrid.request.CommandResult;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class HibridRequestContext {
@@ -26,5 +27,14 @@ public class HibridRequestContext {
 
     public CommandResult[] getResults() {
         return results;
+    }
+
+    @Override
+    public String toString() {
+        return "HibridRequestContext{" +
+                "request=" + request +
+                ", results=" + Arrays.toString(results) +
+                ", pos=" + pos +
+                '}';
     }
 }

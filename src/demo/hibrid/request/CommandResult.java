@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class CommandResult implements Serializable {
 
@@ -41,5 +42,13 @@ public class CommandResult implements Serializable {
         for (int i = 0; i < results.length; i++) {
             dos.writeBoolean(results[i]);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "CommandResult{" +
+                "id=" + id +
+                ", results=" + Arrays.toString(results) +
+                '}';
     }
 }

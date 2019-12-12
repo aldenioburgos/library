@@ -3,19 +3,20 @@ package demo.hibrid.server.graph;
 import demo.hibrid.server.ServerCommand;
 
 import java.util.Arrays;
+import java.util.concurrent.Semaphore;
 
 public class COSManager {
-
+    private Semaphore ready = new Semaphore(0);
     private HibridCOS<ServerCommand>[] graphs;
 
     public COSManager(int numGraphs, int maxCOSSize, ConflictDefinition<ServerCommand> conflictDefinition) {
-        assert numGraphs > 0 : "Invalid Argument numGraphs = "+numGraphs;
-        assert maxCOSSize > 0 : "Invalid Argument maxCOSSize = "+maxCOSSize;
+        assert numGraphs > 0 : "Invalid Argument numGraphs = " + numGraphs;
+        assert maxCOSSize > 0 : "Invalid Argument maxCOSSize = " + maxCOSSize;
         assert conflictDefinition != null : "Invalid Argument conflictDefinition = null";
 
         this.graphs = new HibridCOS[numGraphs];
         for (int i = 0; i < numGraphs; i++) {
-            this.graphs[i] = new HibridCOS<>(maxCOSSize, conflictDefinition);
+            this.graphs[i] = new HibridCOS<>(maxCOSSize, conflictDefinition, ready);
         }
     }
 
@@ -24,12 +25,10 @@ public class COSManager {
         assert preferentialPartition >= 0 : "Invalid Argument preferentialPartition = " + preferentialPartition;
         assert preferentialPartition < graphs.length : "Invalid Argument preferentialPartition = " + preferentialPartition + " >= graphs.length = " + graphs.length;
 
-        COSNode<ServerCommand> node = null;
+        ready.acquire();
+        HibridCOSNode<ServerCommand> node = null;
         for (int i = 0; i < graphs.length && node == null; i++) {
             node = graphs[(preferentialPartition + i) % graphs.length].tryGet();
-        }
-        if (node == null) {
-            node = graphs[preferentialPartition].get();
         }
         return node.data;
     }
@@ -41,11 +40,7 @@ public class COSManager {
 
         var node = serverCommand.getNode();
         var cos = node.cos;
-
-        synchronized (this) { //TODO remover depois.
-            cos.remove(node);
-            System.out.println(this);//TODO remover depois.
-        }
+        cos.remove(node);
     }
 
 
@@ -59,17 +54,16 @@ public class COSManager {
         for (int partition : serverCommand.distinctPartitions) {
             graphs[partition].addDependencies(node);
         }
-        synchronized (this) { //TODO remover depois.
-            cos.insert(node);
-            node.checkIfReady();
-            System.out.println(this);//TODO remover depois.
-        }
+        cos.insert(node);
+        node.checkIfReady();
     }
 
     @Override
     public String toString() {
         return "COSManager{" +
-                "graphs=" + Arrays.toString(graphs) +
+                " ready = " + ready.availablePermits() +
+                ", sizes = " + Arrays.toString(Arrays.stream(graphs).mapToInt(it-> it.size()).toArray()) +
+                ", graphs = " + Arrays.toString(graphs) +
                 '}';
     }
 }

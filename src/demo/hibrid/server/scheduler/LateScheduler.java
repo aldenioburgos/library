@@ -42,12 +42,12 @@ public class LateScheduler extends Thread {
     public void run() {
         try {
             while (true) {
-                var takeInit = System.currentTimeMillis();
-                System.out.println("LateScheduler " + id + " takeCommandFrom " + myPartition);
+//                var takeInit = System.currentTimeMillis();
+//                System.out.println("LateScheduler " + id + " takeCommandFrom " + myPartition);
                 var command = queuesManager.takeCommandFrom(myPartition);
-                Stats.lateSchedulerInit(id, takeInit, command);
+//                Stats.lateSchedulerInit(id, takeInit, command);
                 schedule(command);
-                Stats.lateSchedulerEnd(id, command);
+//                Stats.lateSchedulerEnd(id, command);
             }
         } catch (InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();

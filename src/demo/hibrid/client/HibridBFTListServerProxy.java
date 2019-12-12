@@ -15,7 +15,7 @@ import demo.hibrid.request.Response;
 /**
  * @author aldenio
  */
-public class HibridBFTListServerProxy {
+public class HibridBFTListServerProxy implements ServerProxy {
 
     private ParallelServiceProxy proxy;
 

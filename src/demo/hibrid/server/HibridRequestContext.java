@@ -8,13 +8,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class HibridRequestContext {
 
-    public final TOMMessage request;
+    public final TOMMessage message;
     private CommandResult[] results;
     private AtomicInteger pos = new AtomicInteger(0);
 
-    public HibridRequestContext(int size, TOMMessage request) {
+    public HibridRequestContext(int size, TOMMessage message) {
         this.results = new CommandResult[size];
-        this.request = request;
+        this.message = message;
     }
 
     public void add(CommandResult result) {
@@ -32,7 +32,7 @@ public class HibridRequestContext {
     @Override
     public String toString() {
         return "HibridRequestContext{" +
-                "request=" + request +
+                "request=" + message +
                 ", results=" + Arrays.toString(results) +
                 ", pos=" + pos +
                 '}';

@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * @author aldenio
  */
-public class HibridServiceReplica extends ParallelServiceReplica {
+public class HibridServiceReplica extends ParallelServiceReplica implements HibridReplier {
 
     private final EarlyScheduler earlyScheduler;
     private final QueuesManager queuesManager;
@@ -54,7 +54,23 @@ public class HibridServiceReplica extends ParallelServiceReplica {
 
     private void initReplicaWorkers(int numWorkers, int numPartitions) {
         for (int i = 0; i < numWorkers; i++) {
-            new HibridServiceReplicaWorker(i, i % numPartitions).start();
+            new HibridWorker(id, i, i % numPartitions, cosManager,  executor, this).start();
+        }
+    }
+
+    public void manageReply(ServerCommand serverCommand, boolean[] results) {
+        var requestId = serverCommand.requestId;
+        var commandId = serverCommand.getCommandId();
+        var ctx = context.get(requestId);
+        var commandResult = new CommandResult(commandId, results);
+        ctx.add(commandResult);
+        System.out.println("REPLY => " + commandResult + " for " + serverCommand);
+        System.out.println("CTX => " + ctx);
+        if (ctx.finished()) {
+            var response = new Response(requestId, ctx.getResults());
+            ctx.message.reply = new TOMMessage(id, ctx.message.getSession(), ctx.message.getSequence(), response.toBytes(), SVController.getCurrentViewId());
+            replier.manageReply(ctx.message, null);
+            Stats.messageReply(requestId);
         }
     }
 
@@ -63,51 +79,15 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         var requestId = request.getId();
         var commands = request.getCommands();
         context.put(requestId, new HibridRequestContext(commands.length, message));
-        try {
-            Stats.messageReceive(request);
-            earlyScheduler.schedule(requestId, commands);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        processRequest(request);
     }
 
-    private class HibridServiceReplicaWorker extends Thread {
-        private int preferentialPartition;
-
-        HibridServiceReplicaWorker(int thread_id, int preferentialPartition) {
-            super("HibridServiceReplicaWorker[" + id + ", " + thread_id + "]");
-            this.preferentialPartition = preferentialPartition;
-        }
-
-        public void run() {
-            try {
-                while (true) {
-                    var workerInit = System.currentTimeMillis();
-                    ServerCommand serverCommand = cosManager.get(preferentialPartition);
-                    Stats.replicaWorkerInit(id, workerInit, serverCommand);
-                    boolean[] results = executor.execute(serverCommand.getCommand());
-                    Stats.replicaWorkerEnd(id, serverCommand);
-                    manageReply(serverCommand, results);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void manageReply(ServerCommand serverCommand, boolean[] results) {
-            var requestId = serverCommand.requestId;
-            var commandId = serverCommand.getCommandId();
-            var ctx = context.get(requestId);
-            var commandResult = new CommandResult(commandId, results);
-            ctx.add(commandResult);
-            System.out.println("REPLY => " +commandResult +" for "+ serverCommand);
-            System.out.println("CTX => "+ ctx);
-            if (ctx.finished()) {
-                var response = new Response(requestId, ctx.getResults());
-                ctx.request.reply = new TOMMessage(id, ctx.request.getSession(), ctx.request.getSequence(), response.toBytes(), SVController.getCurrentViewId());
-                replier.manageReply(ctx.request, null);
-                Stats.messageReply(requestId);
-            }
+    public void processRequest(Request request) {
+        try {
+            Stats.messageReceive(request);
+            earlyScheduler.schedule(request.getId(), request.getCommands());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }

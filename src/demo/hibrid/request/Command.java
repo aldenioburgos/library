@@ -19,7 +19,7 @@ public class Command {
     public Command() {
     }
 
-    public Command(int type, int[] partition, int[] indexes) {
+    public Command(int type, int[] partition, int... indexes) {
         if (type != ADD && type != GET) throw new IllegalArgumentException("Unkown command type: " + type);
         this.id = idGenerator.getAndAdd(1);
         this.type = type;

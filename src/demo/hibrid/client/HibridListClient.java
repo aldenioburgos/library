@@ -99,17 +99,22 @@ class HibridListClient {
         return exactDivision + remainder;
     }
 
+    protected ServerProxy getServerProxy(int id) {
+        return new HibridBFTListServerProxy(id);
+    }
+
+
     public class AccountClientWorker extends Thread {
         private final int numOperations;
         private final int id;
-        private final HibridBFTListServerProxy server;
+        private final ServerProxy server;
         private final Random rand = new Random();
 
         AccountClientWorker(int id, int numberOfRqs) throws IOException {
             super("Client " + clientProcessId + " Worker " + id);
             this.id = id;
             this.numOperations = numberOfRqs;
-            this.server = new HibridBFTListServerProxy(id);
+            this.server = getServerProxy(id);
         }
 
         @Override
@@ -195,6 +200,9 @@ class HibridListClient {
                 return rand.nextInt(division + remainder) + (partition * division);
             }
         }
+
     }
+
+
 
 }

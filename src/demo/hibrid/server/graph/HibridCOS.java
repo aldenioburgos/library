@@ -8,37 +8,42 @@ package demo.hibrid.server.graph;
 
 import demo.hibrid.server.ServerCommand;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 /**
- * @author eduardo
+ * @author aldenio
  */
 public class HibridCOS<T extends ServerCommand> { // TODO não precisava extender server command, está aqui só para debug.
 
     private final Semaphore space;                // counting semaphore for size of graph
     private final ConflictDefinition<T> conflictDefinition;
-    private final List<COSNode<T>> nodes = new LinkedList<>();
+    private final Queue<HibridCOSNode<T>> nodes = new ConcurrentLinkedQueue<>();
+    private final Semaphore globalReady;
+    private final Semaphore ready = new Semaphore(0);  // tells if there is ready to execute
 
-    Semaphore ready = new Semaphore(0);  // tells if there is ready to execute
-
-     HibridCOS(int limit, ConflictDefinition<T> cd) {
+     HibridCOS(int limit, ConflictDefinition<T> cd, Semaphore globalReady) {
         this.space = new Semaphore(limit);
         this.conflictDefinition = cd;
+        this.globalReady = globalReady;
     }
 
-    COSNode<T> createNode(T serverCommand) {
-        return new COSNode<T>(serverCommand, this);
+    HibridCOSNode<T> createNode(T serverCommand) {
+        return new HibridCOSNode<T>(serverCommand, this);
     }
 
-    void insert(COSNode<T> node) throws InterruptedException {
+    public int size(){
+         return nodes.size();
+    }
+
+    void insert(HibridCOSNode<T> node) throws InterruptedException {
         this.space.acquire();
-        nodes.removeIf(COSNode::isDone);
+        nodes.removeIf(HibridCOSNode::isDone);
         nodes.add(node);
     }
 
-    void addDependencies(COSNode<T> newNode) {
+    void addDependencies(HibridCOSNode<T> newNode) {
         for (var oldNode : nodes) {
             if (isDependent(newNode.data, oldNode.data)) {
                 newNode.dependsOn(oldNode);
@@ -46,25 +51,25 @@ public class HibridCOS<T extends ServerCommand> { // TODO não precisava extende
         }
     }
 
-    public void remove(COSNode<T> node) throws InterruptedException {
+    public void remove(HibridCOSNode<T> node)  {
         node.markAsRemoved();
         this.space.release(1);
         node.releaseDependentNodes();
     }
 
-    COSNode<T> tryGet()  {
+    HibridCOSNode<T> tryGet()  {
         if (this.ready.tryAcquire()) {
             return getNextAvailableNode();
         }
         return null;
     }
 
-    COSNode<T> get() throws InterruptedException {
+    HibridCOSNode<T> get() throws InterruptedException {
         this.ready.acquire();
         return getNextAvailableNode();
     }
 
-    private COSNode<T> getNextAvailableNode() {
+    private HibridCOSNode<T> getNextAvailableNode() {
         for (var node : nodes) {
             if (node.tryReserve()) {
                 return node;
@@ -84,5 +89,10 @@ public class HibridCOS<T extends ServerCommand> { // TODO não precisava extende
                 ", ready=" + ready.availablePermits() +
                 ", nodes=" + nodes +
                 '}';
+    }
+
+    public void release(int i) {
+         this.ready.release(i);
+         this.globalReady.release(i);
     }
 }

@@ -3,6 +3,7 @@ package demo.hibrid.server.scheduler;
 import demo.hibrid.server.ServerCommand;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -17,20 +18,18 @@ public class QueuesManager {
         }
     }
 
-    ServerCommand takeCommandFrom(int partition) throws InterruptedException {
-        var x = queues[partition].take();
-        System.out.println(this);
-        return x;
-    }
-
     void putCommandIn(int partition, ServerCommand serverCommand) throws InterruptedException {
         queues[partition].put(serverCommand);
-        System.out.println(this);
+    }
+
+    ServerCommand takeCommandFrom(int partition) throws InterruptedException {
+        return queues[partition].take();
     }
 
     @Override
     public String toString() {
         return "QueuesManager{" +
+                "sizes=" + Arrays.toString(Arrays.stream(queues).mapToInt(Collection::size).toArray()) +
                 "queues=" + Arrays.toString(queues) +
                 '}';
     }

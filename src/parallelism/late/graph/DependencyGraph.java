@@ -18,12 +18,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class DependencyGraph extends COS {
 
-
     protected vNode head;                                 // always exist
     protected vNode tail;                                 // in the list: lower and highest
-
-
-
 
     public DependencyGraph(int limit, CBASEScheduler scheduler) {
         super(limit, scheduler);

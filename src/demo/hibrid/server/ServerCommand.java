@@ -1,7 +1,7 @@
 package demo.hibrid.server;
 
 import demo.hibrid.request.Command;
-import demo.hibrid.server.graph.COSNode;
+import demo.hibrid.server.graph.HibridCOSNode;
 
 import java.util.Arrays;
 import java.util.concurrent.BrokenBarrierException;
@@ -12,7 +12,7 @@ public class ServerCommand {
     public final int requestId;
     private CyclicBarrier barrier;
     private Command command;
-    private COSNode<ServerCommand> node;
+    private HibridCOSNode<ServerCommand> node;
 
     public final int[] partitions;
     public final int[] distinctPartitions;
@@ -42,11 +42,11 @@ public class ServerCommand {
         return command.getId();
     }
 
-    public void setNode(COSNode<ServerCommand> node) {
+    public void setNode(HibridCOSNode<ServerCommand> node) {
         this.node = node;
     }
 
-    public COSNode<ServerCommand> getNode() {
+    public HibridCOSNode<ServerCommand> getNode() {
         return node;
     }
 

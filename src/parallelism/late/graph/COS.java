@@ -43,9 +43,7 @@ public abstract class COS {
     }
 
     public Object get() throws InterruptedException {
-        System.out.println("COS.get() in " + Thread.currentThread());
         this.ready.acquire();
-        System.out.println("Tem vNode para " + Thread.currentThread());
         return COSGet();
     }
 

@@ -5,11 +5,8 @@
  */
 package demo.hibrid.client;
 
-import bftsmart.tom.ParallelServiceProxy;
 import demo.hibrid.request.Command;
 import demo.hibrid.request.CommandResult;
-import demo.hibrid.request.Request;
-import demo.hibrid.request.Response;
 
 
 /**
@@ -17,6 +14,6 @@ import demo.hibrid.request.Response;
  */
 public interface ServerProxy {
 
-    CommandResult[] execute(int clientProcessId, int id, Command... commands) ;
+    CommandResult[] execute(int clientProcessId, int id, Command... commands) throws InterruptedException;
 
 }

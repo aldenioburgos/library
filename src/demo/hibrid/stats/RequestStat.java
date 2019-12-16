@@ -13,6 +13,7 @@ public class RequestStat {
     RequestStat(int id, int numCommands) {
         this.id = id;
         this.commands = new HashMap<>(numCommands);
+        this.arrivalTime = System.nanoTime();
     }
 
     public CommandStat getCommand(Integer commandId) {
@@ -20,5 +21,25 @@ public class RequestStat {
             commands.put(commandId, new CommandStat());
         }
         return commands.get(commandId);
+    }
+
+    public static String title(){
+        return "RequestStatId\tarrivalTime\treplyTime\t"+CommandStat.title();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (var command : commands.values()) {
+            builder.append(id);
+            builder.append('\t');
+            builder.append(arrivalTime);
+            builder.append('\t');
+            builder.append(replyTime);
+            builder.append('\t');
+            builder.append(command.toString());
+            builder.append('\n');
+        }
+        return builder.toString();
     }
 }

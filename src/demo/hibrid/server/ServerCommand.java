@@ -1,18 +1,17 @@
 package demo.hibrid.server;
 
 import demo.hibrid.request.Command;
-import demo.hibrid.server.graph.HibridCOSNode;
+import demo.hibrid.server.graph.LockFreeNode;
 
 import java.util.Arrays;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 public class ServerCommand {
 
     public final int requestId;
-    private CyclicBarrier barrier;
+    public final CyclicBarrier barrier;
     private Command command;
-    private HibridCOSNode<ServerCommand> node;
+    private LockFreeNode<ServerCommand> node;
 
     public final int[] partitions;
     public final int[] distinctPartitions;
@@ -24,12 +23,8 @@ public class ServerCommand {
         this.distinctPartitions = Arrays.stream(this.partitions).distinct().toArray();
         if (distinctPartitions.length > 1) {
             this.barrier = new CyclicBarrier(distinctPartitions.length);
-        }
-    }
-
-    public void awaitAtCyclicBarrierIfNeeded() throws BrokenBarrierException, InterruptedException {
-        if (barrier != null) {
-            barrier.await();
+        } else {
+            barrier = null;
         }
     }
 
@@ -42,11 +37,11 @@ public class ServerCommand {
         return command.getId();
     }
 
-    public void setNode(HibridCOSNode<ServerCommand> node) {
+    public void setNode(LockFreeNode<ServerCommand> node) {
         this.node = node;
     }
 
-    public HibridCOSNode<ServerCommand> getNode() {
+    public LockFreeNode<ServerCommand> getNode() {
         return node;
     }
 

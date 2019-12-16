@@ -16,6 +16,7 @@ public class HibridWorker extends Thread {
     private COSManager cosManager;
     private HibridExecutor executor;
     private HibridReplier hibridReplier;
+    private int thread_id;
 
     public HibridWorker(int id, int thread_id, int preferentialPartition, COSManager cosManager, HibridExecutor executor, HibridReplier hibridReplier) {
         super("HibridServiceReplicaWorker[" + id + ", " + thread_id + "]");
@@ -23,23 +24,24 @@ public class HibridWorker extends Thread {
         this.cosManager = cosManager;
         this.executor = executor;
         this.hibridReplier = hibridReplier;
+        this.thread_id = thread_id;
     }
 
     public void run() {
         try {
             while (true) {
-//                var workerInit = System.currentTimeMillis();
+                var workerInit = System.nanoTime();
                 ServerCommand serverCommand = cosManager.get(preferentialPartition);
-//                Stats.replicaWorkerInit(id, workerInit, serverCommand);
+                Stats.replicaWorkerInit(thread_id, workerInit, serverCommand);
                 boolean[] results = executor.execute(serverCommand.getCommand());
-//                Stats.replicaWorkerEnd(id, serverCommand);
+                Stats.replicaWorkerEnd(thread_id, serverCommand);
                 cosManager.remove(serverCommand);
-//                Stats.commandRemoved(id, serverCommand);
+                Stats.commandRemoved(thread_id, serverCommand);
                 hibridReplier.manageReply(serverCommand, results);
-//                Stats.replySent(id, serverCommand);
+                Stats.replySent(thread_id, serverCommand);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

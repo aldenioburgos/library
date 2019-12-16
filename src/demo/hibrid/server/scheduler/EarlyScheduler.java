@@ -20,11 +20,11 @@ public class EarlyScheduler {
 
     private void addToQueues(int requestId, Command command) throws InterruptedException {
         var serverCommand = new ServerCommand(requestId, command);
-//        Stats.earlySchedulerInit(serverCommand);
+        Stats.earlySchedulerInit(serverCommand);
         for (int partition : serverCommand.distinctPartitions) {
             queuesManager.putCommandIn(partition, serverCommand);
         }
-//        Stats.earlySchedulerEnd(serverCommand);
+        Stats.earlySchedulerEnd(serverCommand);
     }
 
 }

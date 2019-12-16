@@ -31,7 +31,8 @@ public class HibridServiceReplica extends ParallelServiceReplica implements Hibr
     private final Map<Integer, HibridRequestContext> context = new HashMap<>();
     private final HibridExecutor executor;
 
-    public HibridServiceReplica(int id, HibridExecutor executor, int numPartitions, int maxQueueSize, int numWorkers, int maxCOSSize) {
+
+    public HibridServiceReplica(int id, HibridExecutor executor, int numPartitions, int maxQueueSize, int numWorkers, int maxCOSSize, int numSchedulers) {
         super(id, executor, null);
         if (executor == null) throw new IllegalArgumentException("Invalid null argument Executor.");
         if (numPartitions <= 0) throw new IllegalArgumentException("Invalid zero or negative argument numPartitions.");
@@ -42,13 +43,13 @@ public class HibridServiceReplica extends ParallelServiceReplica implements Hibr
         this.queuesManager = new QueuesManager(numPartitions, maxQueueSize);
         this.earlyScheduler = new EarlyScheduler(queuesManager);
         this.cosManager = new COSManager(numPartitions, maxCOSSize, new ConflictDefinitionDefault());
-        initLateSchedulers(numPartitions);
+        initLateSchedulers(numPartitions, numSchedulers);
         initReplicaWorkers(numWorkers, numPartitions);
     }
 
-    private void initLateSchedulers(int numPartitions) {
-        for (int i = 0; i < numPartitions; i++) {
-            new LateScheduler(cosManager, queuesManager, i).start();
+    private void initLateSchedulers(int numPartitions, int numSchedulers) {
+        for (int i = 0; i < numSchedulers; i++) {
+            new LateScheduler(cosManager, queuesManager, i, i % numPartitions).start();
         }
     }
 
@@ -64,8 +65,6 @@ public class HibridServiceReplica extends ParallelServiceReplica implements Hibr
         var ctx = context.get(requestId);
         var commandResult = new CommandResult(commandId, results);
         ctx.add(commandResult);
-        System.out.println("REPLY => " + commandResult + " for " + serverCommand);
-        System.out.println("CTX => " + ctx);
         if (ctx.finished()) {
             var response = new Response(requestId, ctx.getResults());
             ctx.message.reply = new TOMMessage(id, ctx.message.getSession(), ctx.message.getSequence(), response.toBytes(), SVController.getCurrentViewId());

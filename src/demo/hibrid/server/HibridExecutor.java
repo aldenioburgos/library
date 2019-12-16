@@ -6,8 +6,11 @@ import demo.hibrid.request.Command;
 
 public class HibridExecutor implements SingleExecutable {
 
-    private final int MIN_TIME_TO_EXECUTE_READ;
-    private final int MIN_TIME_TO_EXECUTE_WRITE;
+    private int MIN_TIME_TO_EXECUTE_READ;
+    private int MIN_TIME_TO_EXECUTE_WRITE;
+
+    public HibridExecutor() {
+    }
 
     public HibridExecutor(int minTimeToExecuteRead, int minTimeToExecuteWrite) {
         if (minTimeToExecuteRead < 0) throw new IllegalArgumentException("Invalid negative argument minTimeToExecuteRead!");

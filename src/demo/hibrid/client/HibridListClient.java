@@ -28,7 +28,7 @@ import java.util.TimerTask;
 /**
  * Example client
  */
-class HibridListClient {
+public class HibridListClient {
     private boolean stop = false;
     private final int clientProcessId;
     private final int numThreads;
@@ -40,8 +40,9 @@ class HibridListClient {
     private final int[] percentualDistributionOfOperationsAmongPartition;
     private final int[] percentualOfPartitionsEnvolvedPerOperation;
     private final int[] percentualOfWritesPerPartition;
+    private ServerProxy serverProxy;
 
-    HibridListClient(int clientProcessId, int numThreads, int numOperations, int interval, int maxListIndex, int numOperationsPerRequest, int numPartitions, int[] percentualDistributionOfOperationsAmongPartition, int[] percentualOfPartitionsEnvolvedPerOperation, int[] percentualOfWritesPerPartition) {
+    public HibridListClient(int clientProcessId, int numThreads, int numOperations, int interval, int maxListIndex, int numOperationsPerRequest, int numPartitions, int[] percentualDistributionOfOperationsAmongPartition, int[] percentualOfPartitionsEnvolvedPerOperation, int[] percentualOfWritesPerPartition) {
         this.clientProcessId = clientProcessId;
         this.numThreads = numThreads;
         this.numOperations = numOperations;
@@ -52,12 +53,6 @@ class HibridListClient {
         this.percentualDistributionOfOperationsAmongPartition = pileValues(percentualDistributionOfOperationsAmongPartition);
         this.percentualOfPartitionsEnvolvedPerOperation = pileValues(percentualOfPartitionsEnvolvedPerOperation);
         this.percentualOfWritesPerPartition = percentualOfWritesPerPartition;
-        // start client
-        try {
-            this.start();
-        } catch (InterruptedException | IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private int[] pileValues(int[] origin) {
@@ -65,11 +60,10 @@ class HibridListClient {
         for (int i = 1; i < array.length; i++) {
             array[i] = (array[i - 1] < 100) ? array[i - 1] + array[i] : 0;
         }
-        System.out.println("O array ficou assim: " + Arrays.toString(array));
         return array;
     }
 
-    private void start() throws InterruptedException, IOException {
+    public void start() throws InterruptedException, IOException {
         (new Timer()).schedule(new TimerTask() {
             public void run() {
                 stop = false;
@@ -78,7 +72,6 @@ class HibridListClient {
         AccountClientWorker[] workers = new AccountClientWorker[numThreads];
         for (int i = 0; i < numThreads; i++) {
             Thread.sleep(100); //TODO pra que esse tempo aqui mesmo?
-            System.out.println("Launching client " + (clientProcessId + i));
             workers[i] = new AccountClientWorker(clientProcessId + i, calcNumRequestsForWorker(i));
         }
         Thread.sleep(300); //TODO pra que esse tempo aqui mesmo?
@@ -99,10 +92,16 @@ class HibridListClient {
         return exactDivision + remainder;
     }
 
-    protected ServerProxy getServerProxy(int id) {
-        return new HibridBFTListServerProxy(id);
+    public ServerProxy getServerProxy(int id) {
+        if (serverProxy == null) {
+            this.serverProxy = new HibridBFTListServerProxy(id);
+        }
+        return serverProxy;
     }
 
+    public void setServerProxy(ServerProxy serverProxy) {
+        this.serverProxy = serverProxy;
+    }
 
     public class AccountClientWorker extends Thread {
         private final int numOperations;
@@ -111,7 +110,7 @@ class HibridListClient {
         private final Random rand = new Random();
 
         AccountClientWorker(int id, int numberOfRqs) throws IOException {
-            super("Client " + clientProcessId + " Worker " + id);
+            super("ClientWorker" + id);
             this.id = id;
             this.numOperations = numberOfRqs;
             this.server = getServerProxy(id);
@@ -119,8 +118,7 @@ class HibridListClient {
 
         @Override
         public void run() {
-            System.out.println("Executing Client Worker " + id + " with " + numOperations + " ops.");
-            for (int i = 0; i < numOperations && !stop; i = +numOperationsPerRequest) {
+            for (int i = 0; i < numOperations && !stop; i += numOperationsPerRequest) {
                 int numOpToExecute = Math.min(numOperations - i, numOperationsPerRequest);
                 var operations = new Command[numOpToExecute];
                 for (int j = 0; j < operations.length; j++) {
@@ -129,15 +127,13 @@ class HibridListClient {
                     int[] selectedIndexes = selectIndexes(selectedPartitions);
                     operations[j] = new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
                 }
-                System.out.println("Client Worker " + id + ": operations" + Arrays.deepToString(operations)); //TODO remover
-                var responses = server.execute(clientProcessId, id, operations);
-                System.out.println("Client Worker " + id + ": responses " + Arrays.deepToString(responses)); //TODO remover
-                if (interval > 0) {
-                    try {
+                try {
+                    server.execute(clientProcessId, id, operations);
+                    if (interval > 0) {
                         Thread.sleep(interval);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
                     }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -156,6 +152,7 @@ class HibridListClient {
 
         private int[] selectIndexes(int[] selectedPartitions) {
             assert selectedPartitions.length > 0 : "Deve haver ao menos uma partição selecionada.";
+
             var indexes = new int[selectedPartitions.length];
             for (int i = 0; i < selectedPartitions.length; i++) {
                 indexes[i] = selectIndex(selectedPartitions[i]);
@@ -202,7 +199,6 @@ class HibridListClient {
         }
 
     }
-
 
 
 }

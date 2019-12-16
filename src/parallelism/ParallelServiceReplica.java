@@ -89,10 +89,6 @@ public class ParallelServiceReplica extends ServiceReplica {
 
     @Override
     public void receiveMessages(int consId[], int regencies[], int leaders[], CertifiedDecision[] cDecs, TOMMessage[][] requests) {
-
-        System.out.println("ParallelServiceReplica received message in " + Thread.currentThread());
-
-        ctxs.keySet().removeIf(key -> ctxs.get(key).finished);
         int consensusCount = 0;
 
         for (TOMMessage[] requestsFromConsensus : requests) {
@@ -202,8 +198,6 @@ public class ParallelServiceReplica extends ServiceReplica {
             while (true) {
                 try {
                     this.requests.drainToQueue(execQueue);
-                    System.out.println("Thread " + thread_id + ": " + execQueue.getSize());
-
                     do {
                         MessageContextPair msg = execQueue.getNext();
                         //TODO: EDUARDO: Não funciona com reconfiguração no conjunto de replicas, precisa colocar uma classe para isso em ClassToThreads com type = REC.

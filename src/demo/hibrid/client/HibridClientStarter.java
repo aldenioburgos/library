@@ -47,10 +47,10 @@ public class HibridClientStarter {
     private static Map<Parametro, Integer> params = new HashMap<>();
     private static Map<Parametro, int[]> arrParams = new HashMap<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         readParams(Arrays.asList(args));
         // create and run the client
-        new HibridListClient(
+        var client = new HibridListClient(
                 params.get(Parametro.id),
                 params.get(Parametro.numthreads),
                 params.get(Parametro.numOp),
@@ -62,6 +62,7 @@ public class HibridClientStarter {
                 arrParams.get(Parametro.percPart),
                 arrParams.get(Parametro.percWrite)
         );
+        client.start();
     }
 
     private static void readParams(List<String> args) {

@@ -11,7 +11,7 @@ public final class HibridServerStarter {
 
 
     public enum Parametro {
-        id, minRead, minWrite, numPart, queuesize, numWorkers, cosSize, numOp, numOpPerReq
+        id, minRead, minWrite, numPart, queuesize, numWorkers, cosSize, numSchedulers
     }
 
     private static Map<Parametro, Integer> params = new HashMap<>();
@@ -22,7 +22,7 @@ public final class HibridServerStarter {
         var executor = new HibridExecutor(params.get(Parametro.minRead), params.get(Parametro.minWrite));
 
         // cria o gerenciador de estatísticas
-        Stats.createInstance(params.get(Parametro.numPart), params.get(Parametro.numOp), params.get(Parametro.numOpPerReq));
+        Stats.createInstance();
 
         // cria a replica
         new HibridServiceReplica(
@@ -31,7 +31,8 @@ public final class HibridServerStarter {
                 params.get(Parametro.numPart),
                 params.get(Parametro.queuesize),
                 params.get(Parametro.numWorkers),
-                params.get(Parametro.cosSize)
+                params.get(Parametro.cosSize),
+                params.get(Parametro.numSchedulers)
         );
     }
 

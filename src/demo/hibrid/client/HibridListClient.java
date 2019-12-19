@@ -1,26 +1,8 @@
-/**
- * Copyright (c) 2007-2013 Alysson Bessani, Eduardo Alchieri, Paulo Sousa, and
- * the authors indicated in the @author tags
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package demo.hibrid.client;
-
 
 import demo.hibrid.request.Command;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,37 +12,12 @@ import java.util.TimerTask;
  */
 public class HibridListClient {
     private boolean stop = false;
-    private final int clientProcessId;
-    private final int numThreads;
-    private final int numOperations;
-    private final int interval;
-    private final int maxListIndex;
-    private final int numOperationsPerRequest;
-    private final int numPartitions;
-    private final int[] percentualDistributionOfOperationsAmongPartition;
-    private final int[] percentualOfPartitionsEnvolvedPerOperation;
-    private final int[] percentualOfWritesPerPartition;
-    private ServerProxy serverProxy;
+    private HibridClientConfig config;
+    private ServerProxyFactory serverProxyFactory;
 
-    public HibridListClient(int clientProcessId, int numThreads, int numOperations, int interval, int maxListIndex, int numOperationsPerRequest, int numPartitions, int[] percentualDistributionOfOperationsAmongPartition, int[] percentualOfPartitionsEnvolvedPerOperation, int[] percentualOfWritesPerPartition) {
-        this.clientProcessId = clientProcessId;
-        this.numThreads = numThreads;
-        this.numOperations = numOperations;
-        this.interval = interval;
-        this.maxListIndex = maxListIndex;
-        this.numOperationsPerRequest = numOperationsPerRequest;
-        this.numPartitions = numPartitions;
-        this.percentualDistributionOfOperationsAmongPartition = pileValues(percentualDistributionOfOperationsAmongPartition);
-        this.percentualOfPartitionsEnvolvedPerOperation = pileValues(percentualOfPartitionsEnvolvedPerOperation);
-        this.percentualOfWritesPerPartition = percentualOfWritesPerPartition;
-    }
-
-    private int[] pileValues(int[] origin) {
-        int[] array = Arrays.copyOf(origin, origin.length);
-        for (int i = 1; i < array.length; i++) {
-            array[i] = (array[i - 1] < 100) ? array[i - 1] + array[i] : 0;
-        }
-        return array;
+    public HibridListClient(HibridClientConfig config, ServerProxyFactory serverProxyFactory) {
+        this.config = config;
+        this.serverProxyFactory = serverProxyFactory;
     }
 
     public void start() throws InterruptedException, IOException {
@@ -69,11 +26,8 @@ public class HibridListClient {
                 stop = false;
             }
         }, 5 * 60000); //depois de 5 minutos encerra.
-        AccountClientWorker[] workers = new AccountClientWorker[numThreads];
-        for (int i = 0; i < numThreads; i++) {
-            Thread.sleep(100); //TODO pra que esse tempo aqui mesmo?
-            workers[i] = new AccountClientWorker(clientProcessId + i, calcNumRequestsForWorker(i));
-        }
+
+        AccountClientWorker[] workers = createClientWorkers();
         Thread.sleep(300); //TODO pra que esse tempo aqui mesmo?
         for (AccountClientWorker worker : workers) {
             worker.start();
@@ -83,25 +37,25 @@ public class HibridListClient {
         }
     }
 
+    private AccountClientWorker[] createClientWorkers() throws InterruptedException {
+        var workers = new AccountClientWorker[config.numThreads];
+        for (int i = 0; i < config.numThreads; i++) {
+            Thread.sleep(100); //TODO pra que esse tempo aqui mesmo?
+            workers[i] = new AccountClientWorker(i, calcNumRequestsForWorker(i), serverProxyFactory.getServerProxy(i));
+        }
+        return workers;
+    }
+
     private int calcNumRequestsForWorker(int i) {
-        int exactDivision = numOperations / numThreads;
-        int remainder = numOperations % numThreads;
-        if (remainder == 0 || i != 0) {
+        int exactDivision = config.numOperations / config.numThreads;
+        int remainder = config.numOperations % config.numThreads;
+        if (remainder != 0 && i == 0) {
+            return exactDivision + remainder;
+        } else {
             return exactDivision;
         }
-        return exactDivision + remainder;
     }
 
-    public ServerProxy getServerProxy(int id) {
-        if (serverProxy == null) {
-            this.serverProxy = new HibridBFTListServerProxy(id);
-        }
-        return serverProxy;
-    }
-
-    public void setServerProxy(ServerProxy serverProxy) {
-        this.serverProxy = serverProxy;
-    }
 
     public class AccountClientWorker extends Thread {
         private final int numOperations;
@@ -109,17 +63,17 @@ public class HibridListClient {
         private final ServerProxy server;
         private final Random rand = new Random();
 
-        AccountClientWorker(int id, int numberOfRqs) throws IOException {
+        AccountClientWorker(int id, int numberOfRqs, ServerProxy server) {
             super("ClientWorker" + id);
             this.id = id;
             this.numOperations = numberOfRqs;
-            this.server = getServerProxy(id);
+            this.server = server;
         }
 
         @Override
         public void run() {
-            for (int i = 0; i < numOperations && !stop; i += numOperationsPerRequest) {
-                int numOpToExecute = Math.min(numOperations - i, numOperationsPerRequest);
+            for (int i = 0; i < numOperations && !stop; i += config.numOperationsPerRequest) {
+                int numOpToExecute = Math.min(numOperations - i, config.numOperationsPerRequest);
                 var operations = new Command[numOpToExecute];
                 for (int j = 0; j < operations.length; j++) {
                     int numPartitionsEnvolved = numPartitionsEnvolved();
@@ -128,9 +82,9 @@ public class HibridListClient {
                     operations[j] = new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
                 }
                 try {
-                    server.execute(clientProcessId, id, operations);
-                    if (interval > 0) {
-                        Thread.sleep(interval);
+                    server.execute(config.clientProcessId, id, operations);
+                    if (config.interval > 0) {
+                        Thread.sleep(config.interval);
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -142,7 +96,7 @@ public class HibridListClient {
             var result = true;
             var seletor = rand.nextInt(100);
             for (int selectedPartition : selectedPartitions) {
-                if (percentualOfWritesPerPartition[selectedPartition] <= seletor) {
+                if (config.percentualOfWritesPerPartition[selectedPartition] <= seletor) {
                     result = false;
                     break;
                 }
@@ -152,7 +106,6 @@ public class HibridListClient {
 
         private int[] selectIndexes(int[] selectedPartitions) {
             assert selectedPartitions.length > 0 : "Deve haver ao menos uma partição selecionada.";
-
             var indexes = new int[selectedPartitions.length];
             for (int i = 0; i < selectedPartitions.length; i++) {
                 indexes[i] = selectIndex(selectedPartitions[i]);
@@ -160,10 +113,20 @@ public class HibridListClient {
             return indexes;
         }
 
+        private int selectIndex(int partition) {
+            int division = config.maxListIndex / config.numPartitions;
+            int remainder = config.maxListIndex % config.numPartitions;
+            if (remainder == 0 || partition < (config.numPartitions - 1)) {
+                return rand.nextInt(division) + (partition * division);
+            } else {
+                return rand.nextInt(division + remainder) + (partition * division);
+            }
+        }
+
         private int numPartitionsEnvolved() {
             var selector = rand.nextInt(100);
-            for (int i = 0; i < percentualOfPartitionsEnvolvedPerOperation.length; i++) {
-                if (selector < percentualOfPartitionsEnvolvedPerOperation[i]) {
+            for (int i = 0; i < config.percentualOfPartitionsEnvolvedPerOperation.length; i++) {
+                if (selector < config.percentualOfPartitionsEnvolvedPerOperation[i]) {
                     return i + 1; // a posição x se refere ao percentual de operações com x+1 partição envolvida;
                 }
             }
@@ -180,25 +143,14 @@ public class HibridListClient {
 
         private int selectPartition() {
             var selector = rand.nextInt(100);
-            for (int i = 0; i < percentualDistributionOfOperationsAmongPartition.length; i++) {
-                if (selector < percentualDistributionOfOperationsAmongPartition[i]) {
+            for (int i = 0; i < config.percentualDistributionOfOperationsAmongPartition.length; i++) {
+                if (selector < config.percentualDistributionOfOperationsAmongPartition[i]) {
                     return i;
                 }
             }
-            return 0;
+            throw new RuntimeException("Sempre deve haver ao menos uma partição envolvida.");
         }
 
-        private int selectIndex(int partition) {
-            int division = maxListIndex / numPartitions;
-            int remainder = maxListIndex % numPartitions;
-            if (remainder == 0 || partition < (numPartitions - 1)) {
-                return rand.nextInt(division) + (partition * division);
-            } else {
-                return rand.nextInt(division + remainder) + (partition * division);
-            }
-        }
 
     }
-
-
 }

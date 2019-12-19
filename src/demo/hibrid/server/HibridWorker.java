@@ -32,11 +32,14 @@ public class HibridWorker extends Thread {
             while (true) {
                 var workerInit = System.nanoTime();
                 ServerCommand serverCommand = cosManager.get(preferentialPartition);
+
                 Stats.replicaWorkerInit(thread_id, workerInit, serverCommand);
-                boolean[] results = executor.execute(serverCommand.getCommand());
+                boolean[] results = executor.execute(serverCommand.command);
                 Stats.replicaWorkerEnd(thread_id, serverCommand);
+
                 cosManager.remove(serverCommand);
                 Stats.commandRemoved(thread_id, serverCommand);
+
                 hibridReplier.manageReply(serverCommand, results);
                 Stats.replySent(thread_id, serverCommand);
             }

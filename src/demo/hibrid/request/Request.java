@@ -14,9 +14,9 @@ public class Request {
     public Request() {
     }
 
-    public Request(int clientId, int clientWorkerId, Command... commands) {
+    public Request(int processId, int workerId, Command... commands) {
         var counter = idGenerator.getAndAdd(1);
-        this.id = Objects.hash(clientId, clientWorkerId, counter);
+        this.id = Objects.hash(processId, workerId, counter);
         this.commands = commands;
     }
 
@@ -41,7 +41,7 @@ public class Request {
             this.id = dis.readInt();
             this.commands = new Command[dis.readInt()];
             for (int i = 0; i < commands.length; i++) {
-                this.commands[i] = new Command().fromBytes(dis);
+                this.commands[i] = Command.fromBytes(dis);
             }
             return this;
         } catch (IOException e) {

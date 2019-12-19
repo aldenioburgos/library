@@ -47,21 +47,22 @@ public class HibridClientStarter {
     private static Map<Parametro, Integer> params = new HashMap<>();
     private static Map<Parametro, int[]> arrParams = new HashMap<>();
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         readParams(Arrays.asList(args));
-        // create and run the client
-        var client = new HibridListClient(
+        var config = new HibridClientConfig(
                 params.get(Parametro.id),
                 params.get(Parametro.numthreads),
                 params.get(Parametro.numOp),
                 params.get(Parametro.interval),
-                params.get(Parametro.maxServerIndex),
                 params.get(Parametro.numOpPerReq),
                 params.get(Parametro.numPartitions),
                 arrParams.get(Parametro.distOpPart),
                 arrParams.get(Parametro.percPart),
                 arrParams.get(Parametro.percWrite)
         );
+
+        // create and run the client
+        var client = new HibridListClient(config, new ServerProxyFactory(ServerProxyHibridList.class));
         client.start();
     }
 

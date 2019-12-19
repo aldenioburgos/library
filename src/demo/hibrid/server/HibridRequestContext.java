@@ -27,7 +27,7 @@ public class HibridRequestContext {
         this.results[pos.getAndAdd(1)] = result;
     }
 
-    public boolean finished(){
+    public boolean testFinished(){
         return pos.get() == results.length && finished.compareAndSet(false, true);
     }
 

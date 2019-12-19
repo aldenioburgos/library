@@ -7,6 +7,6 @@ public class ConflictDefinitionDefault implements ConflictDefinition<ServerComma
 
     @Override
     public boolean isDependent(ServerCommand r1, ServerCommand r2) {
-        return r1.getCommand().getType() == Command.ADD || r2.getCommand().getType() == Command.ADD;
+        return r1.command.type == Command.ADD || r2.command.type == Command.ADD;
     }
 }

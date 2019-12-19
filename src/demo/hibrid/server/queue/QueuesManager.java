@@ -1,4 +1,4 @@
-package demo.hibrid.server.scheduler;
+package demo.hibrid.server.queue;
 
 import demo.hibrid.server.ServerCommand;
 
@@ -18,11 +18,11 @@ public class QueuesManager {
         }
     }
 
-    void putCommandIn(int partition, ServerCommand serverCommand) throws InterruptedException {
+    public void putCommandIn(int partition, ServerCommand serverCommand) throws InterruptedException {
         queues[partition].put(serverCommand);
     }
 
-    ServerCommand takeCommandFrom(int partition) throws InterruptedException {
+    public ServerCommand takeCommandFrom(int partition) throws InterruptedException {
         return queues[partition].take();
     }
 
@@ -32,5 +32,9 @@ public class QueuesManager {
                 "sizes=" + Arrays.toString(Arrays.stream(queues).mapToInt(Collection::size).toArray()) +
                 "queues=" + Arrays.toString(queues) +
                 '}';
+    }
+
+    public int getNumQueues() {
+        return this.queues.length;
     }
 }

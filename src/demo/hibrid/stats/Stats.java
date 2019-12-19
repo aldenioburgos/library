@@ -14,7 +14,7 @@ public class Stats {
     // printing thread control related fields
     private Semaphore semaphore = new Semaphore(0);
     private Queue<Integer> readyQueue = new ArrayDeque<>();
-    public boolean stop = false;
+    private boolean stop = false;
 
     // stat related fields
     private Map<Integer, RequestStat> requestStats = new Hashtable<>();
@@ -29,7 +29,7 @@ public class Stats {
         return instance;
     }
 
-    public Stats() {
+    public void start() {
         new StatsWorker().start();
     }
 
@@ -39,49 +39,49 @@ public class Stats {
     }
 
     public static void earlySchedulerInit(ServerCommand command) {
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).id = command.getCommandId();
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).earlySchedulerInit = System.nanoTime();
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).id = command.commandId;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).earlySchedulerInit = System.nanoTime();
     }
 
     public static void earlySchedulerEnd(ServerCommand command) {
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).earlySchedulerEnd = System.nanoTime();
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).earlySchedulerEnd = System.nanoTime();
     }
 
     public static void lateSchedulerInit(int lateSchedulerId, long takeInit, ServerCommand command) {
         var lateSchedulerInit = System.nanoTime();
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).lateSchedulerId = lateSchedulerId;
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).lateSchedulerWaitingInit = takeInit;
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).lateSchedulerWaitingEnd = lateSchedulerInit;
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).lateSchedulerInit = lateSchedulerInit;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerId = lateSchedulerId;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerWaitingInit = takeInit;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerWaitingEnd = lateSchedulerInit;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerInit = lateSchedulerInit;
     }
 
     public static void lateSchedulerEnd(int id, ServerCommand command) {
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).lateSchedulerEnd = System.nanoTime();
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerEnd = System.nanoTime();
     }
 
     public static void replicaWorkerInit(int id, long workerInit, ServerCommand command) {
         var replicaWorkerInit = System.nanoTime();
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaWorkerId = id;
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaWorkerWaitingInit = workerInit;
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaWorkerWaitingEnd = replicaWorkerInit;
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaWorkerInit = replicaWorkerInit;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerId = id;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerWaitingInit = workerInit;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerWaitingEnd = replicaWorkerInit;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerInit = replicaWorkerInit;
     }
 
     public static void replicaWorkerEnd(int id, ServerCommand command) {
         var replicaWorkerEnd = System.nanoTime();
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaWorkerEnd = replicaWorkerEnd;
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaCommandRemovalInit = replicaWorkerEnd;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerEnd = replicaWorkerEnd;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaCommandRemovalInit = replicaWorkerEnd;
     }
 
     public static void commandRemoved(int id, ServerCommand command) {
         var replicaCommandRemovalEnd = System.nanoTime();
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaCommandRemovalEnd = replicaCommandRemovalEnd;
-        instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaCommandReplyInit = replicaCommandRemovalEnd;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaCommandRemovalEnd = replicaCommandRemovalEnd;
+        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaCommandReplyInit = replicaCommandRemovalEnd;
     }
 
     public static void replySent(int id, ServerCommand command) {
         if (instance.requestStats.get(command.requestId) != null) {
-            instance.requestStats.get(command.requestId).getCommand(command.getCommandId()).replicaCommandReplyEnd = System.nanoTime();
+            instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaCommandReplyEnd = System.nanoTime();
         }
     }
 
@@ -98,6 +98,10 @@ public class Stats {
             builder.append(x.toString());
         }
         System.out.println(builder.toString());
+    }
+
+    public static void messageScheduled(Request request) {
+        instance.requestStats.get(request.getId()).scheduledAt = System.nanoTime();
     }
 
     /**

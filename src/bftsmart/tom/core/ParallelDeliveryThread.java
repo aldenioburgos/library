@@ -17,7 +17,7 @@ import bftsmart.tom.ServiceReplica;
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.core.messages.TOMMessageType;
 import bftsmart.tom.server.Recoverable;
-import parallelism.ParallelServiceReplica;
+import demo.hibrid.server.HibridServiceReplica;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.logging.Level;
@@ -62,7 +62,7 @@ public final class ParallelDeliveryThread extends DeliveryThread {
 
     private void awaitOnReceiverReconfBarrier() {
         try {
-            ((ParallelServiceReplica) this.receiver).getReconfBarrier().await();
+            ((HibridServiceReplica) this.receiver).getReconfBarrier().await();
         } catch (InterruptedException ex) {
             Logger.getLogger(ParallelDeliveryThread.class.getName()).log(Level.SEVERE, null, ex);
         } catch (BrokenBarrierException ex) {

@@ -9,32 +9,23 @@ import java.util.concurrent.CyclicBarrier;
 public class ServerCommand {
 
     public final int requestId;
+    public final int commandId;
+    public final Command command;
     public final CyclicBarrier barrier;
-    private Command command;
-    private LockFreeNode<ServerCommand> node;
-
-    public final int[] partitions;
     public final int[] distinctPartitions;
+
+    private LockFreeNode<ServerCommand> node;
 
     public ServerCommand(int requestId, Command command) {
         this.requestId = requestId;
         this.command = command;
-        this.partitions = command.getPartitions();
-        this.distinctPartitions = Arrays.stream(this.partitions).distinct().toArray();
+        this.commandId = command.id;
+        this.distinctPartitions = Arrays.stream(command.partitions).distinct().toArray();
         if (distinctPartitions.length > 1) {
             this.barrier = new CyclicBarrier(distinctPartitions.length);
         } else {
             barrier = null;
         }
-    }
-
-
-    public Command getCommand() {
-        return command;
-    }
-
-    public int getCommandId() {
-        return command.getId();
     }
 
     public void setNode(LockFreeNode<ServerCommand> node) {

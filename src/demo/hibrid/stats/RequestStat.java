@@ -1,6 +1,6 @@
 package demo.hibrid.stats;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class RequestStat {
@@ -8,11 +8,12 @@ public class RequestStat {
     public int id;
     public long arrivalTime;
     public long replyTime;
+    public long scheduledAt;
     public final Map<Integer, CommandStat> commands;
 
     RequestStat(int id, int numCommands) {
         this.id = id;
-        this.commands = new HashMap<>(numCommands);
+        this.commands = new Hashtable<>(numCommands);
         this.arrivalTime = System.nanoTime();
     }
 
@@ -23,8 +24,13 @@ public class RequestStat {
         return commands.get(commandId);
     }
 
-    public static String title(){
-        return "RequestStatId\tarrivalTime\treplyTime\t"+CommandStat.title();
+    public static String title() {
+        return "*** Tudo está em nanosecs *** \n" +
+                "RequestStatId\t" +
+                "arrivalTime\t" +
+                "scheduledAt\t" +
+                "replyTime\t" +
+                CommandStat.title();
     }
 
     @Override
@@ -34,6 +40,8 @@ public class RequestStat {
             builder.append(id);
             builder.append('\t');
             builder.append(arrivalTime);
+            builder.append('\t');
+            builder.append(scheduledAt);
             builder.append('\t');
             builder.append(replyTime);
             builder.append('\t');

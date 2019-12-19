@@ -1,11 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package demo.hibrid.server.graph;
-
-import demo.hibrid.server.ServerCommand;
 
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
@@ -17,13 +10,13 @@ public class COS<T> {
 
     private final LockFreeNode<T> head = new LockFreeNode<>(null, VertexType.HEAD, this);
     private final LockFreeNode<T> tail = new LockFreeNode<>(null, VertexType.TAIL, this);
-    private ConflictDefinition<T> conflictDefinition;
+    private final ConflictDefinition<T> conflictDefinition;
     private final COSManager cosManager;
-    private Semaphore ready;
+    private final Semaphore ready;
 
     public COS(ConflictDefinition<T> conflictDefinition, COSManager cosManager) {
-        this.ready = new Semaphore(0);
         this.conflictDefinition = conflictDefinition;
+        this.ready = new Semaphore(0);
         this.cosManager = cosManager;
         this.head.next = tail;
         this.tail.prev = head;
@@ -44,12 +37,12 @@ public class COS<T> {
     private LockFreeNode<T> COSGet() {
         LockFreeNode<T> aux = head;
         while (true) {
-            if (aux.vertexType == VertexType.TAIL) {
-                aux = head;
-            }
             aux = aux.next;
             if (aux.readyAtomic.get() && aux.reservedAtomic.compareAndSet(false, true)) {
                 break;
+            }
+            if (aux.vertexType == VertexType.TAIL) {
+                aux = head;
             }
         }
         return aux;
@@ -62,24 +55,29 @@ public class COS<T> {
 
 
     public void insert(LockFreeNode<T> newNode) {
+        cleanRemovedNodes();
         tail.insertBehind(newNode);
         newNode.testReady();
     }
 
-    public void insertDependencies(LockFreeNode<T> newNode) {
-        LockFreeNode<T> currentNode = head.next;
-        while (currentNode.vertexType != VertexType.TAIL) {
-            if (this.conflictDefinition.isDependent(newNode.data, currentNode.data)) {
-                currentNode.insertDependentNode(newNode);
+    private void cleanRemovedNodes() {
+        LockFreeNode<T> node = head.next;
+        while (node.vertexType != VertexType.TAIL) {
+            if (node.isRemoved()) {
+                node.goAway();
             }
-            currentNode = currentNode.next;
+            node = node.next;
         }
     }
 
-
-    public void remove(LockFreeNode<T> node) {
-        node.markRemoved();
-        node.goAway();
+    public void insertDependencies(LockFreeNode<T> newNode) {
+        LockFreeNode<T> node = head.next;
+        while (node.vertexType != VertexType.TAIL) {
+            if (this.conflictDefinition.isDependent(newNode.data, node.data)) {
+                node.insertDependentNode(newNode);
+            }
+            node = node.next;
+        }
     }
 
     @Override

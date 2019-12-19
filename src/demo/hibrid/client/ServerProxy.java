@@ -14,6 +14,7 @@ import demo.hibrid.request.CommandResult;
  */
 public interface ServerProxy {
 
+
     CommandResult[] execute(int clientProcessId, int id, Command... commands) throws InterruptedException;
 
 }

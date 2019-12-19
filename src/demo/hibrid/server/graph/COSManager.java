@@ -13,9 +13,9 @@ public class COSManager {
     private COS<ServerCommand>[] graphs;
 
     public COSManager(int numGraphs, int maxCOSSize, ConflictDefinition<ServerCommand> conflictDefinition) {
-        assert numGraphs > 0 : "Invalid Argument numGraphs = " + numGraphs;
-        assert maxCOSSize > 0 : "Invalid Argument maxCOSSize = " + maxCOSSize;
-        assert conflictDefinition != null : "Invalid Argument conflictDefinition = null";
+        assert numGraphs > 0 : "Invalid Argument numGraphs <= 0";
+        assert maxCOSSize > 0 : "Invalid Argument maxCOSSize <= 0";
+        assert conflictDefinition != null : "Invalid Argument conflictDefinition == null";
 
         this.ready = new Semaphore(0);
         this.space = new Semaphore(maxCOSSize);
@@ -25,18 +25,13 @@ public class COSManager {
         }
     }
 
-    void release() {
-        this.ready.release();
-    }
-
     public ServerCommand get(int preferentialPartition) throws InterruptedException {
-        assert Thread.currentThread().getName().startsWith("HibridServiceReplicaWorker") : "COSManager.get() foi chamado pela thread " + Thread.currentThread().getName();
-        assert preferentialPartition >= 0 : "Invalid Argument preferentialPartition = " + preferentialPartition;
-        assert preferentialPartition < graphs.length : "Invalid Argument preferentialPartition = " + preferentialPartition + " >= graphs.length = " + graphs.length;
+        assert preferentialPartition >= 0 : "Invalid Argument preferentialPartition < 0 ";
+        assert preferentialPartition < graphs.length : "Invalid Argument preferentialPartition >= graphs.length";
 
         ready.acquire();
-        Optional<ServerCommand> optServerCommand = Optional.empty();
         int i = 0;
+        Optional<ServerCommand> optServerCommand = Optional.empty();
         while (optServerCommand.isEmpty()) {
             var choosenPartition = (preferentialPartition + i++) % graphs.length;
             optServerCommand = graphs[choosenPartition].tryGet();
@@ -46,19 +41,16 @@ public class COSManager {
 
 
     public void remove(ServerCommand serverCommand) {
-        assert Thread.currentThread().getName().startsWith("HibridServiceReplicaWorker") : "COSManager.remove() foi chamado pela thread " + Thread.currentThread().getName();
         assert serverCommand != null : "Invalid Argument serverCommand = null";
 
         var node = serverCommand.getNode();
-        var cos = node.cos;
-        cos.remove(node);
+        node.markRemoved();
         this.space.release();
     }
 
 
     public void addTo(int partitionToInsertTheCommand, ServerCommand serverCommand) throws InterruptedException {
-        assert Thread.currentThread().getName().startsWith("LateScheduler") : "COSManager.addTo() foi chamado pela thread " + Thread.currentThread().getName();
-        assert Arrays.stream(serverCommand.partitions).anyMatch(it -> it == partitionToInsertTheCommand) : "A partição para inserção do comando não está dentre as partições do comando.";
+        assert Arrays.stream(serverCommand.distinctPartitions).anyMatch(it -> it == partitionToInsertTheCommand) : "A partição para inserção do comando não está dentre as partições do comando.";
 
         this.space.acquire();
         var cos = graphs[partitionToInsertTheCommand];
@@ -70,6 +62,14 @@ public class COSManager {
         cos.insert(node);
     }
 
+    void release() {
+        this.ready.release();
+    }
+
+    public int getNumCOS() {
+        return this.graphs.length;
+    }
+
     @Override
     public String toString() {
         return "COSManager{" +
@@ -77,5 +77,4 @@ public class COSManager {
                 ", graphs = " + Arrays.toString(graphs) +
                 '}';
     }
-
 }

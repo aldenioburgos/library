@@ -15,11 +15,11 @@ import demo.hibrid.request.Response;
 /**
  * @author aldenio
  */
-public class HibridBFTListServerProxy implements ServerProxy {
+public class ServerProxyHibridList implements ServerProxy {
 
     private ParallelServiceProxy proxy;
 
-    public HibridBFTListServerProxy(int id) {
+    public ServerProxyHibridList(int id) {
         this.proxy = new ParallelServiceProxy(id);
     }
 

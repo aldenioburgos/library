@@ -6,45 +6,49 @@
 package demo.hibrid.server;
 
 import demo.hibrid.server.graph.COSManager;
+import demo.hibrid.stats.Event;
 import demo.hibrid.stats.Stats;
+
+import static demo.hibrid.stats.EventType.*;
 
 /**
  * @author aldenio
  */
 public class HibridWorker extends Thread {
-    private int preferentialPartition;
-    private COSManager cosManager;
-    private HibridExecutor executor;
-    private HibridReplier hibridReplier;
-    private int thread_id;
+    private final int preferentialPartition;
+    private final COSManager cosManager;
+    private final HibridExecutor executor;
+    private final HibridReplier hibridReplier;
+    private final int workerId;
 
-    public HibridWorker(int id, int thread_id, int preferentialPartition, COSManager cosManager, HibridExecutor executor, HibridReplier hibridReplier) {
-        super("HibridServiceReplicaWorker[" + id + ", " + thread_id + "]");
+    public HibridWorker(int id,
+                        int workerId,
+                        int preferentialPartition,
+                        COSManager cosManager,
+                        HibridExecutor executor,
+                        HibridReplier hibridReplier) {
+        super("HibridServiceReplicaWorker[" + id + ", " + workerId + "]");
         this.preferentialPartition = preferentialPartition;
         this.cosManager = cosManager;
         this.executor = executor;
         this.hibridReplier = hibridReplier;
-        this.thread_id = thread_id;
+        this.workerId = workerId;
     }
 
     public void run() {
-        try {
-            while (true) {
-                var workerInit = System.nanoTime();
-                ServerCommand serverCommand = cosManager.get(preferentialPartition);
+        while (true) {
+            Stats.log(new Event(REPLICA_WORKER_WILL_TAKE_COMMAND, null, null, null, workerId));
+            ServerCommand serverCommand = cosManager.get(preferentialPartition);
 
-                Stats.replicaWorkerInit(thread_id, workerInit, serverCommand);
-                boolean[] results = executor.execute(serverCommand.command);
-                Stats.replicaWorkerEnd(thread_id, serverCommand);
+            Stats.log(new Event(REPLICA_WORKER_STARTED, serverCommand.requestId, serverCommand.command.id, null, workerId));
+            boolean[] results = executor.execute(serverCommand.command);
+            Stats.log(new Event(REPLICA_WORKER_ENDED, serverCommand.requestId, serverCommand.command.id, null, workerId));
 
-                cosManager.remove(serverCommand);
-                Stats.commandRemoved(thread_id, serverCommand);
+            cosManager.remove(serverCommand);
+            Stats.log(new Event(COMMAND_REMOVED, serverCommand.requestId, serverCommand.command.id, null, workerId));
 
-                hibridReplier.manageReply(serverCommand, results);
-                Stats.replySent(thread_id, serverCommand);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            hibridReplier.manageReply(serverCommand, results);
+            Stats.log(new Event(COMMAND_REPLIED, serverCommand.requestId, serverCommand.command.id, null, workerId));
         }
     }
 

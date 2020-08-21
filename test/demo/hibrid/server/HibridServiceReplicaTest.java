@@ -1,25 +1,14 @@
 package demo.hibrid.server;
 
+import bftsmart.tom.ServiceProxy;
+import demo.hibrid.client.BftAdapter;
+import demo.hibrid.client.HibridClient;
 import demo.hibrid.client.HibridClientConfig;
-import demo.hibrid.client.HibridListClient;
-import demo.hibrid.client.ServerProxy;
-import demo.hibrid.client.ServerProxyFactory;
-import demo.hibrid.request.Command;
-import demo.hibrid.request.CommandResult;
-import demo.hibrid.request.Request;
-import demo.hibrid.server.graph.COSManager;
-import demo.hibrid.server.graph.ConflictDefinitionDefault;
-import demo.hibrid.server.scheduler.EarlyScheduler;
-import demo.hibrid.server.scheduler.LateScheduler;
-import demo.hibrid.server.queue.QueuesManager;
-import demo.hibrid.stats.Stats;
 
-import java.io.IOException;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import static demo.hibrid.server.util.ThreadUtil.join;
+import static demo.hibrid.server.util.ThreadUtil.start;
 
-public class HibridServiceReplicaTest  implements HibridReplier, ServerProxy {
+public class HibridServiceReplicaTest  {
 
     //Configurações comuns.
     private static final int NUM_PARTITIONS = 2;
@@ -32,7 +21,6 @@ public class HibridServiceReplicaTest  implements HibridReplier, ServerProxy {
     private static final int[] WRITES_PER_PARTITION = new int[]{20, 20};
 
     // Configurações só do servidor
-
     private static final int MIN_READ_TIME = 1;
     private static final int MAX_READ_TIME = 5;
     private static final int MIN_WRITE_TIME = 5;
@@ -41,80 +29,26 @@ public class HibridServiceReplicaTest  implements HibridReplier, ServerProxy {
     private static final int MAX_COS_SIZE = 10;
     private static final int NUM_WORKERS = 2;
 
-
-
-
-
-    private QueuesManager queuesManager = new QueuesManager(NUM_PARTITIONS, MAX_QUEUE_SIZE);
-    private COSManager cosManager = new COSManager(NUM_PARTITIONS, MAX_COS_SIZE, new ConflictDefinitionDefault());
-    private EarlyScheduler earlyScheduler = new EarlyScheduler(queuesManager);
-    private HibridExecutor executor = new HibridExecutor(MIN_READ_TIME, MAX_READ_TIME, MIN_WRITE_TIME, MAX_WRITE_TIME);
-
-
-    private Queue<ServerCommand> completedCommands = new ConcurrentLinkedQueue<>();
-
-    public static void main(String[] args) throws Exception {
-        Stats.createInstance();
+    private final ServiceProxy serviceProxyMock;
+    public static void main(String[] args) {
         new HibridServiceReplicaTest();
     }
 
-    public HibridServiceReplicaTest() throws InterruptedException, IOException {
-        HibridWorker[] workers = createWorkers();
-        LateScheduler[] lateSchedulers = createLateSchedulers();
-        start(workers);
-        start(lateSchedulers);
-        createClient().start();
+
+
+    public HibridServiceReplicaTest() {
+        HibridExecutor executor = new HibridExecutor(MIN_READ_TIME, MAX_READ_TIME, MIN_WRITE_TIME, MAX_WRITE_TIME);
+        HibridServiceReplica replica = new HibridServiceReplicaMock(0, MAX_QUEUE_SIZE, MAX_COS_SIZE, NUM_PARTITIONS, NUM_WORKERS, executor);
+        serviceProxyMock = new ServiceProxyMock(0, replica);
+
+        replica.start();
+        join(start(createClient()));
     }
 
-    private HibridWorker[] createWorkers() {
-        var workers = new HibridWorker[NUM_WORKERS];
-        for (int i = 0; i < workers.length; i++) {
-            workers[i] = new HibridWorker(0, i, i, cosManager, executor, this);
-        }
-        return workers;
-    }
 
-    private LateScheduler[] createLateSchedulers() {
-        var schedulers = new LateScheduler[NUM_PARTITIONS];
-        for (int i = 0; i < schedulers.length; i++) {
-            schedulers[i] = new LateScheduler(cosManager, queuesManager, i, i % NUM_PARTITIONS, i % NUM_PARTITIONS);
-        }
-        return schedulers;
-    }
-
-    private HibridListClient createClient() {
+    private HibridClient createClient() {
         var config = new HibridClientConfig(TEST_SIZE, NUM_OPERATIONS_PER_REQUEST, NUM_PARTITIONS, PERCENTUAL_OPERATIONS_PER_PARTITION, PERCENTUAL_PARTITIONS_ENVOLVED_IN_EACH_OPERATION, WRITES_PER_PARTITION);
-        return new HibridListClient(config, new ServerProxyFactory(this));
+        return HibridClient.createClient(config, new BftAdapter(serviceProxyMock, true));
     }
 
-    private void start(Thread... threads) {
-        for (Thread thread : threads) {
-            thread.start();
-        }
-    }
-
-    /**
-     * Esse método faz o papel do ServiceReplica.
-     */
-    @Override
-    public CommandResult[] execute(int processId, int workerId, Command... commands)  {
-        var request = new Request(processId, workerId, commands);
-        Stats.messageReceive(request);
-        earlyScheduler.schedule(request.getId(), commands);
-        Stats.messageScheduled(request);
-        return null;
-    }
-
-    /**
-     * Esse método faz o papel do ServiceReplica
-     */
-    @Override
-    public void manageReply(ServerCommand serverCommand, boolean[] results) {
-        completedCommands.add(serverCommand);
-        if (completedCommands.size() == TEST_SIZE && print.compareAndSet(false, true)) {
-            Stats.print();
-            System.exit(0);
-        }
-    }
-    private AtomicBoolean print = new AtomicBoolean(false);
 }

@@ -1,17 +1,11 @@
 package demo.hibrid.server;
 
-import demo.hibrid.server.graph.COSManager;
-import demo.hibrid.server.graph.ConflictDefinitionDefault;
-import demo.hibrid.server.scheduler.EarlyScheduler;
-import demo.hibrid.server.queue.QueuesManager;
-import demo.hibrid.stats.Stats;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class HibridServerStarter {
+public final class Main {
     /**
      * Esses são os parâmetros que o programa aceita e precisa.
      */
@@ -19,7 +13,7 @@ public final class HibridServerStarter {
         id, minRead, maxRead, minWrite, maxWrite, numPartitions, numWorkers, queueSize, cosSize,
     }
 
-    private static Map<Parametro, Integer> params = new HashMap<>();
+    private static final Map<Parametro, Integer> params = new HashMap<>();
 
     public static void main(String[] args) {
         readParams(Arrays.asList(args));
@@ -34,16 +28,8 @@ public final class HibridServerStarter {
         var cosSize = params.get(Parametro.cosSize);
         var numWorkers = params.get(Parametro.numWorkers);
 
-        // cria o executor
-        var executor = new HibridExecutor(minRead, maxRead, minWrite, maxWrite);
-
-        // cria o gerenciador de estatísticas
-        Stats.createInstance().start();
-        var queuesManager = new QueuesManager(numPartitions, queueSize);
-        var earlyScheduler = new EarlyScheduler(queuesManager);
-        var cosManager = new COSManager(numPartitions, cosSize, new ConflictDefinitionDefault());
-
-        var replica = new HibridServiceReplica(id, earlyScheduler, queuesManager, cosManager, executor, numPartitions, numWorkers);
+        HibridExecutor executor = new HibridExecutor(minRead, maxRead, minWrite, maxWrite);
+        var replica = new HibridServiceReplica(id, queueSize, cosSize, numPartitions, numWorkers, executor);
         replica.start();
     }
 

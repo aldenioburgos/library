@@ -2,60 +2,55 @@ package demo.hibrid.server.scheduler;
 
 import demo.hibrid.server.ServerCommand;
 import demo.hibrid.server.graph.COSManager;
-import demo.hibrid.server.queue.QueuesManager;
+import demo.hibrid.stats.Event;
 import demo.hibrid.stats.Stats;
 
-import java.util.Arrays;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
+
+import static demo.hibrid.stats.EventType.*;
 
 public class LateScheduler extends Thread {
 
-    private COSManager cosManager;
-    private QueuesManager queuesManager;
-    private int myQueue;
-    private int myCos;
-    private int id;
+    private final int id;
+    private final  COSManager cosManager;
+    private final BlockingQueue<ServerCommand> queue;
 
-    public LateScheduler(COSManager cosManager, QueuesManager queuesManager, int id, int myQueue, int myCos) {
+
+    public LateScheduler(int id, BlockingQueue<ServerCommand> queue, COSManager cosManager) {
         super("LateScheduler[" + id + "]");
-        this.cosManager = cosManager;
-        this.queuesManager = queuesManager;
-        this.myCos = myCos;
-        this.myQueue = myQueue;
         this.id = id;
-    }
-
-    public void schedule(ServerCommand command) throws BrokenBarrierException, InterruptedException {
-        if (command.barrier != null) {
-            command.barrier.await();
-        }
-        if (myCos == min(command.distinctPartitions)) {
-            cosManager.addTo(myCos, command);
-        }
-        if (command.barrier != null) {
-            command.barrier.await();
-        }
+        this.queue = queue;
+        this.cosManager = cosManager;
     }
 
     @Override
     public void run() {
         try {
             while (true) {
-                var takeInit = System.nanoTime();
-                var command = queuesManager.takeCommandFrom(myQueue);
-                Stats.lateSchedulerInit(id, takeInit, command);
+                Stats.log(new Event(LATE_SCHEDULER_WILL_TAKE_COMMAND, null, null, id, null));
+                var command = queue.take();
                 schedule(command);
-                Stats.lateSchedulerEnd(id, command);
             }
         } catch (InterruptedException | BrokenBarrierException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public void schedule(ServerCommand serverCommand) throws BrokenBarrierException, InterruptedException {
+        Stats.log(new Event(LATE_SCHEDULER_STARTED, serverCommand.requestId, serverCommand.command.id, id, null));
+        if (serverCommand.hasBarrier()) {
+            serverCommand.barrier.await();
+        }
 
-    private int min(int[] commandPartitions) {
-        assert commandPartitions.length > 0 : "Todo comando deve acessar ao menos uma partição.";
-        return Arrays.stream(commandPartitions).min().getAsInt();
+        if (this.id == serverCommand.distinctPartitions[0]) {
+            cosManager.addTo(id, serverCommand);
+        }
+
+        if (serverCommand.hasBarrier()) {
+            serverCommand.barrier.await();
+        }
+        Stats.log(new Event(LATE_SCHEDULER_ENDED, serverCommand.requestId, serverCommand.command.id, id, null));
     }
 
 }

@@ -3,143 +3,141 @@ package demo.hibrid.server.graph;
 
 import demo.hibrid.server.ServerCommand;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static demo.hibrid.server.graph.VertexType.HEAD;
+import static demo.hibrid.server.graph.VertexType.TAIL;
 
 public class LockFreeNode<T> {
+    /*
+     NEW -> INSERTED -> READY -> RESERVED -> REMOVED
+     */
+    public static final int NEW = 0;
+    public static final int INSERTED = 1;
+    public static final int READY = 2;
+    public static final int RESERVED = 3;
+    public static final int REMOVED = 5;
+    public final AtomicInteger status = new AtomicInteger(NEW);
 
+    private final VertexType nodeType;
     public final T data;
-    private final COS<T> cos;
+    public LockFreeNode<T> next;
+    public final COS<T> cos;
 
-    final VertexType vertexType;
-    LockFreeNode<T> next;
-    LockFreeNode<T> prev;
-    private boolean inserted = false;
-    private int dependencies = 0;
+    private final AtomicInteger dependencies = new AtomicInteger(0);
+    private final Edge<LockFreeNode<T>> listeners = new Edge<>(HEAD);
+    private final Edge<LockFreeNode<T>> tail = listeners.next;
+    private boolean lateSchedulerIsWorkingHere = false;
 
+    LockFreeNode(VertexType nodeType) {
+        this(null, nodeType, null);
+        if (nodeType == HEAD) {
+            this.next = new LockFreeNode<>(TAIL);
+        }
+    }
 
-    final AtomicBoolean reservedAtomic = new AtomicBoolean(false);
-    final AtomicBoolean readyAtomic = new AtomicBoolean(false);
-    private boolean removed = false;
-
-    private final Edge<LockFreeNode<T>> dependentsHead = new Edge<>(null, VertexType.HEAD);
-    private final Edge<LockFreeNode<T>> dependentsTail = new Edge<>(null, VertexType.TAIL);
-
-    LockFreeNode(T data, VertexType vertexType, COS cos) {
+    LockFreeNode(T data, VertexType nodeType, COS<T> cos) {
         this.data = data;
-        this.vertexType = vertexType;
-        this.dependentsHead.next = this.dependentsTail;
-        this.dependentsTail.prev = this.dependentsHead;
+        this.nodeType = nodeType;
         this.cos = cos;
     }
 
-    public boolean isRemoved() {
-        return removed;
-    }
 
-    void insertBehind(LockFreeNode<T> node) {
-        assert this.vertexType == VertexType.TAIL : "Tentativa de inserção de um nó fora do fim da fila.";
-        node.next = this;
-        this.prev.next = node;
-        node.prev = this.prev;
-        this.prev = node;
-        node.inserted = true;
-    }
-
-    void goAway() {
-        this.prev.next = this.next;
-        this.next.prev = this.prev;
-    }
-
-    void testReady() {
-        if (inserted && dependencies == 0 && readyAtomic.compareAndSet(false, true)) {
-            this.cos.release();
+    public void insert(LockFreeNode<T> newNode) {
+        newNode.next = this.next;
+        this.next = newNode;
+        if (!newNode.testReady()) {
+            newNode.status.compareAndSet(NEW, INSERTED);
         }
     }
 
-    /**
-     * O scheluler é que quem executa esse método, quando está inserindo um novo node no grafo.
-     * Como os workers podem executar o mátodo markRemoved ao mesmo tempo desse método aqui,
-     * é preciso sincronizar o acesso à lista de dependências.
-     */
-    synchronized void insertDependentNode(LockFreeNode<T> newNode) {
-        if (!this.removed) {
-            newNode.dependencies++;
-            this.dependentsTail.insertBehind(newNode);
+
+    public void insertDependentNode(LockFreeNode<T> newNode) {
+        lateSchedulerIsWorkingHere = true;
+        if (status.get() != REMOVED) {
+            listeners.insert(newNode);
+            newNode.dependencies.incrementAndGet();
+        }
+        lateSchedulerIsWorkingHere = false;
+    }
+
+    public void markRemoved() {
+        if (status.compareAndSet(RESERVED, REMOVED)) {
+            while(lateSchedulerIsWorkingHere) {
+                waitLateSchedulerFinish();
+            }
+            var listener = listeners.next;
+            while (listener != tail) {
+                listener.node.dependencies.decrementAndGet();
+                listener.node.testReady();
+                listener = listener.next;
+            }
         }
     }
 
-    /**
-     * Os workers executam este método e podem concorrer com o scheduler no acesso a lista de dependências do node
-     * portanto é preciso sincronizar o acesso à lista de dependências.
-     */
-    synchronized void markRemoved() {
-        assert !this.removed: "Tentativa de remover o mesmo node mais de uma vez.";
-
-        this.removed = true;
-        var currentEdge = this.dependentsHead.next;
-        while (currentEdge.vertexType != VertexType.TAIL) {
-            var dependentNode = currentEdge.node;
-            dependentNode.dependencies--;
-            dependentNode.testReady();
-            currentEdge = currentEdge.next;
+    private void waitLateSchedulerFinish() {
+        try {
+            this.wait(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
+
+    private boolean testReady() {
+        if (dependencies.get() == 0 && (status.compareAndSet(NEW, READY) || status.compareAndSet(INSERTED, READY))) {
+            cos.releaseReady();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     @Override
     public String toString() {
-        switch (vertexType) {
-            case HEAD:
-                return "\n{HEAD}, " + next;
-            case TAIL:
-                return "\n{TAIL}";
-            default:
-                return "\nLockFreeNode{" +
-                        " inserted=" + inserted +
-                        ", reserved=" + reservedAtomic +
-                        ", removed=" + removed +
-                        ", ready=" + readyAtomic +
-                        ", dependencies=" + dependencies +
-                        ", dependents=" + dependentsHead +
-                        ", data=" + data +
-                        "}, " + next;
-        }
+        return switch (nodeType) {
+            case HEAD -> "[" + next;
+            case TAIL -> "]";
+            default -> "{" +
+                    " status=" + status +
+                    ", dependencies=" + dependencies +
+                    ", dependents=" + listeners +
+                    ", data=" + data +
+                    "}, " + next;
+        };
     }
 
+
     class Edge<N extends LockFreeNode<T>> {
-        final VertexType vertexType;
+        public final VertexType edgeType;
         public final N node;
         private Edge<N> next;
-        private Edge<N> prev;
 
-        Edge(N node, VertexType v) {
-            this(node, v, null, null);
+        Edge(VertexType v) {
+            this(null, v, null);
+            if (v == HEAD) {
+                this.next = new Edge<>(TAIL);
+            }
         }
 
-        Edge(N node, VertexType v, Edge<N> prev, Edge<N> next) {
+        Edge(N node, VertexType edgeType, Edge<N> next) {
             this.node = node;
-            this.vertexType = v;
-            this.prev = prev;
+            this.edgeType = edgeType;
             this.next = next;
         }
 
-        void insertBehind(N newNode) {
-            assert this.vertexType == VertexType.TAIL : "Tentativa de inserção de um Edge fora do fim da fila.";
-
-            var edge = new Edge<>(newNode, VertexType.MESSAGE, this.prev, this);
-            this.prev.next = edge;
-            this.prev = edge;
+        void insert(N newNode) {
+            this.next = new Edge<>(newNode, VertexType.NODE, this.next);
+            ;
         }
 
         @Override
         public String toString() {
-            switch (vertexType) {
-                case HEAD:
-                    return next.toString();
-                case TAIL:
-                    return "";
-                default:
-                    return ", " + ((ServerCommand) node.data).commandId + next;
-            }
+            return switch (edgeType) {
+                case HEAD -> "[" + next;
+                case TAIL -> "]";
+                default -> ", " + ((ServerCommand) node.data).command.id + next;
+            };
         }
     }
 }

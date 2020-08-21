@@ -8,9 +8,9 @@ import java.util.concurrent.Semaphore;
 
 public class COSManager {
 
-    private Semaphore ready;
-    private Semaphore space;
-    private COS<ServerCommand>[] graphs;
+    private final Semaphore ready;
+    private final Semaphore space;
+    private final COS<ServerCommand>[] graphs;
 
     public COSManager(int numGraphs, int maxCOSSize, ConflictDefinition<ServerCommand> conflictDefinition) {
         assert numGraphs > 0 : "Invalid Argument numGraphs <= 0";
@@ -25,45 +25,47 @@ public class COSManager {
         }
     }
 
-    public ServerCommand get(int preferentialPartition) throws InterruptedException {
+    public ServerCommand get(int preferentialPartition){
         assert preferentialPartition >= 0 : "Invalid Argument preferentialPartition < 0 ";
         assert preferentialPartition < graphs.length : "Invalid Argument preferentialPartition >= graphs.length";
 
-        ready.acquire();
+        Optional<ServerCommand> optServerCommand;
         int i = 0;
-        Optional<ServerCommand> optServerCommand = Optional.empty();
-        while (optServerCommand.isEmpty()) {
+        System.out.println("Vou pegar, agora existem " + ready.availablePermits() + " comandos disponíveis no COS.");
+        acquireReady();
+        do {
             var choosenPartition = (preferentialPartition + i++) % graphs.length;
             optServerCommand = graphs[choosenPartition].tryGet();
-        }
+        } while (optServerCommand.isEmpty());
         return optServerCommand.get();
     }
 
-
-    public void remove(ServerCommand serverCommand) {
-        assert serverCommand != null : "Invalid Argument serverCommand = null";
-
-        var node = serverCommand.getNode();
-        node.markRemoved();
-        this.space.release();
+    private void acquireReady() {
+        try {
+            ready.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    void releaseReady() {
+        this.ready.release();
+    }
+
 
 
     public void addTo(int partitionToInsertTheCommand, ServerCommand serverCommand) throws InterruptedException {
         assert Arrays.stream(serverCommand.distinctPartitions).anyMatch(it -> it == partitionToInsertTheCommand) : "A partição para inserção do comando não está dentre as partições do comando.";
 
         this.space.acquire();
-        var cos = graphs[partitionToInsertTheCommand];
-        var node = cos.createNode(serverCommand);
-        serverCommand.setNode(node);
+        COS<ServerCommand> cos = graphs[partitionToInsertTheCommand];
+        LockFreeNode<ServerCommand> node = cos.createNode(serverCommand);
         for (int partition : serverCommand.distinctPartitions) {
             graphs[partition].insertDependencies(node);
         }
+        serverCommand.setNode(node);
         cos.insert(node);
-    }
-
-    void release() {
-        this.ready.release();
+        System.out.println(this);
     }
 
     public int getNumCOS() {
@@ -74,7 +76,13 @@ public class COSManager {
     public String toString() {
         return "COSManager{" +
                 " ready=" + ready.availablePermits() +
+                ", space=" + space.availablePermits() +
                 ", graphs = " + Arrays.toString(graphs) +
                 '}';
+    }
+
+    public void remove(ServerCommand serverCommand) {
+        serverCommand.getNode().markRemoved();
+        space.release();
     }
 }

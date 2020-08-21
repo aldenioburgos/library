@@ -9,17 +9,15 @@ import java.util.concurrent.CyclicBarrier;
 public class ServerCommand {
 
     public final int requestId;
-    public final int commandId;
     public final Command command;
     public final CyclicBarrier barrier;
-    public final int[] distinctPartitions;
 
+    public final int[] distinctPartitions;
     private LockFreeNode<ServerCommand> node;
 
     public ServerCommand(int requestId, Command command) {
         this.requestId = requestId;
         this.command = command;
-        this.commandId = command.id;
         this.distinctPartitions = Arrays.stream(command.partitions).distinct().toArray();
         if (distinctPartitions.length > 1) {
             this.barrier = new CyclicBarrier(distinctPartitions.length);
@@ -36,6 +34,9 @@ public class ServerCommand {
         return node;
     }
 
+    public boolean hasBarrier() {
+        return barrier != null;
+    }
 
     @Override
     public String toString() {
@@ -45,4 +46,5 @@ public class ServerCommand {
                 ", " + command +
                 '}';
     }
+
 }

@@ -3,11 +3,15 @@ package demo.hibrid.server.scheduler;
 import demo.hibrid.request.Command;
 import demo.hibrid.server.ServerCommand;
 import demo.hibrid.server.queue.QueuesManager;
+import demo.hibrid.stats.Event;
 import demo.hibrid.stats.Stats;
+
+import static demo.hibrid.stats.EventType.EARLY_SCHEDULER_ENDED;
+import static demo.hibrid.stats.EventType.EARLY_SCHEDULER_STARTED;
 
 public class EarlyScheduler {
 
-    private QueuesManager queuesManager;
+    private final QueuesManager queuesManager;
 
     public EarlyScheduler(QueuesManager queuesManager) {
         assert queuesManager != null : "Invalid Argument, queuesManager == null.";
@@ -16,24 +20,25 @@ public class EarlyScheduler {
 
     public void schedule(int requestId, Command[] commands) {
         assert commands.length > 0 : "Invalid Argument, commands está vazio.";
-        try {
-            for (Command command : commands) {
-                addToQueues(requestId, command);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        for (Command command : commands) {
+            addToQueues(requestId, command);
         }
     }
 
-    private void addToQueues(int requestId, Command command) throws InterruptedException {
-        assert command != null: "Invalid Argument, command == null";
+    private void addToQueues(int requestId, Command command) {
+        assert command != null : "Invalid Argument, command == null";
+        Stats.log(new Event(EARLY_SCHEDULER_STARTED, requestId, command.id, null, null));
 
         var serverCommand = new ServerCommand(requestId, command);
-        Stats.earlySchedulerInit(serverCommand);
         for (int partition : serverCommand.distinctPartitions) {
-            queuesManager.putCommandIn(partition, serverCommand);
+            try {
+                queuesManager.putCommandIn(partition, serverCommand);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-        Stats.earlySchedulerEnd(serverCommand);
+
+        Stats.log(new Event(EARLY_SCHEDULER_ENDED, requestId, command.id, null, null));
     }
 
 }

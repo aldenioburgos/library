@@ -9,7 +9,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class QueuesManager {
 
-    private BlockingQueue<ServerCommand>[] queues;
+    private final BlockingQueue<ServerCommand>[] queues;
 
     public QueuesManager(int numQueues, int maxQueueSize) {
         this.queues = new BlockingQueue[numQueues];
@@ -19,11 +19,12 @@ public class QueuesManager {
     }
 
     public void putCommandIn(int partition, ServerCommand serverCommand) throws InterruptedException {
+        System.out.println("Vou incluir na fila[" + partition + "] que tem " + queues[partition].remainingCapacity() + " espaços livres.");
         queues[partition].put(serverCommand);
     }
 
-    public ServerCommand takeCommandFrom(int partition) throws InterruptedException {
-        return queues[partition].take();
+    public BlockingQueue<ServerCommand> getQueue(int partition) {
+        return queues[partition];
     }
 
     @Override
@@ -34,7 +35,4 @@ public class QueuesManager {
                 '}';
     }
 
-    public int getNumQueues() {
-        return this.queues.length;
-    }
 }

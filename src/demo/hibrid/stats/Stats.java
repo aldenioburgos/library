@@ -1,130 +1,109 @@
 package demo.hibrid.stats;
 
-import demo.hibrid.request.Request;
-import demo.hibrid.server.ServerCommand;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+
+import static java.lang.System.Logger.Level.INFO;
+import static java.lang.System.Logger.Level.OFF;
 
 public class Stats {
 
     // the stats controller
-    private static Stats instance;
+    private static final Stats instance = new Stats();
+    private static final java.lang.System.Logger logger = System.getLogger(Stats.class.getName());
 
     // printing thread control related fields
-    private Semaphore semaphore = new Semaphore(0);
-    private Queue<Integer> readyQueue = new ArrayDeque<>();
-    private boolean stop = false;
+    private final Semaphore semaphore = new Semaphore(0);
+    private final Queue<Integer> readyQueue = new ConcurrentLinkedQueue<>();
 
     // stat related fields
-    private Map<Integer, RequestStat> requestStats = new Hashtable<>();
+    private final Map<Integer, Queue<Event>> logs = new ConcurrentHashMap<>();
 
-
-    public static Stats createInstance() {
-        if (instance == null) {
-            instance = new Stats();
-        } else {
-            throw new IllegalStateException("Tentativa de criar dois coletores de estatistica");
-        }
-        return instance;
-    }
-
-    public void start() {
+    private Stats() {
         new StatsWorker().start();
     }
 
-    public static void messageReceive(Request request) {
-        var reqStat = new RequestStat(request.getId(), request.getCommands().length);
-        instance.requestStats.put(request.getId(), reqStat);
+    public static Stats getInstance() {
+        return instance;
     }
 
-    public static void earlySchedulerInit(ServerCommand command) {
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).id = command.commandId;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).earlySchedulerInit = System.nanoTime();
-    }
-
-    public static void earlySchedulerEnd(ServerCommand command) {
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).earlySchedulerEnd = System.nanoTime();
-    }
-
-    public static void lateSchedulerInit(int lateSchedulerId, long takeInit, ServerCommand command) {
-        var lateSchedulerInit = System.nanoTime();
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerId = lateSchedulerId;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerWaitingInit = takeInit;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerWaitingEnd = lateSchedulerInit;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerInit = lateSchedulerInit;
-    }
-
-    public static void lateSchedulerEnd(int id, ServerCommand command) {
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).lateSchedulerEnd = System.nanoTime();
-    }
-
-    public static void replicaWorkerInit(int id, long workerInit, ServerCommand command) {
-        var replicaWorkerInit = System.nanoTime();
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerId = id;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerWaitingInit = workerInit;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerWaitingEnd = replicaWorkerInit;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerInit = replicaWorkerInit;
-    }
-
-    public static void replicaWorkerEnd(int id, ServerCommand command) {
-        var replicaWorkerEnd = System.nanoTime();
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaWorkerEnd = replicaWorkerEnd;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaCommandRemovalInit = replicaWorkerEnd;
-    }
-
-    public static void commandRemoved(int id, ServerCommand command) {
-        var replicaCommandRemovalEnd = System.nanoTime();
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaCommandRemovalEnd = replicaCommandRemovalEnd;
-        instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaCommandReplyInit = replicaCommandRemovalEnd;
-    }
-
-    public static void replySent(int id, ServerCommand command) {
-        if (instance.requestStats.get(command.requestId) != null) {
-            instance.requestStats.get(command.requestId).getCommand(command.commandId).replicaCommandReplyEnd = System.nanoTime();
+    public static void log(Event event) {
+        Integer requestId = (event.getRequestId() == null) ? Integer.valueOf(-1) : event.getRequestId();
+        if (getInstance().logs.get(requestId) == null) {
+            getInstance().logs.put(requestId, new ConcurrentLinkedQueue<>());
+        }
+        getInstance().logs.get(requestId).add(event);
+        if (event.getType() == EventType.REPLY_SENT) {
+            getInstance().readyQueue.add(requestId);
+            getInstance().semaphore.release();
         }
     }
 
-    public static void messageReply(int requestId) {
-        instance.requestStats.get(requestId).replyTime = System.nanoTime();
-        instance.readyQueue.add(requestId);
-        instance.semaphore.release();
+    private String title() {
+        return "*** Tudo está em nanosecs *** \t" +
+                "RequestId\t" +
+                "arrivalTime\t" +
+                "scheduledAt\t" +
+                "replyTime\t" +
+                "CommandId\t" +
+                "earlySchedulerInit\t" +
+                "earlySchedulerEnd\t" +
+                "earlySchedulerTime\t" +
+                "lateSchedulerId\t" +
+                "lateSchedulerWaitingInit\t" +
+                "lateSchedulerWaitingEnd\t" +
+                "lateSchedulerWaitingTime\t" +
+                "lateSchedulerSchedulingInit\t" +
+                "lateSchedulerSchedulingEnd\t" +
+                "lateSchedulerSchedulingTime\t" +
+                "replicaWorkerId\t" +
+                "replicaWorkerWaitingInit\t" +
+                "replicaWorkerWaitingEnd\t" +
+                "replicaWorkerWaitingTime\t" +
+                "replicaWorkerWorkingInit\t" +
+                "replicaWorkerWorkingEnd\t" +
+                "replicaWorkerWorkingTime\t" +
+                "replicaWorkerRemovalInit\t" +
+                "replicaWorkerRemovalEnd\t" +
+                "replicaWorkerRemovalTime\t" +
+                "replicaWorkerReplyInit\t" +
+                "replicaWorkerReplyEnd\t" +
+                "replicaWorkerReplyTime\t";
     }
 
-    public static void print(){
-        System.out.println(RequestStat.title());
+    public void print(Collection<Event> events) {
         var builder = new StringBuilder();
-        for (var x :instance.requestStats.values()) {
-            builder.append(x.toString());
+        for (var event : events) {
+            builder.append(event.toString());
         }
-        System.out.println(builder.toString());
+        logger.log(OFF, builder.toString());
     }
 
-    public static void messageScheduled(Request request) {
-        instance.requestStats.get(request.getId()).scheduledAt = System.nanoTime();
-    }
 
     /**
      * The Stat printer thread.
      */
     public class StatsWorker extends Thread {
+
         @Override
         public void run() {
             try {
-                System.out.println(RequestStat.title());
-                while (!instance.stop) {
+                logger.log(INFO, title());
+                while (true) {
+                    logger.log(INFO, "Stats is waiting.");
                     semaphore.acquire();
+                    logger.log(INFO, "Stats woke-up.");
                     var readyMsgId = readyQueue.poll();
-                    print(readyMsgId);
+                    var events = logs.remove(readyMsgId);
+                    print(events);
                 }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        private void print(Integer readyMsgId) {
-            var request = requestStats.remove(readyMsgId);
-            System.out.println(request.toString());
         }
     }
 

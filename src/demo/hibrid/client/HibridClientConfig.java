@@ -6,7 +6,6 @@ public class HibridClientConfig {
     public final int clientProcessId;
     public final int numThreads;
     public final int numOperations;
-    public final int interval;
     public final int maxListIndex;
     public final int numOperationsPerRequest;
     public final int numPartitions;
@@ -15,13 +14,12 @@ public class HibridClientConfig {
     public final int[] percentualOfWritesPerPartition;
 
     public HibridClientConfig(int numOperations, int numOperationsPerRequest, int numPartitions, int[] percentualDistributionOfOperationsAmongPartition, int[] percentualOfPartitionsEnvolvedPerOperation, int[] percentualOfWritesPerPartition) {
-        this(0, 1, numOperations, 0, numOperationsPerRequest, numPartitions, percentualDistributionOfOperationsAmongPartition, percentualOfPartitionsEnvolvedPerOperation, percentualOfWritesPerPartition);
+        this(0, 1, numOperations,  numOperationsPerRequest, numPartitions, percentualDistributionOfOperationsAmongPartition, percentualOfPartitionsEnvolvedPerOperation, percentualOfWritesPerPartition);
     }
 
     public HibridClientConfig(int clientProcessId,
                               int numThreads,
                               int numOperations,
-                              int interval,
                               int numOperationsPerRequest,
                               int numPartitions,
                               int[] percentualDistributionOfOperationsAmongPartition,
@@ -31,7 +29,6 @@ public class HibridClientConfig {
         this.clientProcessId = clientProcessId;
         this.numThreads = numThreads;
         this.numOperations = numOperations;
-        this.interval = interval;
         this.numOperationsPerRequest = numOperationsPerRequest;
         this.numPartitions = numPartitions;
         this.percentualDistributionOfOperationsAmongPartition = pileValues(percentualDistributionOfOperationsAmongPartition);
@@ -43,7 +40,6 @@ public class HibridClientConfig {
     private boolean selfValidation() {
         assert numThreads > 0 : "Invalid Argument numThreads.";
         assert numOperations > 0 : "Invalid Argument numOperations.";
-        assert interval >= 0 : "Invalid Argument interval.";
         assert numOperationsPerRequest > 0 : "Invalid Argument numOperationsPerRequest.";
         assert numPartitions > 0 : "Invalid Argument numPartitions.";
         assert percentualDistributionOfOperationsAmongPartition[percentualDistributionOfOperationsAmongPartition.length - 1] == 100 : "Invalid Argument percentualDistributionOfOperationsAmongPartition não soma 100%";

@@ -1,6 +1,7 @@
 package demo.hibrid.request;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class Response {
 
@@ -52,4 +53,11 @@ public class Response {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Response{" +
+                "id=" + id +
+                ", results=" + Arrays.toString(results) +
+                '}';
+    }
 }

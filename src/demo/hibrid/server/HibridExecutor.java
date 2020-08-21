@@ -8,11 +8,11 @@ import java.util.Random;
 
 public class HibridExecutor implements SingleExecutable {
 
-    private int minReadTime;
-    private int maxReadTime;
-    private int minWriteTime;
-    private int maxWriteTime;
-    private Random rand = new Random();
+    private final int minReadTime;
+    private final int maxReadTime;
+    private final int minWriteTime;
+    private final int maxWriteTime;
+    private final Random rand = new Random();
 
     public HibridExecutor(int minTimeToExecuteRead,
                           int maxTimeToExecuteRead,
@@ -29,6 +29,15 @@ public class HibridExecutor implements SingleExecutable {
         this.maxWriteTime = maxTimeToExecuteWrite;
     }
 
+    public boolean[] execute(Command command) {
+        long endTime = System.currentTimeMillis() + ((command.type == Command.ADD) ? minWriteTime + rand.nextInt(maxWriteTime) : minReadTime + rand.nextInt(maxReadTime));
+        var u = 0;
+        while (System.currentTimeMillis() < endTime) {
+            u++; // Active waiting
+        }
+        return new boolean[command.indexes.length];
+    }
+
     @Override
     public byte[] executeOrdered(byte[] bytes, MessageContext messageContext) {
         throw new UnsupportedOperationException();
@@ -37,14 +46,5 @@ public class HibridExecutor implements SingleExecutable {
     @Override
     public byte[] executeUnordered(byte[] bytes, MessageContext messageContext) {
         throw new UnsupportedOperationException();
-    }
-
-    public boolean[] execute(Command command) {
-        long endTime = System.currentTimeMillis() + ((command.type == Command.ADD) ? minWriteTime + rand.nextInt(maxWriteTime) : minReadTime + rand.nextInt(maxReadTime));
-        var u = 0;
-        while (System.currentTimeMillis() < endTime) {
-            u++; // Active waiting
-        }
-        return new boolean[command.indexes.length];
     }
 }

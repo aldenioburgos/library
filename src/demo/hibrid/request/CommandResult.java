@@ -19,13 +19,6 @@ public class CommandResult implements Serializable {
         this.results = results;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public boolean[] getResults() {
-        return results;
-    }
 
     public CommandResult fromBytes(DataInputStream dis) throws IOException {
         this.id = dis.readInt();
@@ -39,8 +32,8 @@ public class CommandResult implements Serializable {
     public void toBytes(DataOutputStream dos) throws IOException {
         dos.writeInt(id);
         dos.writeInt(results.length);
-        for (int i = 0; i < results.length; i++) {
-            dos.writeBoolean(results[i]);
+        for (boolean result : results) {
+            dos.writeBoolean(result);
         }
     }
 

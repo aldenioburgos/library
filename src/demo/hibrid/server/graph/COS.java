@@ -3,13 +3,18 @@ package demo.hibrid.server.graph;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
 
+import static demo.hibrid.server.graph.LockFreeNode.READY;
+import static demo.hibrid.server.graph.LockFreeNode.RESERVED;
+import static demo.hibrid.server.graph.VertexType.HEAD;
+import static demo.hibrid.server.graph.VertexType.NODE;
+
 /**
  * @author aldenio & eduardo
  */
 public class COS<T> {
 
-    private final LockFreeNode<T> head = new LockFreeNode<>(null, VertexType.HEAD, this);
-    private final LockFreeNode<T> tail = new LockFreeNode<>(null, VertexType.TAIL, this);
+    private final LockFreeNode<T> head = new LockFreeNode<>(HEAD);
+    private final LockFreeNode<T> tail = head.next;
     private final ConflictDefinition<T> conflictDefinition;
     private final COSManager cosManager;
     private final Semaphore ready;
@@ -18,62 +23,65 @@ public class COS<T> {
         this.conflictDefinition = conflictDefinition;
         this.ready = new Semaphore(0);
         this.cosManager = cosManager;
-        this.head.next = tail;
-        this.tail.prev = head;
     }
 
     public LockFreeNode<T> createNode(T serverCommand) {
-        return new LockFreeNode<T>(serverCommand, VertexType.MESSAGE, this);
+        return new LockFreeNode<>(serverCommand, NODE, this);
     }
 
     public Optional<T> tryGet() {
         if (this.ready.tryAcquire()) {
-            var data = COSGet().data;
+            var data = reserveNode().data;
             return Optional.of(data);
         }
         return Optional.empty();
     }
 
-    private LockFreeNode<T> COSGet() {
-        LockFreeNode<T> aux = head;
-        while (true) {
-            aux = aux.next;
-            if (aux.readyAtomic.get() && aux.reservedAtomic.compareAndSet(false, true)) {
-                break;
-            }
-            if (aux.vertexType == VertexType.TAIL) {
-                aux = head;
-            }
+    /**
+     * Reserve a ready node and return it.
+     */
+    private LockFreeNode<T> reserveNode() {
+        var node = head.next;
+        while (node != tail && !node.status.compareAndSet(READY, RESERVED)) {
+            node = node.next;
         }
-        return aux;
+        assert node != tail : "Não foi possível reservar um NODE!";
+        return node;
     }
 
-    void release() {
+    void releaseReady() {
         this.ready.release();
-        this.cosManager.release();
+        this.cosManager.releaseReady();
     }
 
 
     public void insert(LockFreeNode<T> newNode) {
-        cleanRemovedNodes();
-        tail.insertBehind(newNode);
-        newNode.testReady();
+        var lastNode = head;
+        var currentNode = head.next;
+        while (currentNode != tail) {
+
+            while (currentNode.status.get() == LockFreeNode.REMOVED) { // remoção dos nodes
+                lastNode.next = currentNode.next;
+                currentNode = currentNode.next;
+            }
+
+            if (currentNode == tail) break; // se acabou a lista, encerra
+
+            if (conflictDefinition.isDependent(newNode.data, currentNode.data)) { // inserção de dependencias
+                currentNode.insertDependentNode(newNode);
+            }
+            lastNode = currentNode;
+            currentNode = currentNode.next;
+        }
+
+        lastNode.insert(newNode);
     }
 
-    private void cleanRemovedNodes() {
-        LockFreeNode<T> node = head.next;
-        while (node.vertexType != VertexType.TAIL) {
-            if (node.isRemoved()) {
-                node.goAway();
-            }
-            node = node.next;
-        }
-    }
 
     public void insertDependencies(LockFreeNode<T> newNode) {
         LockFreeNode<T> node = head.next;
-        while (node.vertexType != VertexType.TAIL) {
-            if (this.conflictDefinition.isDependent(newNode.data, node.data)) {
+        while (node != tail) {
+            if (conflictDefinition.isDependent(newNode.data, node.data)) {
                 node.insertDependentNode(newNode);
             }
             node = node.next;

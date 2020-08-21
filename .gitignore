@@ -5,3 +5,6 @@
 /*.txt
 /*.log
 /config/currentView
+/out
+*.iml
+*.log

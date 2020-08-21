@@ -6,7 +6,7 @@ import demo.hibrid.server.ServerCommand;
 public class ConflictDefinitionDefault implements ConflictDefinition<ServerCommand> {
 
     @Override
-    public boolean isDependent(ServerCommand r1, ServerCommand r2) {
-        return r1.command.type == Command.ADD || r2.command.type == Command.ADD;
+    public boolean isDependent(ServerCommand newNode, ServerCommand oldNode) {
+        return newNode.command.type == Command.ADD || oldNode.command.type == Command.ADD;
     }
 }

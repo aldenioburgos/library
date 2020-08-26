@@ -38,17 +38,17 @@ public class HibridWorker extends Thread {
     public void run() {
         while (true) {
             Stats.log(new Event(REPLICA_WORKER_WILL_TAKE_COMMAND, null, null, null, workerId));
-            ServerCommand serverCommand = cosManager.get(preferentialPartition);
+            CommandEnvelope commandEnvelope = cosManager.getFrom(preferentialPartition);
 
-            Stats.log(new Event(REPLICA_WORKER_STARTED, serverCommand.requestId, serverCommand.command.id, null, workerId));
-            boolean[] results = executor.execute(serverCommand.command);
-            Stats.log(new Event(REPLICA_WORKER_ENDED, serverCommand.requestId, serverCommand.command.id, null, workerId));
+            Stats.log(new Event(REPLICA_WORKER_STARTED, commandEnvelope.requestId, commandEnvelope.command.id, null, workerId));
+            boolean[] results = executor.execute(commandEnvelope.command);
+            Stats.log(new Event(REPLICA_WORKER_ENDED, commandEnvelope.requestId, commandEnvelope.command.id, null, workerId));
 
-            cosManager.remove(serverCommand);
-            Stats.log(new Event(COMMAND_REMOVED, serverCommand.requestId, serverCommand.command.id, null, workerId));
+            cosManager.remove(commandEnvelope);
+            Stats.log(new Event(COMMAND_REMOVED, commandEnvelope.requestId, commandEnvelope.command.id, null, workerId));
 
-            hibridReplier.manageReply(serverCommand, results);
-            Stats.log(new Event(COMMAND_REPLIED, serverCommand.requestId, serverCommand.command.id, null, workerId));
+            hibridReplier.manageReply(commandEnvelope, results);
+            Stats.log(new Event(COMMAND_REPLIED, commandEnvelope.requestId, commandEnvelope.command.id, null, workerId));
         }
     }
 

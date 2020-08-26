@@ -42,9 +42,7 @@ public class HibridClient extends Thread {
                 commands[j] = new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
             }
             var request = new Request(config.clientProcessId, config.clientProcessId, commands);
-            System.out.println("Cliente " + config.clientProcessId + " mandando a requisição " + request.getId() + " com " + request.getCommands().length + " comandos.");
             CommandResult[] result = bftAdapter.execute(request);
-            System.out.println("Cliente " + config.clientProcessId + " recebeu resposta para requisição " + request.getId() + "= " + Arrays.toString(result));
         }
     }
 

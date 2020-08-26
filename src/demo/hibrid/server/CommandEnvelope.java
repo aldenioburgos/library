@@ -6,19 +6,19 @@ import demo.hibrid.server.graph.LockFreeNode;
 import java.util.Arrays;
 import java.util.concurrent.CyclicBarrier;
 
-public class ServerCommand {
+public class CommandEnvelope {
 
     public final int requestId;
     public final Command command;
     public final CyclicBarrier barrier;
 
     public final int[] distinctPartitions;
-    private LockFreeNode<ServerCommand> node;
+    private LockFreeNode node;
 
-    public ServerCommand(int requestId, Command command) {
+    public CommandEnvelope(int requestId, Command command) {
         this.requestId = requestId;
         this.command = command;
-        this.distinctPartitions = Arrays.stream(command.partitions).distinct().toArray();
+        this.distinctPartitions = command.distinctPartitions();
         if (distinctPartitions.length > 1) {
             this.barrier = new CyclicBarrier(distinctPartitions.length);
         } else {
@@ -26,11 +26,11 @@ public class ServerCommand {
         }
     }
 
-    public void setNode(LockFreeNode<ServerCommand> node) {
+    public void setNode(LockFreeNode node) {
         this.node = node;
     }
 
-    public LockFreeNode<ServerCommand> getNode() {
+    public LockFreeNode getNode() {
         return node;
     }
 

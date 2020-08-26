@@ -1,5 +1,5 @@
 package demo.hibrid.server;
 
 public interface HibridReplier {
-    void manageReply(ServerCommand serverCommand, boolean[] results) ;
+    void manageReply(CommandEnvelope commandEnvelope, boolean[] results) ;
 }

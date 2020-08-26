@@ -30,6 +30,8 @@ public class HibridServiceReplicaTest  {
     private static final int NUM_WORKERS = 2;
 
     private final ServiceProxy serviceProxyMock;
+
+
     public static void main(String[] args) {
         new HibridServiceReplicaTest();
     }

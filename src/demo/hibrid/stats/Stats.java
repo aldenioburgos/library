@@ -32,15 +32,16 @@ public class Stats {
     }
 
     public static void log(Event event) {
-        Integer requestId = (event.getRequestId() == null) ? Integer.valueOf(-1) : event.getRequestId();
-        if (getInstance().logs.get(requestId) == null) {
-            getInstance().logs.put(requestId, new ConcurrentLinkedQueue<>());
-        }
-        getInstance().logs.get(requestId).add(event);
-        if (event.getType() == EventType.REPLY_SENT) {
-            getInstance().readyQueue.add(requestId);
-            getInstance().semaphore.release();
-        }
+        System.out.println(event);
+//        Integer requestId = (event.getRequestId() == null) ? Integer.valueOf(-1) : event.getRequestId();
+//        if (getInstance().logs.get(requestId) == null) {
+//            getInstance().logs.put(requestId, new ConcurrentLinkedQueue<>());
+//        }
+//        getInstance().logs.get(requestId).add(event);
+//        if (event.getType() == EventType.REPLY_SENT) {
+//            getInstance().readyQueue.add(requestId);
+//            getInstance().semaphore.release();
+//        }
     }
 
     private String title() {

@@ -28,6 +28,10 @@ public class Command {
         this(idGenerator.getAndAdd(1), type, partition, indexes);
     }
 
+    public int[] distinctPartitions(){
+        return Arrays.stream(partitions).distinct().toArray();
+    }
+
     public static Command fromBytes(DataInputStream dis) throws IOException {
         var id = dis.readInt();
         var type = dis.readInt();

@@ -1,35 +1,38 @@
 package demo.hibrid.server.graph;
 
+import demo.hibrid.server.CommandEnvelope;
+
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
 
 import static demo.hibrid.server.graph.LockFreeNode.READY;
 import static demo.hibrid.server.graph.LockFreeNode.RESERVED;
 import static demo.hibrid.server.graph.VertexType.HEAD;
-import static demo.hibrid.server.graph.VertexType.NODE;
 
 /**
  * @author aldenio & eduardo
  */
-public class COS<T> {
+public class COS {
 
-    private final LockFreeNode<T> head = new LockFreeNode<>(HEAD);
-    private final LockFreeNode<T> tail = head.next;
-    private final ConflictDefinition<T> conflictDefinition;
+    private final LockFreeNode head = new LockFreeNode(HEAD);
+    private final LockFreeNode tail = head.next;
+    private final ConflictDefinition<CommandEnvelope> conflictDefinition;
     private final COSManager cosManager;
     private final Semaphore ready;
 
-    public COS(ConflictDefinition<T> conflictDefinition, COSManager cosManager) {
+    public COS(ConflictDefinition<CommandEnvelope> conflictDefinition, COSManager cosManager) {
         this.conflictDefinition = conflictDefinition;
         this.ready = new Semaphore(0);
         this.cosManager = cosManager;
     }
 
-    public LockFreeNode<T> createNode(T serverCommand) {
-        return new LockFreeNode<>(serverCommand, NODE, this);
+
+    public void createNodeFor(CommandEnvelope commandEnvelope) {
+        new LockFreeNode(commandEnvelope, this);
     }
 
-    public Optional<T> tryGet() {
+    public Optional<CommandEnvelope> tryGet() {
         if (this.ready.tryAcquire()) {
             var data = reserveNode().data;
             return Optional.of(data);
@@ -40,7 +43,7 @@ public class COS<T> {
     /**
      * Reserve a ready node and return it.
      */
-    private LockFreeNode<T> reserveNode() {
+    private LockFreeNode reserveNode() {
         var node = head.next;
         while (node != tail && !node.status.compareAndSet(READY, RESERVED)) {
             node = node.next;
@@ -55,34 +58,33 @@ public class COS<T> {
     }
 
 
-    public void insert(LockFreeNode<T> newNode) {
+    public void excludeRemovedNodes_insertDependencies_insertNewNode(CommandEnvelope commandEnvelope) {
         var lastNode = head;
         var currentNode = head.next;
         while (currentNode != tail) {
 
-            while (currentNode.status.get() == LockFreeNode.REMOVED) { // remoção dos nodes
+            while (currentNode != tail && currentNode.status.get() == LockFreeNode.REMOVED) { // remoção dos nodes
                 lastNode.next = currentNode.next;
                 currentNode = currentNode.next;
             }
 
             if (currentNode == tail) break; // se acabou a lista, encerra
 
-            if (conflictDefinition.isDependent(newNode.data, currentNode.data)) { // inserção de dependencias
-                currentNode.insertDependentNode(newNode);
+            if (conflictDefinition.isDependent(commandEnvelope, currentNode.data)) { // inserção de dependencias
+                currentNode.insertDependentNode(commandEnvelope.getNode());
             }
             lastNode = currentNode;
             currentNode = currentNode.next;
         }
 
-        lastNode.insert(newNode);
+        lastNode.insert(commandEnvelope.getNode());
     }
 
-
-    public void insertDependencies(LockFreeNode<T> newNode) {
-        LockFreeNode<T> node = head.next;
+    public void insertDependencies(CommandEnvelope commandEnvelope) {
+        LockFreeNode node = head.next;
         while (node != tail) {
-            if (conflictDefinition.isDependent(newNode.data, node.data)) {
-                node.insertDependentNode(newNode);
+            if (conflictDefinition.isDependent(commandEnvelope, node.data)) {
+                node.insertDependentNode(commandEnvelope.getNode());
             }
             node = node.next;
         }
@@ -95,5 +97,4 @@ public class COS<T> {
                 ", nodes=" + this.head.toString() +
                 "}";
     }
-
 }

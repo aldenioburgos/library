@@ -1,7 +1,7 @@
 package demo.hibrid.server.scheduler;
 
 import demo.hibrid.request.Command;
-import demo.hibrid.server.ServerCommand;
+import demo.hibrid.server.CommandEnvelope;
 import demo.hibrid.server.queue.QueuesManager;
 import demo.hibrid.stats.Event;
 import demo.hibrid.stats.Stats;
@@ -29,7 +29,7 @@ public class EarlyScheduler {
         assert command != null : "Invalid Argument, command == null";
         Stats.log(new Event(EARLY_SCHEDULER_STARTED, requestId, command.id, null, null));
 
-        var serverCommand = new ServerCommand(requestId, command);
+        var serverCommand = new CommandEnvelope(requestId, command);
         for (int partition : serverCommand.distinctPartitions) {
             try {
                 queuesManager.putCommandIn(partition, serverCommand);

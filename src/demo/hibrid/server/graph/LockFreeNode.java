@@ -1,14 +1,15 @@
 package demo.hibrid.server.graph;
 
 
-import demo.hibrid.server.ServerCommand;
+import demo.hibrid.server.CommandEnvelope;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
 
 import static demo.hibrid.server.graph.VertexType.HEAD;
 import static demo.hibrid.server.graph.VertexType.TAIL;
 
-public class LockFreeNode<T> {
+public class LockFreeNode {
     /*
      NEW -> INSERTED -> READY -> RESERVED -> REMOVED
      */
@@ -20,30 +21,37 @@ public class LockFreeNode<T> {
     public final AtomicInteger status = new AtomicInteger(NEW);
 
     private final VertexType nodeType;
-    public final T data;
-    public LockFreeNode<T> next;
-    public final COS<T> cos;
+    public final CommandEnvelope data;
+    public LockFreeNode next;
+    public final COS cos;
 
     private final AtomicInteger dependencies = new AtomicInteger(0);
-    private final Edge<LockFreeNode<T>> listeners = new Edge<>(HEAD);
-    private final Edge<LockFreeNode<T>> tail = listeners.next;
+    private final Edge listeners = new Edge(HEAD);
+    private final Edge tail = listeners.next;
     private boolean lateSchedulerIsWorkingHere = false;
 
-    LockFreeNode(VertexType nodeType) {
+    public LockFreeNode(VertexType nodeType) {
         this(null, nodeType, null);
         if (nodeType == HEAD) {
-            this.next = new LockFreeNode<>(TAIL);
+            this.next = new LockFreeNode(TAIL);
         }
     }
 
-    LockFreeNode(T data, VertexType nodeType, COS<T> cos) {
-        this.data = data;
+    public LockFreeNode(CommandEnvelope data, COS cos) {
+        this(data, VertexType.NODE, cos);
+        assert data != null : "Não pode criar um node sem dados!";
+        assert cos != null : "Não pode criar um node sem COS!";
+        data.setNode(this);
+    }
+
+    private LockFreeNode(CommandEnvelope data, VertexType nodeType,  COS cos) {
+        assert nodeType != null: "Não pode criar um node sem o seu tipo.";
         this.nodeType = nodeType;
+        this.data = data;
         this.cos = cos;
     }
 
-
-    public void insert(LockFreeNode<T> newNode) {
+    public void insert(LockFreeNode newNode) {
         newNode.next = this.next;
         this.next = newNode;
         if (!newNode.testReady()) {
@@ -52,7 +60,7 @@ public class LockFreeNode<T> {
     }
 
 
-    public void insertDependentNode(LockFreeNode<T> newNode) {
+    public void insertDependentNode(LockFreeNode newNode) {
         lateSchedulerIsWorkingHere = true;
         if (status.get() != REMOVED) {
             listeners.insert(newNode);
@@ -108,27 +116,26 @@ public class LockFreeNode<T> {
     }
 
 
-    class Edge<N extends LockFreeNode<T>> {
+    class Edge {
         public final VertexType edgeType;
-        public final N node;
-        private Edge<N> next;
+        public final LockFreeNode node;
+        private Edge next;
 
         Edge(VertexType v) {
             this(null, v, null);
             if (v == HEAD) {
-                this.next = new Edge<>(TAIL);
+                this.next = new Edge(TAIL);
             }
         }
 
-        Edge(N node, VertexType edgeType, Edge<N> next) {
+        Edge(LockFreeNode node, VertexType edgeType, Edge next) {
             this.node = node;
             this.edgeType = edgeType;
             this.next = next;
         }
 
-        void insert(N newNode) {
-            this.next = new Edge<>(newNode, VertexType.NODE, this.next);
-            ;
+        void insert(LockFreeNode newNode) {
+            this.next = new Edge(newNode, VertexType.NODE, this.next);
         }
 
         @Override
@@ -136,7 +143,7 @@ public class LockFreeNode<T> {
             return switch (edgeType) {
                 case HEAD -> "[" + next;
                 case TAIL -> "]";
-                default -> ", " + ((ServerCommand) node.data).command.id + next;
+                default -> ", " + node.data.command.id + next;
             };
         }
     }

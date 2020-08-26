@@ -1,7 +1,7 @@
 package demo.hibrid.server.scheduler;
 
-import demo.hibrid.server.ServerCommand;
-import demo.hibrid.server.graph.COSManager;
+import demo.hibrid.server.CommandEnvelope;
+import demo.hibrid.server.graph.COS;
 import demo.hibrid.stats.Event;
 import demo.hibrid.stats.Stats;
 
@@ -13,15 +13,15 @@ import static demo.hibrid.stats.EventType.*;
 public class LateScheduler extends Thread {
 
     private final int id;
-    private final  COSManager cosManager;
-    private final BlockingQueue<ServerCommand> queue;
+    private final  COS cos;
+    private final BlockingQueue<CommandEnvelope> queue;
 
 
-    public LateScheduler(int id, BlockingQueue<ServerCommand> queue, COSManager cosManager) {
+    public LateScheduler(int id, BlockingQueue<CommandEnvelope> queue, COS cos) {
         super("LateScheduler[" + id + "]");
         this.id = id;
         this.queue = queue;
-        this.cosManager = cosManager;
+        this.cos = cos;
     }
 
     @Override
@@ -37,20 +37,25 @@ public class LateScheduler extends Thread {
         }
     }
 
-    public void schedule(ServerCommand serverCommand) throws BrokenBarrierException, InterruptedException {
-        Stats.log(new Event(LATE_SCHEDULER_STARTED, serverCommand.requestId, serverCommand.command.id, id, null));
-        if (serverCommand.hasBarrier()) {
-            serverCommand.barrier.await();
+    public void schedule(CommandEnvelope commandEnvelope) throws BrokenBarrierException, InterruptedException {
+        Stats.log(new Event(LATE_SCHEDULER_STARTED, commandEnvelope.requestId, commandEnvelope.command.id, id, null));
+        if (this.id == commandEnvelope.distinctPartitions[0]) {
+            cos.createNodeFor(commandEnvelope);
         }
 
-        if (this.id == serverCommand.distinctPartitions[0]) {
-            cosManager.addTo(id, serverCommand);
+        if (commandEnvelope.hasBarrier()) {
+            commandEnvelope.barrier.await();
         }
 
-        if (serverCommand.hasBarrier()) {
-            serverCommand.barrier.await();
+        if (this.id == commandEnvelope.distinctPartitions[0]) {
+            cos.excludeRemovedNodes_insertDependencies_insertNewNode(commandEnvelope);
+        } else {
+            cos.insertDependencies(commandEnvelope);
         }
-        Stats.log(new Event(LATE_SCHEDULER_ENDED, serverCommand.requestId, serverCommand.command.id, id, null));
+
+        if (commandEnvelope.hasBarrier()) {
+            commandEnvelope.barrier.await();
+        }
+        Stats.log(new Event(LATE_SCHEDULER_ENDED, commandEnvelope.requestId, commandEnvelope.command.id, id, null));
     }
-
 }

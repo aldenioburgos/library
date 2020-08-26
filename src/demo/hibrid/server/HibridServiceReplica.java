@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package demo.hibrid.server;
 
 import demo.hibrid.request.CommandResult;
@@ -59,15 +54,15 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
         Stats.log(new Event(MESSAGE_SCHEDULED, requestId, null, null, null));
     }
 
-    public void manageReply(ServerCommand serverCommand, boolean[] results) {
-        var ctx = context.get(serverCommand.requestId);
-        var commandResult = new CommandResult(serverCommand.command.id, results);
+    public void manageReply(CommandEnvelope commandEnvelope, boolean[] results) {
+        var ctx = context.get(commandEnvelope.requestId);
+        var commandResult = new CommandResult(commandEnvelope.command.id, results);
         ctx.add(commandResult);
         if (ctx.isRequestFinished()) {
-            var response = new Response(serverCommand.requestId, ctx.getResults());
+            var response = new Response(commandEnvelope.requestId, ctx.getResults());
             reply(response);
-            context.remove(serverCommand.requestId);
-            Stats.log(new Event(REPLY_SENT, serverCommand.requestId, null, null, null));
+            context.remove(commandEnvelope.requestId);
+            Stats.log(new Event(REPLY_SENT, commandEnvelope.requestId, null, null, null));
         }
     }
 
@@ -82,14 +77,14 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
 
     private void initLateSchedulers() {
         for (int i = 0; i < lateSchedulers.length; i++) {
-            lateSchedulers[i] = new LateScheduler(i, queuesManager.getQueue(i), cosManager);
+            lateSchedulers[i] = new LateScheduler(i, queuesManager.getQueue(i), cosManager.graphs[i]);
             lateSchedulers[i].start();
         }
     }
 
     private void initReplicaWorkers() {
         for (int i = 0; i < workers.length; i++) {
-            workers[i] = new HibridWorker(id, i, i % cosManager.getNumCOS(), cosManager, executor, hibridReplier);
+            workers[i] = new HibridWorker(id, i, i % cosManager.graphs.length, cosManager, executor, hibridReplier);
             workers[i].start();
         }
     }

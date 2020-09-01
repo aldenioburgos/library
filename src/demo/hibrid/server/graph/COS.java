@@ -2,26 +2,29 @@ package demo.hibrid.server.graph;
 
 import demo.hibrid.server.CommandEnvelope;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static demo.hibrid.server.graph.LockFreeNode.READY;
-import static demo.hibrid.server.graph.LockFreeNode.RESERVED;
-import static demo.hibrid.server.graph.VertexType.HEAD;
+import static demo.hibrid.server.graph.LockFreeNode.*;
 
 /**
  * @author aldenio & eduardo
  */
 public class COS {
 
-    private final LockFreeNode head = new LockFreeNode(HEAD);
-    private final LockFreeNode tail = head.next;
-    private final ConflictDefinition<CommandEnvelope> conflictDefinition;
-    private final COSManager cosManager;
-    private final Semaphore ready;
+    public final int id;
+    private final Node head;
+    private final Node relatedNodes;
+    public final Semaphore ready;
 
-    public COS(ConflictDefinition<CommandEnvelope> conflictDefinition, COSManager cosManager) {
+    private final ConflictDefinition<CommandEnvelope> conflictDefinition;
+    public final COSManager cosManager;
+
+    public COS(int id, ConflictDefinition<CommandEnvelope> conflictDefinition, COSManager cosManager) {
+        this.id = id;
+        this.head = new Node(null);
+        this.relatedNodes = new Node(null);
         this.conflictDefinition = conflictDefinition;
         this.ready = new Semaphore(0);
         this.cosManager = cosManager;
@@ -40,61 +43,102 @@ public class COS {
         return Optional.empty();
     }
 
-    /**
-     * Reserve a ready node and return it.
-     */
     private LockFreeNode reserveNode() {
-        var node = head.next;
-        while (node != tail && !node.status.compareAndSet(READY, RESERVED)) {
-            node = node.next;
+        var node = head.next.get();
+        while (node != null && !node.value.status.compareAndSet(READY, RESERVED)) {
+            node = node.next.get();
         }
-        assert node != tail : "Não foi possível reservar um NODE!";
-        return node;
+        return (node != null)? node.value: null;
     }
 
     void releaseReady() {
         this.ready.release();
-        this.cosManager.releaseReady();
+        cosManager.releaseReady();
     }
 
 
-    public void excludeRemovedNodes_insertDependencies_insertNewNode(CommandEnvelope commandEnvelope) {
-        var lastNode = head;
-        var currentNode = head.next;
-        while (currentNode != tail) {
+    public void cleanRemovedNodesInsertDependenciesAndInsertNewNode(CommandEnvelope commandEnvelope) {
+        cosManager.acquireSpace();
+        cleanRemovedNodesInsertDependenciesAndInsertNewNode(commandEnvelope, head);
+        cleanRemovedNodesAndInsertDependencies(commandEnvelope, relatedNodes);
+    }
 
-            while (currentNode != tail && currentNode.status.get() == LockFreeNode.REMOVED) { // remoção dos nodes
-                lastNode.next = currentNode.next;
-                currentNode = currentNode.next;
+    public void excludeRemovedNodesInsertDependencies(CommandEnvelope commandEnvelope) {
+        cleanRemovedNodesInsertDependenciesAndInsertNewNode(commandEnvelope, relatedNodes);
+        cleanRemovedNodesAndInsertDependencies(commandEnvelope, head);
+    }
+
+
+    private void cleanRemovedNodesInsertDependenciesAndInsertNewNode(CommandEnvelope commandEnvelope, Node head) {
+        var newNode = new Node(commandEnvelope.getNode());
+        var lastNode = head;
+        var currentNode = head;
+        while (!currentNode.next.compareAndSet(null, newNode)) {
+            currentNode = currentNode.next.get();
+
+            while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
+                lastNode.next.compareAndSet(currentNode, currentNode.next.get());
+                if (currentNode.next.compareAndSet(null,  newNode)) {
+                    return;
+                } else {
+                    currentNode = currentNode.next.get();
+                }
             }
 
-            if (currentNode == tail) break; // se acabou a lista, encerra
-
-            if (conflictDefinition.isDependent(commandEnvelope, currentNode.data)) { // inserção de dependencias
-                currentNode.insertDependentNode(commandEnvelope.getNode());
+            if (conflictDefinition.isDependent(commandEnvelope, currentNode.value.data)) { // inserção de dependencias
+                currentNode.value.insertDependentNode(commandEnvelope.getNode());
             }
             lastNode = currentNode;
-            currentNode = currentNode.next;
         }
-
-        lastNode.insert(commandEnvelope.getNode());
     }
 
-    public void insertDependencies(CommandEnvelope commandEnvelope) {
-        LockFreeNode node = head.next;
-        while (node != tail) {
-            if (conflictDefinition.isDependent(commandEnvelope, node.data)) {
-                node.insertDependentNode(commandEnvelope.getNode());
+
+    private void cleanRemovedNodesAndInsertDependencies(CommandEnvelope commandEnvelope, Node head) {
+        var lastNode = head;
+        var currentNode = head;
+        while (currentNode.next.get() != null) {
+            currentNode = currentNode.next.get();
+            while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
+                lastNode.next.compareAndSet(currentNode, currentNode.next.get());
+                if (currentNode.next.get() == null) {
+                    return;
+                } else {
+                    currentNode = currentNode.next.get();
+                }
             }
-            node = node.next;
+            if (conflictDefinition.isDependent(commandEnvelope, currentNode.value.data)) { // inserção de dependencias
+                currentNode.value.insertDependentNode(commandEnvelope.getNode());
+            }
+            lastNode = currentNode;
         }
     }
 
     @Override
     public String toString() {
-        return "COS{" +
+        return "\n\tCOS-" + id + "{" +
                 "ready=" + this.ready.availablePermits() +
-                ", nodes=" + this.head.toString() +
-                "}";
+                ",\n\t\tnodes=" + this.head +
+                ",\n\t\trelatedNodes=" + this.relatedNodes +
+                "\n\t}";
     }
+}
+
+
+
+class Node {
+    public final LockFreeNode value;
+    public final AtomicReference<Node> next = new AtomicReference<>();
+
+    public Node(LockFreeNode value) {
+        this.value = value;
+    }
+
+
+    @Override
+    public String toString() {
+        if (value == null) return "[" + ((next.get() == null) ? "]" : next.get());
+        else return "\n\t\t\t"+value.toString() + ((next.get() == null) ? "\n\t\t]" : ", " + next.get());
+
+    }
+
 }

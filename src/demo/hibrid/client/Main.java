@@ -48,8 +48,9 @@ public class Main {
                 arrParams.get(Parametro.percWrite)
         );
 
-        // create the client
-        HibridClient.createClient(config, null);
+        // create and start the client
+        var client = new HibridClient(config);
+        client.start();
     }
 
     private static void readParams(List<String> args) {

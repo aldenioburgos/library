@@ -61,11 +61,12 @@ public class Command {
 
     @Override
     public String toString() {
-        return "Command{" +
-                "id=" + id +
-                ", type=" + type +
-                ", partitions=" + Arrays.toString(partitions) +
-                ", indexes=" + Arrays.toString(indexes) +
+        return "{" +
+//                "id=" +
+                id +
+//                ", type=" + type +
+//                ", partitions=" + Arrays.toString(partitions) +
+//                ", indexes=" + Arrays.toString(indexes) +
                 '}';
     }
 }

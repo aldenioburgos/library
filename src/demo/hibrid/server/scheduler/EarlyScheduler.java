@@ -27,18 +27,25 @@ public class EarlyScheduler {
 
     private void addToQueues(int requestId, Command command) {
         assert command != null : "Invalid Argument, command == null";
-        Stats.log(new Event(EARLY_SCHEDULER_STARTED, requestId, command.id, null, null));
+//        Stats.log(new Event(EARLY_SCHEDULER_STARTED, requestId, command.id, null, null));
 
-        var serverCommand = new CommandEnvelope(requestId, command);
-        for (int partition : serverCommand.distinctPartitions) {
+        var commandEnvelope = new CommandEnvelope(requestId, command);
+        for (int partition : commandEnvelope.distinctPartitions) {
             try {
-                queuesManager.putCommandIn(partition, serverCommand);
+//                System.out.println("Early Scheduler put "+commandEnvelope+" in partition "+partition);
+                queuesManager.putCommandIn(partition, commandEnvelope);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        Stats.log(new Event(EARLY_SCHEDULER_ENDED, requestId, command.id, null, null));
+//        Stats.log(new Event(EARLY_SCHEDULER_ENDED, requestId, command.id, null, null));
     }
 
+    @Override
+    public String toString() {
+        return "EarlyScheduler{" +
+                "queuesManager=" + queuesManager +
+                '}';
+    }
 }

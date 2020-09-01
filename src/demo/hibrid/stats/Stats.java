@@ -74,6 +74,7 @@ public class Stats {
                 "replicaWorkerReplyInit\t" +
                 "replicaWorkerReplyEnd\t" +
                 "replicaWorkerReplyTime\t";
+                //TODO calcular o número de operações por segundo
     }
 
     public void print(Collection<Event> events) {
@@ -95,9 +96,7 @@ public class Stats {
             try {
                 logger.log(INFO, title());
                 while (true) {
-                    logger.log(INFO, "Stats is waiting.");
                     semaphore.acquire();
-                    logger.log(INFO, "Stats woke-up.");
                     var readyMsgId = readyQueue.poll();
                     var events = logs.remove(readyMsgId);
                     print(events);

@@ -8,10 +8,10 @@ import java.util.concurrent.CyclicBarrier;
 
 public class CommandEnvelope {
 
-    public final int requestId;
     public final Command command;
-    public final CyclicBarrier barrier;
 
+    public final int requestId;
+    public final CyclicBarrier barrier;
     public final int[] distinctPartitions;
     private LockFreeNode node;
 
@@ -40,9 +40,10 @@ public class CommandEnvelope {
 
     @Override
     public String toString() {
-        return "ServerCommand{" +
-                "requestId=" + requestId +
+        return "{" +
+                "request=" + requestId +
                 ", barrier=" + ((barrier == null) ? " null" : barrier.getNumberWaiting() + " de " + barrier.getParties()) +
+                ", distinctPartitions=" + Arrays.toString(distinctPartitions) +
                 ", " + command +
                 '}';
     }

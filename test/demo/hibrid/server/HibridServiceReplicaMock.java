@@ -12,6 +12,13 @@ public class HibridServiceReplicaMock extends  HibridServiceReplica {
 
     @Override
     protected void reply(Response response) {
-        logger.log(System.Logger.Level.OFF, response);
+//        logger.log(System.Logger.Level.OFF, response);
+        if (context.isEmpty()) {
+            System.out.println("End:"+System.nanoTime());
+            System.exit(0); //TODO remover esse código depois de debugado!
+        }
     }
+
+
+
 }

@@ -1,9 +1,12 @@
 package demo.hibrid.client;
 
+import bftsmart.tom.ServiceProxy;
 import demo.hibrid.request.Command;
 import demo.hibrid.request.CommandResult;
 import demo.hibrid.request.Request;
+import demo.hibrid.server.HibridServiceReplica;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -12,26 +15,29 @@ import java.util.Random;
  */
 public class HibridClient extends Thread {
 
-    private final BftAdapter bftAdapter;
+    private final HibridServiceReplica replica;
+    private final ServiceProxy proxy;
     private final Random rand = new Random();
     private final HibridClientConfig config;
 
-    private HibridClient(HibridClientConfig config, BftAdapter bftAdapter) {
+    public HibridClient(HibridClientConfig config) {
+        this(config, null, new ServiceProxy(config.clientProcessId));
+    }
+
+    public HibridClient(HibridClientConfig config, HibridServiceReplica replica) {
+        this(config, replica, null);
+    }
+
+    private HibridClient(HibridClientConfig config, HibridServiceReplica replica, ServiceProxy proxy) {
         super("ClientWorker-" + config.clientProcessId);
+        this.replica = replica;
+        this.proxy = proxy;
         this.config = config;
-        this.bftAdapter = bftAdapter;
     }
-
-    public static HibridClient createClient(HibridClientConfig config, BftAdapter bftAdapter) {
-        var proxy = (bftAdapter == null) ? new BftAdapter(0): bftAdapter;
-        return new HibridClient(config, proxy);
-    }
-
-
 
     @Override
     public void run() {
-        System.out.println("Cliente "+config.clientProcessId+" tem "+config.numOperations+" operações para enviar.");
+        var requests = new ArrayList<Request>((config.numOperations / config.numOperationsPerRequest) + 1);
         for (int i = 0; i < config.numOperations; i += config.numOperationsPerRequest) {
             int numOpToExecute = Math.min(config.numOperations - i, config.numOperationsPerRequest);
             var commands = new Command[numOpToExecute];
@@ -41,10 +47,22 @@ public class HibridClient extends Thread {
                 int[] selectedIndexes = selectIndexes(selectedPartitions);
                 commands[j] = new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
             }
-            var request = new Request(config.clientProcessId, config.clientProcessId, commands);
-            CommandResult[] result = bftAdapter.execute(request);
+            requests.add(new Request(config.clientProcessId, config.clientProcessId, commands));
+        }
+
+        if (replica != null) {
+            System.out.println("Start:"+System.nanoTime());
+            for (var request : requests) {
+                replica.processRequest(request);
+            }
+        } else {
+            for (var request : requests) {
+                byte[] results = proxy.invokeOrdered(request.toBytes());
+                System.out.println(new CommandResult().fromBytes(results));
+            }
         }
     }
+
 
     private boolean isWriteOperation(int[] selectedPartitions) {
         var result = true;
@@ -105,6 +123,14 @@ public class HibridClient extends Thread {
         throw new RuntimeException("Sempre deve haver ao menos uma partição envolvida.");
     }
 
-
+    @Override
+    public String toString() {
+        return "HibridClient{" +
+                "replica=" + replica +
+                ", proxy=" + proxy +
+                ", rand=" + rand +
+                ", config=" + config +
+                '}';
+    }
 }
 

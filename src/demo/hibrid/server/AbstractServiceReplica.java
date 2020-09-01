@@ -113,7 +113,6 @@ public abstract class AbstractServiceReplica extends ServiceReplica  {
             consensusCount++;
         }
         if (SVController.hasUpdates()) {
-            // this.scheduler.scheduleReplicaReconfiguration(); //TODO isso aqui pode ficar assim?
             throw new UnsupportedOperationException();
         }
     }

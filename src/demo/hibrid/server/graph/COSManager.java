@@ -21,7 +21,7 @@ public class COSManager {
         this.space = new Semaphore(maxCOSSize);
         this.graphs = new COS[numGraphs];
         for (int i = 0; i < numGraphs; i++) {
-            this.graphs[i] = new COS(conflictDefinition, this);
+            this.graphs[i] = new COS(i,conflictDefinition, this);
         }
     }
 
@@ -59,14 +59,9 @@ public class COSManager {
         }
     }
 
-    void releaseSpace() {
-        this.space.release();
-    }
-
-
     public void remove(CommandEnvelope commandEnvelope) {
         commandEnvelope.getNode().markRemoved();
-        space.release();
+        this.space.release();
     }
 
     @Override
@@ -74,7 +69,7 @@ public class COSManager {
         return "COSManager{" +
                 " ready=" + ready.availablePermits() +
                 ", space=" + space.availablePermits() +
-                ", graphs = " + Arrays.toString(graphs) +
+                ", graphs=" + Arrays.toString(graphs)+
                 '}';
     }
 }

@@ -47,4 +47,15 @@ public class HibridExecutor implements SingleExecutable {
     public byte[] executeUnordered(byte[] bytes, MessageContext messageContext) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String toString() {
+        return "HibridExecutor{" +
+                "minReadTime=" + minReadTime +
+                ", maxReadTime=" + maxReadTime +
+                ", minWriteTime=" + minWriteTime +
+                ", maxWriteTime=" + maxWriteTime +
+                ", rand=" + rand +
+                '}';
+    }
 }

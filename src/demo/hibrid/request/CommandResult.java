@@ -1,9 +1,6 @@
 package demo.hibrid.request;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Arrays;
 
 public class CommandResult implements Serializable {
@@ -17,6 +14,16 @@ public class CommandResult implements Serializable {
     public CommandResult(int id, boolean[] results) {
         this.id = id;
         this.results = results;
+    }
+
+
+    public CommandResult fromBytes(byte[] bytes) {
+        try (var bais = new ByteArrayInputStream(bytes);
+             var dis = new DataInputStream(bais)){
+             return fromBytes(dis);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

@@ -9,7 +9,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class QueuesManager {
 
-    private final BlockingQueue<CommandEnvelope>[] queues;
+    public final BlockingQueue<CommandEnvelope>[] queues;
 
     public QueuesManager(int numQueues, int maxQueueSize) {
         this.queues = new BlockingQueue[numQueues];
@@ -22,14 +22,10 @@ public class QueuesManager {
         queues[partition].put(commandEnvelope);
     }
 
-    public BlockingQueue<CommandEnvelope> getQueue(int partition) {
-        return queues[partition];
-    }
 
     @Override
     public String toString() {
         return "QueuesManager{" +
-                "sizes=" + Arrays.toString(Arrays.stream(queues).mapToInt(Collection::size).toArray()) +
                 "queues=" + Arrays.toString(queues) +
                 '}';
     }

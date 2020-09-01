@@ -11,6 +11,7 @@ import demo.hibrid.server.scheduler.LateScheduler;
 import demo.hibrid.stats.Event;
 import demo.hibrid.stats.Stats;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,7 +22,7 @@ import static demo.hibrid.stats.EventType.*;
  */
 public class HibridServiceReplica extends AbstractServiceReplica implements HibridReplier {
 
-    private final Map<Integer, HibridRequestContext> context = new ConcurrentHashMap<>();
+    protected final Map<Integer, HibridRequestContext> context = new ConcurrentHashMap<>();
     private final EarlyScheduler earlyScheduler;
     private final QueuesManager queuesManager;
     private final LateScheduler[] lateSchedulers;
@@ -44,14 +45,14 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     /////////////////////////////////////////////////////////////////////
     // Métodos que fazem o trabalho dessa replica
     ////////////////////////////////////////////////////////////////////
-    protected void processRequest(Request request) {
+    public void processRequest(Request request) {
         var requestId = request.getId();
         var commands = request.getCommands();
 
-        Stats.log(new Event(MESSAGE_RECEIVED, requestId, null, null, null));
+//        Stats.log(new Event(MESSAGE_RECEIVED, requestId, null, null, null));
         context.put(requestId, new HibridRequestContext(request));
         earlyScheduler.schedule(requestId, commands);
-        Stats.log(new Event(MESSAGE_SCHEDULED, requestId, null, null, null));
+//        Stats.log(new Event(MESSAGE_SCHEDULED, requestId, null, null, null));
     }
 
     public void manageReply(CommandEnvelope commandEnvelope, boolean[] results) {
@@ -60,9 +61,10 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
         ctx.add(commandResult);
         if (ctx.isRequestFinished()) {
             var response = new Response(commandEnvelope.requestId, ctx.getResults());
-            reply(response);
             context.remove(commandEnvelope.requestId);
-            Stats.log(new Event(REPLY_SENT, commandEnvelope.requestId, null, null, null));
+            reply(response);
+            System.out.print('.');
+//            Stats.log(new Event(REPLY_SENT, commandEnvelope.requestId, null, null, null));
         }
     }
 
@@ -70,23 +72,40 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     /////////////////////////////////////////////////////////////////////
     // Métodos para criar e executar as threads dos schedulers e workes.
     ////////////////////////////////////////////////////////////////////
-    public void start() {
-        initLateSchedulers();
-        initReplicaWorkers();
+    public Thread[] start() {
+        var um = initLateSchedulers();
+        var dois = initReplicaWorkers();
+        var soma = new Thread[um.length+dois.length];
+        System.arraycopy(um,0,soma, 0, um.length);
+        System.arraycopy(dois, 0, soma, um.length,dois.length);
+        return soma;
     }
 
-    private void initLateSchedulers() {
+    private Thread[] initLateSchedulers() {
         for (int i = 0; i < lateSchedulers.length; i++) {
-            lateSchedulers[i] = new LateScheduler(i, queuesManager.getQueue(i), cosManager.graphs[i]);
+            lateSchedulers[i] = new LateScheduler(i, queuesManager.queues[i], cosManager.graphs[i]);
             lateSchedulers[i].start();
         }
+        return lateSchedulers;
     }
 
-    private void initReplicaWorkers() {
+    private Thread[] initReplicaWorkers() {
         for (int i = 0; i < workers.length; i++) {
             workers[i] = new HibridWorker(id, i, i % cosManager.graphs.length, cosManager, executor, hibridReplier);
             workers[i].start();
         }
+        return workers;
     }
 
+    @Override
+    public String toString() {
+        return "HibridServiceReplica{" +
+                "\ncontext=" + context +
+                ", \nearlyScheduler=" + earlyScheduler +
+                ", \nlateSchedulers=" + Arrays.toString(lateSchedulers) +
+                ", \ncosManager=" + cosManager +
+                ", \nworkers=" + Arrays.toString(workers) +
+                ", \nexecutor=" + executor +
+                '}';
+    }
 }

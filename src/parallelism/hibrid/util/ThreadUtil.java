@@ -1,4 +1,4 @@
-package demo.hibrid.server.util;
+package parallelism.hibrid.util;
 
 public class ThreadUtil {
 

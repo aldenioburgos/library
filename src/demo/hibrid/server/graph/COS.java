@@ -31,24 +31,25 @@ public class COS {
     }
 
 
-    public void createNodeFor(CommandEnvelope commandEnvelope) {
-        new LockFreeNode(commandEnvelope, this);
+    public boolean createNodeFor(CommandEnvelope commandEnvelope) {
+        return (commandEnvelope.atomicNode.get() == null &&
+                commandEnvelope.atomicNode.compareAndSet(null, new LockFreeNode(commandEnvelope, this)));
     }
 
     public Optional<CommandEnvelope> tryGet() {
         if (this.ready.tryAcquire()) {
-            var data = reserveNode().data;
+            CommandEnvelope data = reserveNode().commandEnvelope;
             return Optional.of(data);
         }
         return Optional.empty();
     }
 
     private LockFreeNode reserveNode() {
-        var node = head.next.get();
+        var node = head.atomicNext.get();
         while (node != null && !node.value.status.compareAndSet(READY, RESERVED)) {
-            node = node.next.get();
+            node = node.atomicNext.get();
         }
-        return (node != null)? node.value: null;
+        return (node != null) ? node.value : null;
     }
 
     void releaseReady() {
@@ -58,7 +59,9 @@ public class COS {
 
 
     public void cleanRemovedNodesInsertDependenciesAndInsertNewNode(CommandEnvelope commandEnvelope) {
+        System.out.println(cosManager);
         cosManager.acquireSpace();
+
         cleanRemovedNodesInsertDependenciesAndInsertNewNode(commandEnvelope, head);
         cleanRemovedNodesAndInsertDependencies(commandEnvelope, relatedNodes);
     }
@@ -70,44 +73,63 @@ public class COS {
 
 
     private void cleanRemovedNodesInsertDependenciesAndInsertNewNode(CommandEnvelope commandEnvelope, Node head) {
-        var newNode = new Node(commandEnvelope.getNode());
+        System.out.println("cleanRemovedNodesInsertDependenciesAndInsertNewNode");
+        Node newNode = new Node(commandEnvelope.atomicNode.get());
         var lastNode = head;
         var currentNode = head;
-        while (!currentNode.next.compareAndSet(null, newNode)) {
-            currentNode = currentNode.next.get();
-
+        System.out.println("head = " + head);
+        while (!currentNode.atomicNext.compareAndSet(null, newNode)){
+            System.out.println("while");
+            currentNode = currentNode.atomicNext.get();
+            System.out.println("while 2");
             while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
-                lastNode.next.compareAndSet(currentNode, currentNode.next.get());
-                if (currentNode.next.compareAndSet(null,  newNode)) {
+                System.out.println("removed");
+                lastNode.atomicNext.compareAndSet(currentNode, currentNode.atomicNext.get());
+                currentNode = currentNode.atomicNext.get();
+
+                if (currentNode == null && lastNode.atomicNext.compareAndSet(null, newNode)) { // acabou a lista, insere o novo nó
                     return;
-                } else {
-                    currentNode = currentNode.next.get();
                 }
             }
-
-            if (conflictDefinition.isDependent(commandEnvelope, currentNode.value.data)) { // inserção de dependencias
-                currentNode.value.insertDependentNode(commandEnvelope.getNode());
+            System.out.println("while 3");
+            if (conflictDefinition.isDependent(commandEnvelope, currentNode.value.commandEnvelope)) { // inserção de dependencias
+                System.out.println("dependency");
+                currentNode.value.insertDependentNode(commandEnvelope.atomicNode.get());
             }
+            System.out.println("while 4");
             lastNode = currentNode;
+            System.out.println("while 5");
         }
+        System.out.println("Partition[" + id + "].size=" + size());
+    }
+
+    private int size() {
+        var counter = 0;
+        var aux = head;
+        while (aux.atomicNext.get() != null) {
+            counter++;
+            aux = aux.atomicNext.get();
+        }
+        return counter;
+
     }
 
 
     private void cleanRemovedNodesAndInsertDependencies(CommandEnvelope commandEnvelope, Node head) {
         var lastNode = head;
         var currentNode = head;
-        while (currentNode.next.get() != null) {
-            currentNode = currentNode.next.get();
+        while (currentNode.atomicNext.get() != null) {
+            currentNode = currentNode.atomicNext.get();
             while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
-                lastNode.next.compareAndSet(currentNode, currentNode.next.get());
-                if (currentNode.next.get() == null) {
+                lastNode.atomicNext.compareAndSet(currentNode, currentNode.atomicNext.get());
+                if (currentNode.atomicNext.get() == null) {
                     return;
                 } else {
-                    currentNode = currentNode.next.get();
+                    currentNode = currentNode.atomicNext.get();
                 }
             }
-            if (conflictDefinition.isDependent(commandEnvelope, currentNode.value.data)) { // inserção de dependencias
-                currentNode.value.insertDependentNode(commandEnvelope.getNode());
+            if (conflictDefinition.isDependent(commandEnvelope, currentNode.value.commandEnvelope)) { // inserção de dependencias
+                currentNode.value.insertDependentNode(commandEnvelope.atomicNode.get());
             }
             lastNode = currentNode;
         }
@@ -121,24 +143,25 @@ public class COS {
                 ",\n\t\trelatedNodes=" + this.relatedNodes +
                 "\n\t}";
     }
-}
 
 
+    class Node {
+        public final LockFreeNode value;
+        public final AtomicReference<Node> atomicNext = new AtomicReference<>(null);
 
-class Node {
-    public final LockFreeNode value;
-    public final AtomicReference<Node> next = new AtomicReference<>();
+        public Node(LockFreeNode value) {
+            this.value = value;
+        }
 
-    public Node(LockFreeNode value) {
-        this.value = value;
+
+        @Override
+        public String toString() {
+            if (value == null) return "[" + ((atomicNext.get() == null) ? "]" : atomicNext.get());
+            else return "\n\t\t\t" + value.toString() + ((atomicNext.get() == null) ? "\n\t\t]" : ", " + atomicNext.get());
+
+        }
+
     }
 
-
-    @Override
-    public String toString() {
-        if (value == null) return "[" + ((next.get() == null) ? "]" : next.get());
-        else return "\n\t\t\t"+value.toString() + ((next.get() == null) ? "\n\t\t]" : ", " + next.get());
-
-    }
-
 }
+

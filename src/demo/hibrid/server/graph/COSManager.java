@@ -60,7 +60,7 @@ public class COSManager {
     }
 
     public void remove(CommandEnvelope commandEnvelope) {
-        commandEnvelope.getNode().markRemoved();
+        commandEnvelope.atomicNode.get().markRemoved();
         this.space.release();
     }
 

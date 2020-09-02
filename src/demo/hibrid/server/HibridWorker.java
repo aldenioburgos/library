@@ -7,13 +7,15 @@ package demo.hibrid.server;
 
 import demo.hibrid.server.graph.COSManager;
 
+import java.util.concurrent.BrokenBarrierException;
+
 /**
  * @author aldenio
  */
 public class HibridWorker extends Thread {
     private final int preferentialPartition;
     private final COSManager cosManager;
-    private final HibridExecutor executor;
+    private final ExecutorInterface executor;
     private final HibridReplier hibridReplier;
     private final int workerId;
 
@@ -21,7 +23,7 @@ public class HibridWorker extends Thread {
                         int workerId,
                         int preferentialPartition,
                         COSManager cosManager,
-                        HibridExecutor executor,
+                        ExecutorInterface executor,
                         HibridReplier hibridReplier) {
         super("HibridServiceReplicaWorker[" + id + ", " + workerId + "]");
         this.preferentialPartition = preferentialPartition;
@@ -32,17 +34,16 @@ public class HibridWorker extends Thread {
     }
 
     public void run() {
-        while (true) {
-//            Stats.log(new Event(REPLICA_WORKER_WILL_TAKE_COMMAND, null, null, null, workerId));
-            CommandEnvelope commandEnvelope = cosManager.getFrom(preferentialPartition);
-
-//            Stats.log(new Event(REPLICA_WORKER_STARTED, commandEnvelope.requestId, commandEnvelope.command.id, null, workerId));
-            boolean[] results = executor.execute(commandEnvelope.command);
-//            Stats.log(new Event(REPLICA_WORKER_ENDED, commandEnvelope.requestId, commandEnvelope.command.id, null, workerId));
-            cosManager.remove(commandEnvelope);
-//            Stats.log(new Event(COMMAND_REMOVED, commandEnvelope.requestId, commandEnvelope.command.id, null, workerId));
-            hibridReplier.manageReply(commandEnvelope, results);
-//            Stats.log(new Event(COMMAND_REPLIED, commandEnvelope.requestId, commandEnvelope.command.id, null, workerId));
+        try {
+            while (true) {
+                CommandEnvelope commandEnvelope = cosManager.getFrom(preferentialPartition);
+                boolean[] results = executor.execute(commandEnvelope.command);
+                cosManager.remove(commandEnvelope);
+                hibridReplier.manageReply(commandEnvelope, results);
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.exit(workerId);
         }
     }
 

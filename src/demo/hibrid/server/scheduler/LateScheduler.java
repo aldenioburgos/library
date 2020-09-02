@@ -37,33 +37,29 @@ public class LateScheduler extends Thread {
                 }
             }
         } catch (InterruptedException | BrokenBarrierException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            System.exit(id);
         }
     }
 
     public void schedule(CommandEnvelope commandEnvelope) throws BrokenBarrierException, InterruptedException {
-//        Stats.log(new Event(LATE_SCHEDULER_STARTED, commandEnvelope.requestId, commandEnvelope.command.id, id, null));
-        if (this.id == commandEnvelope.distinctPartitions[0]) {
-            cos.createNodeFor(commandEnvelope);
-        }
-        if (commandEnvelope.hasBarrier()) {
-            commandEnvelope.barrier.await();
-        }
-
-        if (this.id == commandEnvelope.distinctPartitions[0]) {
+        if (cos.createNodeFor(commandEnvelope)) {
+            System.out.println("LateScheduler["+id+"].createNodeFor("+commandEnvelope.command.id+")");
             cos.cleanRemovedNodesInsertDependenciesAndInsertNewNode(commandEnvelope);
+            System.out.println("LateScheduler["+id+"].inserted("+commandEnvelope.command.id+")");
         } else {
+            System.out.println("LateScheduler["+id+"].nodeExists("+commandEnvelope.command.id+")");
             cos.excludeRemovedNodesInsertDependencies(commandEnvelope);
+            System.out.println("LateScheduler["+id+"].insertedDependencies("+commandEnvelope.command.id+")");
         }
 
-        if (commandEnvelope.hasBarrier()) {
-            commandEnvelope.barrier.await();
+        if (commandEnvelope.atomicCounter.decrementAndGet() == 0){
+            if (commandEnvelope.atomicNode.get().status.compareAndSet(NEW, INSERTED)){
+                commandEnvelope.atomicNode.get().testReady();
+            } else {
+                throw new IllegalStateException("AtomicCounter == 0 and status != NEW");
+            }
         }
-
-        if (commandEnvelope.getNode().status.compareAndSet(NEW, INSERTED)) {
-            commandEnvelope.getNode().testReady();
-        }
-//        Stats.log(new Event(LATE_SCHEDULER_ENDED, commandEnvelope.requestId, commandEnvelope.command.id, id, null));
     }
 
     @Override

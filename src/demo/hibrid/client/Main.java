@@ -38,6 +38,7 @@ public class Main {
     public static void main(String[] args) {
         readParams(Arrays.asList(args));
         var config = new HibridClientConfig(
+                Integer.MAX_VALUE,
                 params.get(Parametro.id),
                 params.get(Parametro.numthreads),
                 params.get(Parametro.numOp),

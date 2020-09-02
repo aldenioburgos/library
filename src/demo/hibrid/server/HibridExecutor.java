@@ -6,7 +6,7 @@ import demo.hibrid.request.Command;
 
 import java.util.Random;
 
-public class HibridExecutor implements SingleExecutable {
+public class HibridExecutor implements ExecutorInterface {
 
     private final int minReadTime;
     private final int maxReadTime;
@@ -38,15 +38,6 @@ public class HibridExecutor implements SingleExecutable {
         return new boolean[command.indexes.length];
     }
 
-    @Override
-    public byte[] executeOrdered(byte[] bytes, MessageContext messageContext) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public byte[] executeUnordered(byte[] bytes, MessageContext messageContext) {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public String toString() {

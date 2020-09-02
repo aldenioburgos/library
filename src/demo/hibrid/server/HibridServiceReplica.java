@@ -8,30 +8,27 @@ import demo.hibrid.server.graph.ConflictDefinitionDefault;
 import demo.hibrid.server.queue.QueuesManager;
 import demo.hibrid.server.scheduler.EarlyScheduler;
 import demo.hibrid.server.scheduler.LateScheduler;
-import demo.hibrid.stats.Event;
 import demo.hibrid.stats.Stats;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static demo.hibrid.stats.EventType.*;
-
 /**
  * @author aldenio
  */
 public class HibridServiceReplica extends AbstractServiceReplica implements HibridReplier {
 
-    protected final Map<Integer, HibridRequestContext> context = new ConcurrentHashMap<>();
-    private final EarlyScheduler earlyScheduler;
+    public final Map<Integer, HibridRequestContext> context = new ConcurrentHashMap<>();
+    public final EarlyScheduler earlyScheduler;
     private final QueuesManager queuesManager;
     private final LateScheduler[] lateSchedulers;
     private final COSManager cosManager;
     private final HibridWorker[] workers;
-    private final HibridExecutor executor;
+    private final ExecutorInterface executor;
     private final HibridReplier hibridReplier;
 
-    public HibridServiceReplica(int id, int queueSize, int cosSize, int numPartitions, int numWorkers, HibridExecutor executor) {
+    public HibridServiceReplica(int id, int queueSize, int cosSize, int numPartitions, int numWorkers, ExecutorInterface executor) {
         super(id, executor, null);
         this.queuesManager = new QueuesManager(numPartitions, queueSize);
         this.earlyScheduler = new EarlyScheduler(queuesManager);
@@ -49,10 +46,8 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
         var requestId = request.getId();
         var commands = request.getCommands();
 
-//        Stats.log(new Event(MESSAGE_RECEIVED, requestId, null, null, null));
         context.put(requestId, new HibridRequestContext(request));
         earlyScheduler.schedule(requestId, commands);
-//        Stats.log(new Event(MESSAGE_SCHEDULED, requestId, null, null, null));
     }
 
     public void manageReply(CommandEnvelope commandEnvelope, boolean[] results) {
@@ -63,8 +58,6 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
             var response = new Response(commandEnvelope.requestId, ctx.getResults());
             context.remove(commandEnvelope.requestId);
             reply(response);
-            System.out.print('.');
-//            Stats.log(new Event(REPLY_SENT, commandEnvelope.requestId, null, null, null));
         }
     }
 
@@ -82,6 +75,7 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     }
 
     private Thread[] initLateSchedulers() {
+        Stats.earlyWorkers = lateSchedulers.length;
         for (int i = 0; i < lateSchedulers.length; i++) {
             lateSchedulers[i] = new LateScheduler(i, queuesManager.queues[i], cosManager.graphs[i]);
             lateSchedulers[i].start();
@@ -90,6 +84,7 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     }
 
     private Thread[] initReplicaWorkers() {
+        Stats.lateWorkers = workers.length;
         for (int i = 0; i < workers.length; i++) {
             workers[i] = new HibridWorker(id, i, i % cosManager.graphs.length, cosManager, executor, hibridReplier);
             workers[i].start();

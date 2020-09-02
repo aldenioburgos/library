@@ -5,44 +5,31 @@ import demo.hibrid.server.graph.LockFreeNode;
 
 import java.util.Arrays;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CommandEnvelope {
 
     public final Command command;
-
     public final int requestId;
-    public final CyclicBarrier barrier;
     public final int[] distinctPartitions;
-    private LockFreeNode node;
+    public final AtomicReference<LockFreeNode> atomicNode;
+    public final AtomicInteger atomicCounter;
 
     public CommandEnvelope(int requestId, Command command) {
         this.requestId = requestId;
         this.command = command;
         this.distinctPartitions = command.distinctPartitions();
-        if (distinctPartitions.length > 1) {
-            this.barrier = new CyclicBarrier(distinctPartitions.length);
-        } else {
-            barrier = null;
-        }
+        this.atomicCounter = new AtomicInteger(distinctPartitions.length);
+        this.atomicNode = new AtomicReference<>(null);
     }
 
-    public void setNode(LockFreeNode node) {
-        this.node = node;
-    }
-
-    public LockFreeNode getNode() {
-        return node;
-    }
-
-    public boolean hasBarrier() {
-        return barrier != null;
-    }
 
     @Override
     public String toString() {
         return "{" +
                 "request=" + requestId +
-                ", barrier=" + ((barrier == null) ? " null" : barrier.getNumberWaiting() + " de " + barrier.getParties()) +
+                ", insertionCounter=" + atomicCounter+
                 ", distinctPartitions=" + Arrays.toString(distinctPartitions) +
                 ", " + command +
                 '}';

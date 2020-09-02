@@ -49,7 +49,9 @@ public class HibridClient extends Thread {
                     commands[i] = createListCommand();
                     replica.context.put(request.getId(), new HibridRequestContext(request));
                 }
+
                 System.out.println("Criação das requisições finalizada!");
+                System.out.println("Enviando "+config.numOperations+" comandos.");
                 Stats.numOperations = config.numOperations;
                 replica.earlyScheduler.schedule(request.getId(), commands);
                 Stats.start = System.nanoTime();
@@ -66,7 +68,6 @@ public class HibridClient extends Thread {
                     requests.add(new Request(config.clientProcessId, config.clientProcessId, commands));
                 }
                 if (replica != null) {
-                    System.out.println("Start:" + System.nanoTime());
                     for (var request : requests) {
                         replica.processRequest(request);
                     }

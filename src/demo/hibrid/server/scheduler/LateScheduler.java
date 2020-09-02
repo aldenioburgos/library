@@ -31,6 +31,7 @@ public class LateScheduler extends Thread {
         try {
             while (true) {
                 var commands = new ArrayList<CommandEnvelope>(queue.size());
+                commands.add(queue.take());
                 queue.drainTo(commands);
                 for (var command : commands) {
                     schedule(command);
@@ -44,13 +45,9 @@ public class LateScheduler extends Thread {
 
     public void schedule(CommandEnvelope commandEnvelope) throws BrokenBarrierException, InterruptedException {
         if (cos.createNodeFor(commandEnvelope)) {
-            System.out.println("LateScheduler["+id+"].createNodeFor("+commandEnvelope.command.id+")");
             cos.cleanRemovedNodesInsertDependenciesAndInsertNewNode(commandEnvelope);
-            System.out.println("LateScheduler["+id+"].inserted("+commandEnvelope.command.id+")");
         } else {
-            System.out.println("LateScheduler["+id+"].nodeExists("+commandEnvelope.command.id+")");
             cos.excludeRemovedNodesInsertDependencies(commandEnvelope);
-            System.out.println("LateScheduler["+id+"].insertedDependencies("+commandEnvelope.command.id+")");
         }
 
         if (commandEnvelope.atomicCounter.decrementAndGet() == 0){

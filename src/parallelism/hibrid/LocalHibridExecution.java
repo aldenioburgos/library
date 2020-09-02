@@ -91,7 +91,6 @@ public class LocalHibridExecution {
 
         var threads = replica.start();
         var client = createClient(replica);
-        System.out.println(client);
         join(start(client));
         join(threads);
     }

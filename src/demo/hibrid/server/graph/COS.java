@@ -59,7 +59,6 @@ public class COS {
 
 
     public void cleanRemovedNodesInsertDependenciesAndInsertNewNode(CommandEnvelope commandEnvelope) {
-        System.out.println(cosManager);
         cosManager.acquireSpace();
 
         cleanRemovedNodesInsertDependenciesAndInsertNewNode(commandEnvelope, head);
@@ -73,17 +72,12 @@ public class COS {
 
 
     private void cleanRemovedNodesInsertDependenciesAndInsertNewNode(CommandEnvelope commandEnvelope, Node head) {
-        System.out.println("cleanRemovedNodesInsertDependenciesAndInsertNewNode");
         Node newNode = new Node(commandEnvelope.atomicNode.get());
         var lastNode = head;
         var currentNode = head;
-        System.out.println("head = " + head);
         while (!currentNode.atomicNext.compareAndSet(null, newNode)){
-            System.out.println("while");
             currentNode = currentNode.atomicNext.get();
-            System.out.println("while 2");
             while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
-                System.out.println("removed");
                 lastNode.atomicNext.compareAndSet(currentNode, currentNode.atomicNext.get());
                 currentNode = currentNode.atomicNext.get();
 
@@ -91,16 +85,11 @@ public class COS {
                     return;
                 }
             }
-            System.out.println("while 3");
             if (conflictDefinition.isDependent(commandEnvelope, currentNode.value.commandEnvelope)) { // inserção de dependencias
-                System.out.println("dependency");
                 currentNode.value.insertDependentNode(commandEnvelope.atomicNode.get());
             }
-            System.out.println("while 4");
             lastNode = currentNode;
-            System.out.println("while 5");
         }
-        System.out.println("Partition[" + id + "].size=" + size());
     }
 
     private int size() {

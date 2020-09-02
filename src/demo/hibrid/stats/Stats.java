@@ -1,5 +1,8 @@
 package demo.hibrid.stats;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Stats {
 
     public static int earlyWorkers = 0;
@@ -16,8 +19,8 @@ public class Stats {
 
     private static String throughput() {
         var nanos = end - start;
-        var seconds = nanos / 1_000_000_000;
-        var tp = numOperations/seconds;
+        var seconds = BigDecimal.valueOf(nanos).divide(BigDecimal.valueOf(1_000_000_000));
+        var tp = BigDecimal.valueOf(numOperations).divide(seconds, RoundingMode.HALF_DOWN);
         return String.valueOf(tp);
     }
 

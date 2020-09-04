@@ -1,4 +1,4 @@
-package parallelism.hibrid;
+package demo.parallelism;
 
 import demo.hibrid.client.HibridClient;
 import demo.hibrid.client.HibridClientConfig;
@@ -8,8 +8,8 @@ import demo.hibrid.server.ListExecutor;
 
 import java.util.Arrays;
 
-import static parallelism.hibrid.util.ThreadUtil.join;
-import static parallelism.hibrid.util.ThreadUtil.start;
+import static demo.parallelism.util.ThreadUtil.join;
+import static demo.parallelism.util.ThreadUtil.start;
 
 
 public class LocalHibridExecution {
@@ -49,7 +49,7 @@ public class LocalHibridExecution {
 
             new LocalHibridExecution(numParticoes, numWorkerThreads, tamLista, percTransacoesGlobais, percEscritas, numeroOperacoes, tamParticoes);
         } else {
-            System.out.println("Modo de uso: java parallelism.hibrid.LocalHibridExecution <numParticoes> <numWorkerThreads> <tamListas> <percTransacoesGlobais> <percEscritas> <numOperacoes> <tamParticoes>");
+            System.out.println("Modo de uso: java demo.parallelism.LocalHibridExecution <numParticoes> <numWorkerThreads> <tamListas> <percTransacoesGlobais> <percEscritas> <numOperacoes> <tamParticoes>");
         }
     }
 

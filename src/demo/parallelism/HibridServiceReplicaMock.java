@@ -1,4 +1,4 @@
-package parallelism.hibrid;
+package demo.parallelism;
 
 import demo.hibrid.request.Response;
 import demo.hibrid.server.ExecutorInterface;

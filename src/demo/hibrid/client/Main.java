@@ -76,11 +76,14 @@ public class Main {
     }
 
     private static int[] getArray(Parametro param, String value) {
-        return switch (param) {
-            case distOpPart, percPart -> getPercentualArrayOrArgs(value, params.get(Parametro.numPartitions), true);
-            case percWrite -> getPercentualArrayOrArgs(value, params.get(Parametro.numPartitions), false);
-            default -> throw new IllegalArgumentException("Unknown (isArray) argument: " + param);
-        };
+        switch (param) {
+            case distOpPart:
+            case percPart:
+                return getPercentualArrayOrArgs(value, params.get(Parametro.numPartitions), true);
+            case percWrite:
+                return getPercentualArrayOrArgs(value, params.get(Parametro.numPartitions), false);
+            default: throw new IllegalArgumentException("Unknown (isArray) argument: " + param);
+        }
     }
 
     @SuppressWarnings("ConstantConditions")

@@ -13,4 +13,5 @@ rm *.jar
 rm -rf META-INF
 cd ..
 javac  --release 11  -sourcepath ./src -cp ./lib/bft-smart.jar -d ./build ./src/demo/parallelism/LocalHibridExecution.java
-jar cvfe BFT-Hibrid-0.1.jar demo.parallelism.LocalHibridExecution -C build ./dist
+jar cvfe BFT-Hibrid.jar demo.parallelism.LocalHibridExecution -C build .
+mv BFT-Hibrid.jar ./dist/

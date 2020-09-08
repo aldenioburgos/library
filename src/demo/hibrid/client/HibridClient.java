@@ -4,12 +4,9 @@ import bftsmart.tom.ServiceProxy;
 import demo.hibrid.request.Command;
 import demo.hibrid.request.CommandResult;
 import demo.hibrid.request.Request;
-import demo.hibrid.server.HibridRequestContext;
 import demo.hibrid.server.HibridServiceReplica;
-import demo.hibrid.stats.Stats;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -40,42 +37,23 @@ public class HibridClient extends Thread {
     @Override
     public void run() {
         try {
-            var numRequests = (config.numOperations / config.numOperationsPerRequest) + 1;
-            ///////////////////////////////////////////////////////////
-            if (numRequests == 1) {
-                var commands = new Command[config.numOperations];
-                var request = new Request(0, 0, commands);
-                for (int i = 0; i < config.numOperations; i++) {
-                    commands[i] = createListCommand();
-                    replica.context.put(request.getId(), new HibridRequestContext(request));
+            var requests = new ArrayList<Request>();
+            for (int i = 0; i < config.numOperations; i += config.numOperationsPerRequest) {
+                int numOpToExecute = Math.min(config.numOperations - i, config.numOperationsPerRequest);
+                var commands = new Command[numOpToExecute];
+                for (int j = 0; j < commands.length; j++) {
+                    commands[j] = createCommand();
                 }
-
-                System.out.println("Criação das requisições finalizada!");
-                System.out.println("Enviando "+config.numOperations+" comandos.");
-                Stats.numOperations = config.numOperations;
-                replica.earlyScheduler.schedule(request.getId(), commands);
-                Stats.start = System.nanoTime();
-                System.out.println("Fim do envio!");
-                /////////////////////////////////////////////////////////
+                requests.add(new Request(config.clientProcessId, config.clientProcessId, commands));
+            }
+            if (replica != null) {
+                for (var request : requests) {
+                    replica.processRequest(request);
+                }
             } else {
-                var requests = new ArrayList<Request>();
-                for (int i = 0; i < config.numOperations; i += config.numOperationsPerRequest) {
-                    int numOpToExecute = Math.min(config.numOperations - i, config.numOperationsPerRequest);
-                    var commands = new Command[numOpToExecute];
-                    for (int j = 0; j < commands.length; j++) {
-                        commands[j] = createCommand();
-                    }
-                    requests.add(new Request(config.clientProcessId, config.clientProcessId, commands));
-                }
-                if (replica != null) {
-                    for (var request : requests) {
-                        replica.processRequest(request);
-                    }
-                } else {
-                    for (var request : requests) {
-                        byte[] results = proxy.invokeOrdered(request.toBytes());
-                        System.out.println(new CommandResult().fromBytes(results));
-                    }
+                for (var request : requests) {
+                    byte[] results = proxy.invokeOrdered(request.toBytes());
+                    System.out.println(new CommandResult().fromBytes(results));
                 }
             }
         } catch (Throwable e) {
@@ -85,19 +63,9 @@ public class HibridClient extends Thread {
     }
 
     private Command createCommand() {
-        int numPartitionsEnvolved = numPartitionsEnvolved();
+        int numPartitionsEnvolved = numPartitionsEnvolved(config, rand);
         int[] selectedPartitions = selectPartitions(numPartitionsEnvolved);
         int[] selectedIndexes = selectIndexes(selectedPartitions);
-        return new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
-    }
-
-    private Command createListCommand() {
-        int numPartitionsEnvolved = numPartitionsEnvolved();
-        int[] selectedPartitions = selectPartitions(numPartitionsEnvolved);
-        int[] selectedIndexes = new int[selectedPartitions.length];
-        for (int i = 0; i < selectedPartitions.length; i++) {
-            selectedIndexes[i] = rand.nextInt(config.maxListIndex);
-        }
         return new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
     }
 
@@ -133,7 +101,7 @@ public class HibridClient extends Thread {
         }
     }
 
-    private int numPartitionsEnvolved() {
+    private int numPartitionsEnvolved(HibridClientConfig config, Random rand) {
         var selector = rand.nextInt(100);
         for (int i = 0; i < config.percentualOfPartitionsEnvolvedPerOperation.length; i++) {
             if (selector < config.percentualOfPartitionsEnvolvedPerOperation[i]) {

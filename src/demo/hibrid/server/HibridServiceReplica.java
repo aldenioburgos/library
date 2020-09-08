@@ -8,7 +8,6 @@ import demo.hibrid.server.graph.ConflictDefinitionDefault;
 import demo.hibrid.server.queue.QueuesManager;
 import demo.hibrid.server.scheduler.EarlyScheduler;
 import demo.hibrid.server.scheduler.LateScheduler;
-import demo.hibrid.stats.Stats;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -31,8 +30,8 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     public HibridServiceReplica(int id, int queueSize, int cosSize, int numPartitions, int numWorkers, ExecutorInterface executor) {
         super(id, executor, null);
         this.queuesManager = new QueuesManager(numPartitions, queueSize);
-        this.earlyScheduler = new EarlyScheduler(queuesManager);
         this.cosManager = new COSManager(numPartitions, cosSize, new ConflictDefinitionDefault());
+        this.earlyScheduler = new EarlyScheduler(queuesManager, cosManager);
         this.lateSchedulers = new LateScheduler[numPartitions];
         this.workers = new HibridWorker[numWorkers];
         this.executor = executor;
@@ -75,7 +74,6 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     }
 
     private Thread[] initLateSchedulers() {
-        Stats.earlyWorkers = lateSchedulers.length;
         for (int i = 0; i < lateSchedulers.length; i++) {
             lateSchedulers[i] = new LateScheduler(i, queuesManager.queues[i], cosManager.graphs[i]);
             lateSchedulers[i].start();
@@ -84,9 +82,8 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     }
 
     private Thread[] initReplicaWorkers() {
-        Stats.lateWorkers = workers.length;
         for (int i = 0; i < workers.length; i++) {
-            workers[i] = new HibridWorker(id, i, i % cosManager.graphs.length, cosManager, executor, hibridReplier);
+            workers[i] = new HibridWorker(i, i % cosManager.graphs.length, cosManager, executor, hibridReplier);
             workers[i].start();
         }
         return workers;

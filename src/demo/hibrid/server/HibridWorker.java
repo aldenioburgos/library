@@ -7,8 +7,6 @@ package demo.hibrid.server;
 
 import demo.hibrid.server.graph.COSManager;
 
-import java.util.concurrent.BrokenBarrierException;
-
 /**
  * @author aldenio
  */
@@ -19,13 +17,12 @@ public class HibridWorker extends Thread {
     private final HibridReplier hibridReplier;
     private final int workerId;
 
-    public HibridWorker(int id,
-                        int workerId,
+    public HibridWorker(int workerId,
                         int preferentialPartition,
                         COSManager cosManager,
                         ExecutorInterface executor,
                         HibridReplier hibridReplier) {
-        super("HibridServiceReplicaWorker[" + id + ", " + workerId + "]");
+        super("HibridiWorker["+ workerId + "]");
         this.preferentialPartition = preferentialPartition;
         this.cosManager = cosManager;
         this.executor = executor;

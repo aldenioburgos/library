@@ -59,8 +59,6 @@ public class COS {
 
 
     public void cleanRemovedNodesInsertDependenciesAndInsertNewNode(CommandEnvelope commandEnvelope) {
-        cosManager.acquireSpace();
-
         cleanRemovedNodesInsertDependenciesAndInsertNewNode(commandEnvelope, head);
         cleanRemovedNodesAndInsertDependencies(commandEnvelope, relatedNodes);
     }
@@ -92,18 +90,6 @@ public class COS {
         }
     }
 
-    private int size() {
-        var counter = 0;
-        var aux = head;
-        while (aux.atomicNext.get() != null) {
-            counter++;
-            aux = aux.atomicNext.get();
-        }
-        return counter;
-
-    }
-
-
     private void cleanRemovedNodesAndInsertDependencies(CommandEnvelope commandEnvelope, Node head) {
         var lastNode = head;
         var currentNode = head;
@@ -123,6 +109,18 @@ public class COS {
             lastNode = currentNode;
         }
     }
+
+    private int size() {
+        var counter = 0;
+        var aux = head;
+        while (aux.atomicNext.get() != null) {
+            counter++;
+            aux = aux.atomicNext.get();
+        }
+        return counter;
+
+    }
+
 
     @Override
     public String toString() {

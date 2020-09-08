@@ -50,7 +50,7 @@ public class LateScheduler extends Thread {
             cos.excludeRemovedNodesInsertDependencies(commandEnvelope);
         }
 
-        if (commandEnvelope.atomicCounter.decrementAndGet() == 0){
+        if (commandEnvelope.atomicCounter.decrementAndGet() <= 0){
             if (commandEnvelope.atomicNode.get().status.compareAndSet(NEW, INSERTED)){
                 commandEnvelope.atomicNode.get().testReady();
             } else {

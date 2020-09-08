@@ -27,7 +27,8 @@ public class QueuesManager {
     @Override
     public String toString() {
         return "QueuesManager{" +
-                "queues=" + Arrays.toString(queues) +
+                "queue[0]=" + queues[0].peek() +
+                "queue[1]=" + queues[1].peek() +
                 '}';
     }
 

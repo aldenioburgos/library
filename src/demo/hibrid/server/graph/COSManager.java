@@ -51,7 +51,7 @@ public class COSManager {
         this.ready.release();
     }
 
-    void acquireSpace() {
+    public void acquireSpace() {
         try {
             space.acquire();
         } catch (InterruptedException e) {

@@ -2,25 +2,24 @@ package demo.hibrid.server.scheduler;
 
 import demo.hibrid.request.Command;
 import demo.hibrid.server.CommandEnvelope;
+import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.server.queue.QueuesManager;
-import demo.hibrid.stats.Event;
-import demo.hibrid.stats.Stats;
-
-import static demo.hibrid.stats.EventType.EARLY_SCHEDULER_ENDED;
-import static demo.hibrid.stats.EventType.EARLY_SCHEDULER_STARTED;
 
 public class EarlyScheduler {
 
     private final QueuesManager queuesManager;
+    private final COSManager cosManager;
 
-    public EarlyScheduler(QueuesManager queuesManager) {
+    public EarlyScheduler(QueuesManager queuesManager, COSManager cosManager) {
         assert queuesManager != null : "Invalid Argument, queuesManager == null.";
         this.queuesManager = queuesManager;
+        this.cosManager = cosManager;
     }
 
     public void schedule(int requestId, Command[] commands) {
         assert commands.length > 0 : "Invalid Argument, commands está vazio.";
         for (Command command : commands) {
+            cosManager.acquireSpace();
             addToQueues(requestId, command);
         }
     }

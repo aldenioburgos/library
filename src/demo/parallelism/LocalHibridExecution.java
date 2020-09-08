@@ -47,16 +47,15 @@ public class LocalHibridExecution implements HibridReplier {
             var numeroOperacoes = Integer.valueOf(args[5]);
             var tamParticoes = Integer.valueOf(args[6]);
 
-            System.out.println("n partitions: " + numParticoes);
-            System.out.println("n workers: " + numWorkerThreads);
-            System.out.println("list size: " + tamLista);
-            System.out.println("perc globals: " + percTransacoesGlobais);
-            System.out.println("perc writes: " + percEscritas);
-            System.out.println("n ops: " + numeroOperacoes);
-            System.out.println("cos size: " + tamParticoes);
+            System.out.print("n partitions: " + numParticoes);
+            System.out.print(" n workers: " + numWorkerThreads);
+            System.out.print(" list size: " + tamLista);
+            System.out.print(" perc globals: " + percTransacoesGlobais);
+            System.out.print(" perc writes: " + percEscritas);
+            System.out.print(" n ops: " + numeroOperacoes);
+            System.out.println(" cos size: " + tamParticoes);
 
             var localHibridExecution2 = new LocalHibridExecution(numParticoes, numWorkerThreads, tamLista, percTransacoesGlobais, percEscritas, numeroOperacoes, tamParticoes);
-            System.out.println("Criação dos comandos finalizada!");
             localHibridExecution2.startServerThreads();
             localHibridExecution2.scheduleCommands();
             localHibridExecution2.joinServerThreads();
@@ -121,11 +120,9 @@ public class LocalHibridExecution implements HibridReplier {
 
 
     public void scheduleCommands() {
-        System.out.println("Enviando " + commandsLeft.get() + " comandos.");
         var request = new Request(0, 0, commands);
         startTimestampInNanos = System.nanoTime();
         earlyScheduler.schedule(request.getId(), commands);
-        System.out.println("Fim do envio!");
     }
 
     @Override
@@ -136,10 +133,6 @@ public class LocalHibridExecution implements HibridReplier {
             String throughput = calculateThroughput(startTimestampInNanos, endTimeInNanos, commands.length);
             System.out.println("TP [partitions: " + cosManager.graphs.length + ", late workers: " + hibridWorkers.length + "] :" + throughput);
             System.exit(0);
-        } else {
-            if (howManyCommandsAreLeft % 1000 == 0) {
-                System.out.print(howManyCommandsAreLeft + ", ");
-            }
         }
     }
 

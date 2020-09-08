@@ -1,11 +1,4 @@
-
-javac  --release 11  -sourcepath ./src -cp ./lib/bft-smart.jar;./dist/BFT-SMaRt-Parallel.jar -d ./build ./src/demo/parallelism/LocalHibridExecution.java
-cp ./lib/*.jar ./build
-cd ./build
-tar xf *.jar
-cd ..
-jar --create --file ./dist/BFT-SMaRt-Hibrid.jar --verbose --main-class demo/parallelism/LocalHibridExecution -C ./build .
-
+rm -rf build
 mkdir build
 cp ./lib/*.jar ./build
 cd ./build
@@ -17,3 +10,7 @@ unzip -o netty-3.1.1.GA.jar
 unzip -o slf4j-api-1.5.8.jar
 unzip -o slf4j-jdk14-1.5.8.jar
 rm *.jar
+rm -rf META-INF
+cd ..
+javac  --release 11  -sourcepath ./src -cp ./lib/bft-smart.jar -d ./build ./src/demo/parallelism/LocalHibridExecution.java
+jar cvfe BFT-Hibrid-0.1.jar demo.parallelism.LocalHibridExecution -C build ./dist

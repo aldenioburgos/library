@@ -35,7 +35,6 @@ public class LocalHibridExecution implements HibridReplier {
     private final Command[] commands;
     private final AtomicInteger commandsLeft;
     private long startTimestampInNanos;
-//    volatile static boolean stop = false;
 
     public static void main(String[] args) {
         if (args.length == 7) {
@@ -47,23 +46,18 @@ public class LocalHibridExecution implements HibridReplier {
             var numeroOperacoes = Integer.valueOf(args[5]);
             var tamParticoes = Integer.valueOf(args[6]);
 
-            System.out.print("n partitions: " + numParticoes);
-            System.out.print(" n workers: " + numWorkerThreads);
-            System.out.print(" list size: " + tamLista);
-            System.out.print(" perc globals: " + percTransacoesGlobais);
-            System.out.print(" perc writes: " + percEscritas);
-            System.out.print(" n ops: " + numeroOperacoes);
-            System.out.println(" cos size: " + tamParticoes);
+            System.out.print("{ n partitions: " + numParticoes);
+            System.out.print(", n workers: " + numWorkerThreads);
+            System.out.print(", list size: " + tamLista);
+            System.out.print(", perc globals: " + percTransacoesGlobais);
+            System.out.print(", perc writes: " + percEscritas);
+            System.out.print(", n ops: " + numeroOperacoes);
+            System.out.print(", cos size: " + tamParticoes);
 
             var localHibridExecution2 = new LocalHibridExecution(numParticoes, numWorkerThreads, tamLista, percTransacoesGlobais, percEscritas, numeroOperacoes, tamParticoes);
             localHibridExecution2.startServerThreads();
             localHibridExecution2.scheduleCommands();
             localHibridExecution2.joinServerThreads();
-
-//            while(!stop) {}
-//            System.out.println(localHibridExecution2.cosManager);
-//            System.out.println(localHibridExecution2.queuesManager);
-//            System.exit(1);
         } else {
             System.out.println("Modo de uso: java demo.parallelism.LocalHibridExecution <numParticoes> <numWorkerThreads> <tamListas> <percTransacoesGlobais> <percEscritas> <numOperacoes> <tamParticoes>");
         }
@@ -131,7 +125,7 @@ public class LocalHibridExecution implements HibridReplier {
         if (howManyCommandsAreLeft == 0) {
             long endTimeInNanos = System.nanoTime();
             String throughput = calculateThroughput(startTimestampInNanos, endTimeInNanos, commands.length);
-            System.out.println("TP [partitions: " + cosManager.graphs.length + ", late workers: " + hibridWorkers.length + "] :" + throughput);
+            System.out.println("}: Throughput=" + throughput);
             System.exit(0);
         }
     }

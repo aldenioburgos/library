@@ -1,4 +1,4 @@
-<size> <threads> <partitions> <%global> <%writes> <quantidade de requisições> <hibrid?> <graph size>
+echo '<size> <threads> <partitions> <%global> <%writes> <quantidade de requisições> <hibrid?> <graph size>'
 java -jar dist/BFT-SMaRt-Parallel.jar 1000  1 2  0 0 10000000 true 150
 java -jar dist/BFT-SMaRt-Parallel.jar 1000  2 2  0 0 10000000 true 150
 java -jar dist/BFT-SMaRt-Parallel.jar 1000  3 2  0 0 10000000 true 150

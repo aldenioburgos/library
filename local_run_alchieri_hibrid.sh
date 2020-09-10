@@ -74,3 +74,10 @@ java -jar dist/BFT-smart-parallel-executable.jar 1000 22 6  0 0 10000000 true 15
 java -jar dist/BFT-smart-parallel-executable.jar 1000 23 6  0 0 10000000 true 150
 java -jar dist/BFT-smart-parallel-executable.jar 1000 24 6  0 0 10000000 true 150
 java -jar dist/BFT-smart-parallel-executable.jar 1000 26 6  0 0 10000000 true 150
+
+
+TP [partitions: 4, late workers: 1] :333333
+n early: 4
+n late: 2
+Criacao das requisições finalizada!
+Fim do envio!

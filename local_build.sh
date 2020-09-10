@@ -1,4 +1,4 @@
-nome=BFT-Hibrid_contended-executable.jar
+nome=BFT-Hibrid_padding-executable.jar
 
 rm -rf build
 mkdir build
@@ -14,7 +14,7 @@ unzip -o slf4j-jdk14-1.5.8.jar
 rm *.jar
 rm -rf META-INF
 cd ..
-javac  --add-exports java.base/jdk.internal.vm.annotation=ALL-UNNAMED  -sourcepath ./src -cp ./lib/bft-smart.jar -d ./build ./src/demo/parallelism/LocalHibridExecution.java
+javac  -sourcepath ./src -cp ./lib/bft-smart.jar -d ./build ./src/demo/parallelism/LocalHibridExecution.java
 jar cvfe $nome demo.parallelism.LocalHibridExecution -C build .
 mv  $nome ./dist/
 

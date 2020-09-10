@@ -2,9 +2,7 @@ package demo.hibrid.server.graph;
 
 
 import demo.hibrid.server.CommandEnvelope;
-import jdk.internal.vm.annotation.Contended;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.Lock;
@@ -12,14 +10,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 public class LockFreeNode {
-    @Contended
-    public final AtomicBoolean inserted = new AtomicBoolean(false);
-    @Contended
-    public final AtomicBoolean ready = new AtomicBoolean(false);
-    @Contended
-    public final AtomicBoolean reserved = new AtomicBoolean(false);
-    @Contended
-    public final AtomicBoolean removed = new AtomicBoolean(false);
+    public final PaddedAtomicBoolean inserted = new PaddedAtomicBoolean(false);
+    public final PaddedAtomicBoolean ready = new PaddedAtomicBoolean(false);
+    public final PaddedAtomicBoolean reserved = new PaddedAtomicBoolean(false);
+    public final PaddedAtomicBoolean removed = new PaddedAtomicBoolean(false);
 
     public final CommandEnvelope commandEnvelope;
     public final COS cos;

@@ -3,6 +3,8 @@ package demo.hibrid.server.graph;
 
 import demo.hibrid.server.CommandEnvelope;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.Lock;
@@ -10,11 +12,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 public class LockFreeNode {
-    public final PaddedAtomicBoolean inserted = new PaddedAtomicBoolean(false);
-    public final PaddedAtomicBoolean ready = new PaddedAtomicBoolean(false);
-    public final PaddedAtomicBoolean reserved = new PaddedAtomicBoolean(false);
-    public final PaddedAtomicBoolean removed = new PaddedAtomicBoolean(false);
-
+    /*
+     NEW -> INSERTED -> READY -> RESERVED -> REMOVED
+     */
+    public static final int NEW = 0;
+    public static final int INSERTED = 1;
+    public static final int READY = 2;
+    public static final int RESERVED = 3;
+    public static final int REMOVED = 5;
+    public final AtomicInteger status;
     public final CommandEnvelope commandEnvelope;
     public final COS cos;
 

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
 
+import static demo.hibrid.server.graph.LockFreeNode.INSERTED;
+import static demo.hibrid.server.graph.LockFreeNode.NEW;
 
 public class LateScheduler extends Thread {
 
@@ -49,7 +51,7 @@ public class LateScheduler extends Thread {
         }
 
         if (commandEnvelope.atomicCounter.decrementAndGet() <= 0){
-            if (commandEnvelope.atomicNode.get().inserted.compareAndSet(false, true)){
+            if (commandEnvelope.atomicNode.get().status.compareAndSet(NEW, INSERTED)){
                 commandEnvelope.atomicNode.get().testReady();
             } else {
                 throw new IllegalStateException("AtomicCounter == 0 and status != NEW");

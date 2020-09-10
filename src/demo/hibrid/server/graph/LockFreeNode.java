@@ -31,6 +31,7 @@ public class LockFreeNode {
         }
         this.cos = cos;
         this.commandEnvelope = commandEnvelope;
+        this.status = new AtomicInteger(NEW);
         var lock = new ReentrantReadWriteLock();
         readLock = lock.readLock();
         writeLock = lock.writeLock();
@@ -75,7 +76,7 @@ public class LockFreeNode {
 
 
     public void testReady() {
-        if (dependencies.intValue() == 0 && inserted.get() && ready.compareAndSet(false, true)) {
+        if (dependencies.intValue() == 0 && status.compareAndSet(INSERTED, READY)) {
             cos.releaseReady();
         }
     }
@@ -83,7 +84,6 @@ public class LockFreeNode {
 
     @Override
     public String toString() {
-        var status = "" + (inserted.get() ? 1 : 0) + (ready.get() ? 1 : 0) + (reserved.get() ? 1 : 0) + (removed.get() ? 1 : 0);
         return "{status=" + status +
                 ", data=" + commandEnvelope +
                 ", dependencies=" + dependencies +

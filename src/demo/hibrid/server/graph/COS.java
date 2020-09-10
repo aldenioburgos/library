@@ -45,9 +45,9 @@ public class COS {
     }
 
     private LockFreeNode reserveNode() {
-        var node = head.atomicNext.get();
-        while (node != null && !(node.value.ready.get() && node.value.reserved.compareAndSet(false, true))) {
-            node = node.atomicNext.get();
+        var node = head.nextNode.get();
+        while (node != null && !node.value.status.compareAndSet(READY, RESERVED)) {
+            node = node.nextNode.get();
         }
         return (node != null) ? node.value : null;
     }
@@ -73,11 +73,11 @@ public class COS {
         Node newNode = new Node(commandEnvelope.atomicNode.get());
         var lastNode = head;
         var currentNode = head;
-        while (!currentNode.atomicNext.compareAndSet(null, newNode)) {
-            currentNode = currentNode.atomicNext.get();
-            while (currentNode.value.removed.get()) { // remoção dos nodes
-                lastNode.atomicNext.compareAndSet(currentNode, currentNode.atomicNext.get());
-                currentNode = currentNode.atomicNext.get();
+        while (!currentNode.nextNode.compareAndSet(null, newNode)){
+            currentNode = currentNode.nextNode.get();
+            while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
+                lastNode.nextNode.compareAndSet(currentNode, currentNode.nextNode.get());
+                currentNode = currentNode.nextNode.get();
 
                 if (currentNode == null && lastNode.nextNode.compareAndSet(null, newNode)) { // acabou a lista, insere o novo nó
                     return;

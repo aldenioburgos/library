@@ -1,0 +1,374 @@
+n early: 2
+n late: 1
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 1] :303030
+n early: 2
+n late: 2
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 2] :434782
+n early: 2
+n late: 3
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 3] :454545
+n early: 2
+n late: 4
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 4] :476190
+n early: 2
+n late: 5
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 5] :526315
+n early: 2
+n late: 6
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 6] :416666
+n early: 2
+n late: 7
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 7] :416666
+n early: 2
+n late: 8
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 8] :476190
+n early: 2
+n late: 9
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 9] :434782
+n early: 2
+n late: 10
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 10] :434782
+n early: 2
+n late: 11
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 11] :384615
+n early: 2
+n late: 12
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 12] :384615
+n early: 2
+n late: 13
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 13] :416666
+n early: 2
+n late: 14
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 14] :476190
+n early: 2
+n late: 15
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 15] :416666
+n early: 2
+n late: 16
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 16] :400000
+n early: 2
+n late: 17
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 17] :434782
+n early: 2
+n late: 18
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 18] :416666
+n early: 2
+n late: 19
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 19] :434782
+n early: 2
+n late: 20
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 20] :384615
+n early: 2
+n late: 21
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 21] :454545
+n early: 2
+n late: 22
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 22] :384615
+n early: 2
+n late: 23
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 23] :400000
+n early: 2
+n late: 24
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 24] :434782
+n early: 2
+n late: 26
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 2, late workers: 26] :434782
+n early: 4
+n late: 1
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 1] :333333
+n early: 4
+n late: 2
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 2] :500000
+n early: 4
+n late: 3
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 3] :500000
+n early: 4
+n late: 4
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 4] :625000
+n early: 4
+n late: 5
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 5] :588235
+n early: 4
+n late: 6
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 6] :666666
+n early: 4
+n late: 7
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 7] :526315
+n early: 4
+n late: 8
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 8] :625000
+n early: 4
+n late: 9
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 9] :555555
+n early: 4
+n late: 10
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 10] :625000
+n early: 4
+n late: 11
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 11] :555555
+n early: 4
+n late: 12
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 12] :555555
+n early: 4
+n late: 13
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 13] :476190
+n early: 4
+n late: 14
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 14] :526315
+n early: 4
+n late: 15
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 15] :555555
+n early: 4
+n late: 16
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 16] :555555
+n early: 4
+n late: 17
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 17] :555555
+n early: 4
+n late: 18
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 18] :526315
+n early: 4
+n late: 19
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 19] :526315
+n early: 4
+n late: 20
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 20] :555555
+n early: 4
+n late: 21
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 21] :500000
+n early: 4
+n late: 22
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 22] :526315
+n early: 4
+n late: 23
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 23] :555555
+n early: 4
+n late: 24
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 24] :555555
+n early: 4
+n late: 26
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 4, late workers: 26] :434782
+n early: 6
+n late: 1
+Criacao das requisições finalizada!
+Fim do envio!
+n early: 6
+n late: 2
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 2] :400000
+n early: 6
+n late: 3
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 3] :588235
+n early: 6
+n late: 4
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 4] :588235
+n early: 6
+n late: 5
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 5] :666666
+n early: 6
+n late: 6
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 6] :714285
+n early: 6
+n late: 7
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 7] :666666
+n early: 6
+n late: 8
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 8] :588235
+n early: 6
+n late: 9
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 9] :666666
+n early: 6
+n late: 10
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 10] :588235
+n early: 6
+n late: 11
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 11] :666666
+n early: 6
+n late: 12
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 12] :666666
+n early: 6
+n late: 13
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 13] :666666
+n early: 6
+n late: 14
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 14] :666666
+n early: 6
+n late: 15
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 15] :666666
+n early: 6
+n late: 16
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 16] :625000
+n early: 6
+n late: 17
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 17] :625000
+n early: 6
+n late: 18
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 18] :625000
+n early: 6
+n late: 19
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 19] :588235
+n early: 6
+n late: 20
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 20] :588235
+n early: 6
+n late: 21
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 21] :625000
+n early: 6
+n late: 22
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 22] :666666
+n early: 6
+n late: 23
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 23] :526315
+n early: 6
+n late: 24
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 24] :588235
+n early: 6
+n late: 26
+Criacao das requisições finalizada!
+Fim do envio!
+TP [partitions: 6, late workers: 26] :555555

@@ -46,7 +46,7 @@ public class COS {
 
     private LockFreeNode reserveNode() {
         var node = head.atomicNext.get();
-        while (node != null && !node.value.status.compareAndSet(READY, RESERVED)) {
+        while (node != null && !(node.value.ready.get() && node.value.reserved.compareAndSet(false, true))) {
             node = node.atomicNext.get();
         }
         return (node != null) ? node.value : null;
@@ -73,9 +73,9 @@ public class COS {
         Node newNode = new Node(commandEnvelope.atomicNode.get());
         var lastNode = head;
         var currentNode = head;
-        while (!currentNode.atomicNext.compareAndSet(null, newNode)){
+        while (!currentNode.atomicNext.compareAndSet(null, newNode)) {
             currentNode = currentNode.atomicNext.get();
-            while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
+            while (currentNode.value.removed.get()) { // remoção dos nodes
                 lastNode.atomicNext.compareAndSet(currentNode, currentNode.atomicNext.get());
                 currentNode = currentNode.atomicNext.get();
 
@@ -95,7 +95,7 @@ public class COS {
         var currentNode = head;
         while (currentNode.atomicNext.get() != null) {
             currentNode = currentNode.atomicNext.get();
-            while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
+            while (currentNode.value.removed.get()) { // remoção dos nodes
                 lastNode.atomicNext.compareAndSet(currentNode, currentNode.atomicNext.get());
                 if (currentNode.atomicNext.get() == null) {
                     return;

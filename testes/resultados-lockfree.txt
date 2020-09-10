@@ -1,0 +1,377 @@
+aldenio@node0:~/library % ./local_run3.sh | tee lockfree.log               
+Configured with lockFree graph.                                            
+n late: 1                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 1] :416666                                
+Configured with lockFree graph.                                            
+n late: 2                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 2] :500000                                
+Configured with lockFree graph.                                            
+n late: 3                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 3] :454545                                
+Configured with lockFree graph.                                            
+n late: 4                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 4] :476190                                
+Configured with lockFree graph.                                            
+n late: 5                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 5] :476190                                
+Configured with lockFree graph.                                            
+n late: 6                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 6] :454545                                
+Configured with lockFree graph.                                            
+n late: 7                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 7] :400000                                
+Configured with lockFree graph.                                            
+n late: 8                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 8] :400000                                
+Configured with lockFree graph.                                            
+n late: 9                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 9] :400000                                
+Configured with lockFree graph.                                            
+n late: 10                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 10] :370370                               
+Configured with lockFree graph.                                            
+n late: 11                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 11] :434782                               
+Configured with lockFree graph.                                            
+n late: 12                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 12] :400000                               
+Configured with lockFree graph.                                            
+n late: 13                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 13] :454545                               
+Configured with lockFree graph.                                            
+n late: 14                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 14] :476190                               
+Configured with lockFree graph.                                            
+n late: 15                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 15] :416666                               
+Configured with lockFree graph.                                            
+n late: 16                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 16] :476190                               
+Configured with lockFree graph.                                            
+n late: 17                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 17] :454545                               
+Configured with lockFree graph.                                            
+n late: 18                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 18] :476190                               
+Configured with lockFree graph.                                            
+n late: 19                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 19] :500000                               
+Configured with lockFree graph.                                            
+n late: 20                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 20] :454545                               
+Configured with lockFree graph.                                            
+n late: 21                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 21] :434782                               
+Configured with lockFree graph.                                            
+n late: 22                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 22] :454545                               
+Configured with lockFree graph.                                            
+n late: 23                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 23] :500000                               
+Configured with lockFree graph.                                            
+n late: 24                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 24] :434782                               
+Configured with lockFree graph.                                            
+n late: 26                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 2, late workers: 26] :454545                               
+Configured with lockFree graph.                                            
+n late: 1                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 1] :370370                                
+Configured with lockFree graph.                                            
+n late: 2                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 2] :500000                                
+Configured with lockFree graph.                                            
+n late: 3                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 3] :526315                                
+Configured with lockFree graph.                                            
+n late: 4                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 4] :476190                                
+Configured with lockFree graph.                                            
+n late: 5                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 5] :434782                                
+Configured with lockFree graph.                                            
+n late: 6                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 6] :416666                                
+Configured with lockFree graph.                                            
+n late: 7                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 7] :400000                                
+Configured with lockFree graph.                                            
+n late: 8                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 8] :400000                                
+Configured with lockFree graph.                                            
+n late: 9                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 9] :476190                                
+Configured with lockFree graph.                                            
+n late: 10                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 10] :370370                               
+Configured with lockFree graph.                                            
+n late: 11                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 11] :357142                               
+Configured with lockFree graph.                                            
+n late: 12                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 12] :434782                               
+Configured with lockFree graph.                                            
+n late: 13                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 13] :416666                               
+Configured with lockFree graph.                                            
+n late: 14                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 14] :434782                               
+Configured with lockFree graph.                                            
+n late: 15                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 15] :434782                               
+Configured with lockFree graph.                                            
+n late: 16                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 16] :434782                               
+Configured with lockFree graph.                                            
+n late: 17                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 17] :384615                               
+Configured with lockFree graph.                                            
+n late: 18                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 18] :500000                               
+Configured with lockFree graph.                                            
+n late: 19                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 19] :454545                               
+Configured with lockFree graph.                                            
+n late: 20                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 20] :526315                               
+Configured with lockFree graph.                                            
+n late: 21                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 21] :454545                               
+Configured with lockFree graph.                                            
+n late: 22                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 22] :454545                               
+Configured with lockFree graph.                                            
+n late: 23                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 23] :500000                               
+Configured with lockFree graph.                                            
+n late: 24                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 24] :434782                               
+Configured with lockFree graph.                                            
+n late: 26                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 4, late workers: 26] :416666                               
+Configured with lockFree graph.                                            
+n late: 1                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 1] :434782                                
+Configured with lockFree graph.                                            
+n late: 2                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 2] :434782                                
+Configured with lockFree graph.                                            
+n late: 3                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 3] :476190                                
+Configured with lockFree graph.                                            
+n late: 4                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 4] :500000                                
+Configured with lockFree graph.                                            
+n late: 5                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 5] :454545                                
+Configured with lockFree graph.                                            
+n late: 6                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 6] :454545                                
+Configured with lockFree graph.                                            
+n late: 7                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 7] :416666                                
+Configured with lockFree graph.                                            
+n late: 8                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 8] :454545                                
+Configured with lockFree graph.                                            
+n late: 9                                                                  
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 9] :434782                                
+Configured with lockFree graph.                                            
+n late: 10                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 10] :476190                               
+Configured with lockFree graph.                                            
+n late: 11                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 11] :384615                               
+Configured with lockFree graph.                                            
+n late: 12                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 12] :416666                               
+Configured with lockFree graph.                                            
+n late: 13                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 13] :384615                               
+Configured with lockFree graph.                                            
+n late: 14                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 14] :476190                               
+Configured with lockFree graph.                                            
+n late: 15                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 15] :434782                               
+Configured with lockFree graph.                                            
+n late: 16                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 16] :500000                               
+Configured with lockFree graph.                                            
+n late: 17                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 17] :476190                               
+Configured with lockFree graph.                                            
+n late: 18                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 18] :454545                               
+Configured with lockFree graph.                                            
+n late: 19                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 19] :476190                               
+Configured with lockFree graph.                                            
+n late: 20                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 20] :476190                               
+Configured with lockFree graph.                                            
+n late: 21                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 21] :454545                               
+Configured with lockFree graph.                                            
+n late: 22                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 22] :434782                               
+Configured with lockFree graph.                                            
+n late: 23                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 23] :476190                               
+Configured with lockFree graph.                                            
+n late: 24                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 24] :500000                               
+Configured with lockFree graph.                                            
+n late: 26                                                                 
+Criacao das requisições finalizada!                                        
+Fim do envio!                                                              
+TP [partitions: 6, late workers: 26] :476190                               
+aldenio@node0:~/library %  

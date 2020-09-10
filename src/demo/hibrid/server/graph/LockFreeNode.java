@@ -2,8 +2,9 @@ package demo.hibrid.server.graph;
 
 
 import demo.hibrid.server.CommandEnvelope;
+import jdk.internal.vm.annotation.Contended;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.Lock;
@@ -11,15 +12,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 public class LockFreeNode {
-    /*
-     NEW -> INSERTED -> READY -> RESERVED -> REMOVED
-     */
-    public static final int NEW = 0;
-    public static final int INSERTED = 1;
-    public static final int READY = 2;
-    public static final int RESERVED = 3;
-    public static final int REMOVED = 5;
-    public final AtomicInteger status;
+    @Contended
+    public final AtomicBoolean inserted = new AtomicBoolean(false);
+    @Contended
+    public final AtomicBoolean ready = new AtomicBoolean(false);
+    @Contended
+    public final AtomicBoolean reserved = new AtomicBoolean(false);
+    @Contended
+    public final AtomicBoolean removed = new AtomicBoolean(false);
+
     public final CommandEnvelope commandEnvelope;
     public final COS cos;
 
@@ -33,7 +34,6 @@ public class LockFreeNode {
         this.listeners = new Edge(null);
         this.cos = cos;
         this.commandEnvelope = commandEnvelope;
-        this.status = new AtomicInteger(NEW);
         var lock = new ReentrantReadWriteLock();
         readLock = lock.readLock();
         writeLock = lock.writeLock();
@@ -42,7 +42,7 @@ public class LockFreeNode {
     public void insertDependentNode(LockFreeNode newNode) {
         try {
             readLock.lock();
-            if (status.get() != REMOVED) {
+            if (removed.get()) {
                 var aux = listeners;
                 while (aux.atomicNext.get() != null || !aux.atomicNext.compareAndSet(null, new Edge(newNode))) {
                     aux = aux.atomicNext.get();
@@ -61,7 +61,7 @@ public class LockFreeNode {
     public void markRemoved() {
         try {
             writeLock.lock();
-            if (status.compareAndSet(RESERVED, REMOVED)) {
+            if (reserved.get() && removed.compareAndSet(false, true)) {
                 var aux = this.listeners.atomicNext.get();
                 while (aux != null) {
                     aux.node.dependencies.decrement();
@@ -76,7 +76,7 @@ public class LockFreeNode {
 
 
     public void testReady() {
-        if (dependencies.intValue() == 0 && status.compareAndSet(INSERTED, READY)) {
+        if (dependencies.intValue() == 0 && inserted.get() && ready.compareAndSet(false, true)) {
             cos.releaseReady();
         }
     }
@@ -84,6 +84,7 @@ public class LockFreeNode {
 
     @Override
     public String toString() {
+        var status = "" + (inserted.get() ? 1 : 0) + (ready.get() ? 1 : 0) + (reserved.get() ? 1 : 0) + (removed.get() ? 1 : 0);
         return "{status=" + status +
                 ", data=" + commandEnvelope +
                 ", dependencies=" + dependencies +

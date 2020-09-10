@@ -79,7 +79,7 @@ public class COS {
                 lastNode.atomicNext.compareAndSet(currentNode, currentNode.atomicNext.get());
                 currentNode = currentNode.atomicNext.get();
 
-                if (currentNode == null && lastNode.atomicNext.compareAndSet(null, newNode)) { // acabou a lista, insere o novo nó
+                if (currentNode == null && lastNode.nextNode.compareAndSet(null, newNode)) { // acabou a lista, insere o novo nó
                     return;
                 }
             }
@@ -93,14 +93,14 @@ public class COS {
     private void cleanRemovedNodesAndInsertDependencies(CommandEnvelope commandEnvelope, Node head) {
         var lastNode = head;
         var currentNode = head;
-        while (currentNode.atomicNext.get() != null) {
-            currentNode = currentNode.atomicNext.get();
-            while (currentNode.value.removed.get()) { // remoção dos nodes
-                lastNode.atomicNext.compareAndSet(currentNode, currentNode.atomicNext.get());
-                if (currentNode.atomicNext.get() == null) {
+        while (currentNode.nextNode.get() != null) {
+            currentNode = currentNode.nextNode.get();
+            while (currentNode.value.status.get() == REMOVED) { // remoção dos nodes
+                lastNode.nextNode.compareAndSet(currentNode, currentNode.nextNode.get());
+                if (currentNode.nextNode.get() == null) {
                     return;
                 } else {
-                    currentNode = currentNode.atomicNext.get();
+                    currentNode = currentNode.nextNode.get();
                 }
             }
             if (conflictDefinition.isDependent(commandEnvelope, currentNode.value.commandEnvelope)) { // inserção de dependencias
@@ -113,9 +113,9 @@ public class COS {
     private int size() {
         var counter = 0;
         var aux = head;
-        while (aux.atomicNext.get() != null) {
+        while (aux.nextNode.get() != null) {
             counter++;
-            aux = aux.atomicNext.get();
+            aux = aux.nextNode.get();
         }
         return counter;
 
@@ -134,7 +134,7 @@ public class COS {
 
     class Node {
         public final LockFreeNode value;
-        public final AtomicReference<Node> atomicNext = new AtomicReference<>(null);
+        public final AtomicReference<Node> nextNode = new AtomicReference<>(null);
 
         public Node(LockFreeNode value) {
             this.value = value;
@@ -143,8 +143,8 @@ public class COS {
 
         @Override
         public String toString() {
-            if (value == null) return "[" + ((atomicNext.get() == null) ? "]" : atomicNext.get());
-            else return "\n\t\t\t" + value.toString() + ((atomicNext.get() == null) ? "\n\t\t]" : ", " + atomicNext.get());
+            if (value == null) return "[" + ((nextNode.get() == null) ? "]" : nextNode.get());
+            else return "\n\t\t\t" + value.toString() + ((nextNode.get() == null) ? "\n\t\t]" : ", " + nextNode.get());
 
         }
 

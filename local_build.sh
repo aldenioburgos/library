@@ -1,4 +1,4 @@
-nome=BFT-Hibrid_padding-executable.jar
+nome=BFT-Hibrid_many_edges-executable.jar
 
 rm -rf build
 mkdir build

@@ -35,13 +35,13 @@ public class LateScheduler extends Thread {
                     schedule(command);
                 }
             }
-        } catch (InterruptedException | BrokenBarrierException e) {
+        } catch (InterruptedException  e) {
             e.printStackTrace();
             System.exit(id);
         }
     }
 
-    public void schedule(CommandEnvelope commandEnvelope) throws BrokenBarrierException, InterruptedException {
+    public void schedule(CommandEnvelope commandEnvelope) {
         if (cos.createNodeFor(commandEnvelope)) {
             cos.cleanRemovedNodesInsertDependenciesAndInsertNewNode(commandEnvelope);
         } else {

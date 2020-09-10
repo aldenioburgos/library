@@ -18,14 +18,17 @@ public class LockFreeNode {
     public final CommandEnvelope commandEnvelope;
     public final COS cos;
 
-    private final Edge listeners;
+    private final ConcurrentHashMap<Integer, Edge> listeners;
     private final LongAdder dependencies = new LongAdder();
     private final Lock readLock;
     private final Lock writeLock;
 
     public LockFreeNode(CommandEnvelope commandEnvelope, COS cos) {
         assert cos != null : "Não pode criar um node sem COS!";
-        this.listeners = new Edge(null);
+        this.listeners = new ConcurrentHashMap<>();
+        for (int i = 0; i < cos.cosManager.graphs.length; i++) {
+            listeners.put(i, new Edge(null));
+        }
         this.cos = cos;
         this.commandEnvelope = commandEnvelope;
         var lock = new ReentrantReadWriteLock();
@@ -36,10 +39,10 @@ public class LockFreeNode {
     public void insertDependentNode(LockFreeNode newNode) {
         try {
             readLock.lock();
-            if (removed.get()) {
-                var aux = listeners;
-                while (aux.atomicNext.get() != null || !aux.atomicNext.compareAndSet(null, new Edge(newNode))) {
-                    aux = aux.atomicNext.get();
+            if (status.get() != REMOVED) {
+                var aux = listeners.get(cos.id);
+                while (aux.nextEdge.get() != null || !aux.nextEdge.compareAndSet(null, new Edge(newNode))) {
+                    aux = aux.nextEdge.get();
                     if (aux.node == newNode) {
                         return;     // não insere o mesmo nó mais de uma vez!
                     }
@@ -55,12 +58,14 @@ public class LockFreeNode {
     public void markRemoved() {
         try {
             writeLock.lock();
-            if (reserved.get() && removed.compareAndSet(false, true)) {
-                var aux = this.listeners.atomicNext.get();
-                while (aux != null) {
-                    aux.node.dependencies.decrement();
-                    aux.node.testReady();
-                    aux = aux.atomicNext.get();
+            if (status.compareAndSet(RESERVED, REMOVED)) {
+                for (var listenerHead : listeners.values()) {
+                    var aux = listenerHead.nextEdge.get();
+                    while (aux != null) {
+                        aux.node.dependencies.decrement();
+                        aux.node.testReady();
+                        aux = aux.nextEdge.get();
+                    }
                 }
             }
         } finally {
@@ -88,7 +93,7 @@ public class LockFreeNode {
 
     class Edge {
         public final LockFreeNode node;
-        public final AtomicReference<Edge> atomicNext = new AtomicReference<>();
+        public final AtomicReference<Edge> nextEdge = new AtomicReference<>();
 
         public Edge(LockFreeNode node) {
             this.node = node;
@@ -96,7 +101,7 @@ public class LockFreeNode {
 
         @Override
         public String toString() {
-            return ((node == null) ? "[" : node.commandEnvelope.command.id) + ((atomicNext.get() == null) ? "]" : ", " + atomicNext);
+            return ((node == null) ? "[" : node.commandEnvelope.command.id) + ((nextEdge.get() == null) ? "]" : ", " + nextEdge);
         }
     }
 }

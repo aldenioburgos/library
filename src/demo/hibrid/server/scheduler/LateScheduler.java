@@ -5,7 +5,6 @@ import demo.hibrid.server.graph.COS;
 
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.BrokenBarrierException;
 
 import static demo.hibrid.server.graph.LockFreeNode.INSERTED;
 import static demo.hibrid.server.graph.LockFreeNode.NEW;

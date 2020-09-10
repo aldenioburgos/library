@@ -3,6 +3,7 @@ package demo.hibrid.server.graph;
 
 import demo.hibrid.server.CommandEnvelope;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,16 +25,16 @@ public class LockFreeNode {
     public final CommandEnvelope commandEnvelope;
     public final COS cos;
 
-    private final ConcurrentHashMap<Integer, Edge> listeners;
+    private final Edge[] listeners;
     private final LongAdder dependencies = new LongAdder();
     private final Lock readLock;
     private final Lock writeLock;
 
     public LockFreeNode(CommandEnvelope commandEnvelope, COS cos) {
         assert cos != null : "Não pode criar um node sem COS!";
-        this.listeners = new ConcurrentHashMap<>();
+        this.listeners = new Edge[cos.cosManager.graphs.length * 10];
         for (int i = 0; i < cos.cosManager.graphs.length; i++) {
-            listeners.put(i, new Edge(null));
+            listeners[i*10] = new Edge(null);
         }
         this.cos = cos;
         this.commandEnvelope = commandEnvelope;
@@ -47,7 +48,7 @@ public class LockFreeNode {
         try {
             readLock.lock();
             if (status.get() != REMOVED) {
-                var aux = listeners.get(cos.id);
+                var aux = listeners[cos.id * 10];
                 while (aux.nextEdge.get() != null || !aux.nextEdge.compareAndSet(null, new Edge(newNode))) {
                     aux = aux.nextEdge.get();
                     if (aux.node == newNode) {
@@ -66,8 +67,8 @@ public class LockFreeNode {
         try {
             writeLock.lock();
             if (status.compareAndSet(RESERVED, REMOVED)) {
-                for (var listenerHead : listeners.values()) {
-                    var aux = listenerHead.nextEdge.get();
+                for (int i = 0; i < listeners.length; i+=10) {
+                    var aux = listeners[i].nextEdge.get();
                     while (aux != null) {
                         aux.node.dependencies.decrement();
                         aux.node.testReady();

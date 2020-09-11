@@ -1,6 +1,6 @@
-package demo.parallelism.util;
+package demo.util;
 
-public class ThreadUtil {
+public class Utils {
 
 
     public static Thread[] start(Thread... threads) {
@@ -20,4 +20,24 @@ public class ThreadUtil {
             throw new RuntimeException(e);
         }
     }
+
+
+    public static <T> void fillWith(T[] array, Creator<T> creator) {
+        for (int i = 0; i < array.length; i++) {
+            array[i] = creator.apply();
+        }
+    }
+
+    public interface Creator<T> {
+        T apply();
+    }
+
+    public interface Action<T> {
+        void apply(T t);
+    }
+
+    public interface Filter<T> {
+        boolean apply(T t);
+    }
 }
+

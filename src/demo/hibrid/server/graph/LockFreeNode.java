@@ -2,14 +2,16 @@ package demo.hibrid.server.graph;
 
 
 import demo.hibrid.server.CommandEnvelope;
+import demo.util.Utils;
+import demo.util.Utils.Action;
 
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static demo.util.Utils.fillWith;
 
 
 public class LockFreeNode {
@@ -25,17 +27,16 @@ public class LockFreeNode {
     public final CommandEnvelope commandEnvelope;
     public final COS cos;
 
-    private final Edge[] listeners;
-    private final LongAdder dependencies = new LongAdder();
-    private final Lock readLock;
-    private final Lock writeLock;
+    public final Edge[] listeners;
+    public final LongAdder dependencies = new LongAdder();
+    public final Lock readLock;
+    public final Lock writeLock;
 
     public LockFreeNode(CommandEnvelope commandEnvelope, COS cos) {
         assert cos != null : "Não pode criar um node sem COS!";
-        this.listeners = new Edge[cos.cosManager.graphs.length * 10];
-        for (int i = 0; i < cos.cosManager.graphs.length; i++) {
-            listeners[i*10] = new Edge(null);
-        }
+
+        this.listeners = new Edge[cos.cosManager.graphs.length];
+        fillWith(listeners, Edge::new);
         this.cos = cos;
         this.commandEnvelope = commandEnvelope;
         this.status = new AtomicInteger(NEW);
@@ -44,48 +45,12 @@ public class LockFreeNode {
         writeLock = lock.writeLock();
     }
 
-    public void insertDependentNode(LockFreeNode newNode) {
-        try {
-            readLock.lock();
-            if (status.get() != REMOVED) {
-                var aux = listeners[cos.id * 10];
-                while (aux.nextEdge.get() != null || !aux.nextEdge.compareAndSet(null, new Edge(newNode))) {
-                    aux = aux.nextEdge.get();
-                    if (aux.node == newNode) {
-                        return;     // não insere o mesmo nó mais de uma vez!
-                    }
-                }
-                newNode.dependencies.increment();
-            }
-        } finally {
-            readLock.unlock();
-        }
-
-    }
-
-    public void markRemoved() {
-        try {
-            writeLock.lock();
-            if (status.compareAndSet(RESERVED, REMOVED)) {
-                for (int i = 0; i < listeners.length; i+=10) {
-                    var aux = listeners[i].nextEdge.get();
-                    while (aux != null) {
-                        aux.node.dependencies.decrement();
-                        aux.node.testReady();
-                        aux = aux.nextEdge.get();
-                    }
-                }
-            }
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-
-    public void testReady() {
+    public boolean testReady() {
         if (dependencies.intValue() == 0 && status.compareAndSet(INSERTED, READY)) {
             cos.releaseReady();
+            return true;
         }
+        return false;
     }
 
 
@@ -98,9 +63,13 @@ public class LockFreeNode {
                 '}';
     }
 
-    class Edge {
+    public static class Edge {
         public final LockFreeNode node;
         public final AtomicReference<Edge> nextEdge = new AtomicReference<>();
+
+        public Edge() {
+            node = null;
+        }
 
         public Edge(LockFreeNode node) {
             this.node = node;
@@ -109,6 +78,22 @@ public class LockFreeNode {
         @Override
         public String toString() {
             return ((node == null) ? "[" : node.commandEnvelope.command.id) + ((nextEdge.get() == null) ? "]" : ", " + nextEdge);
+        }
+
+        public void forEach(Action<LockFreeNode> action){
+            if (this.node != null) throw new UnsupportedOperationException("Método forEach só pode ser executado no head da lista!");
+            Edge aux = this.nextEdge.get();
+            while (aux != null) {
+                action.apply(aux.node);
+                aux = aux.nextEdge.get();
+            }
+        }
+
+        public void insert(LockFreeNode newNode) {
+            Edge aux = this;
+            while (aux.node != newNode && (aux.nextEdge.get() != null || !aux.nextEdge.compareAndSet(null, new Edge(newNode)))) {
+                aux = aux.nextEdge.get();
+            }
         }
     }
 }

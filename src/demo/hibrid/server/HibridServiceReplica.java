@@ -29,7 +29,7 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
 
     public HibridServiceReplica(int id, int queueSize, int cosSize, int numPartitions, int numWorkers, ExecutorInterface executor) {
         super(id, executor, null);
-        this.queuesManager = new QueuesManager(numPartitions, queueSize);
+        this.queuesManager = new QueuesManager(numPartitions);
         this.cosManager = new COSManager(numPartitions, cosSize, new ConflictDefinitionDefault());
         this.earlyScheduler = new EarlyScheduler(queuesManager, cosManager);
         this.lateSchedulers = new LateScheduler[numPartitions];
@@ -75,7 +75,7 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
 
     private Thread[] initLateSchedulers() {
         for (int i = 0; i < lateSchedulers.length; i++) {
-            lateSchedulers[i] = new LateScheduler(i, queuesManager.queues[i], cosManager.graphs[i]);
+            lateSchedulers[i] = new LateScheduler(i, queuesManager, cosManager);
             lateSchedulers[i].start();
         }
         return lateSchedulers;

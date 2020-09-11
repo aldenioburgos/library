@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package demo.hibrid.server;
 
 import demo.hibrid.server.graph.COSManager;
+import demo.hibrid.server.graph.LockFreeNode;
 
 /**
  * @author aldenio
@@ -22,7 +18,7 @@ public class HibridWorker extends Thread {
                         COSManager cosManager,
                         ExecutorInterface executor,
                         HibridReplier hibridReplier) {
-        super("HibridiWorker["+ workerId + "]");
+        super("HibridiWorker[" + workerId + "]");
         this.preferentialPartition = preferentialPartition;
         this.cosManager = cosManager;
         this.executor = executor;
@@ -33,9 +29,9 @@ public class HibridWorker extends Thread {
     public void run() {
         try {
             while (true) {
-                CommandEnvelope commandEnvelope = cosManager.getFrom(preferentialPartition);
+                CommandEnvelope commandEnvelope = getNextAvailableCommand();
                 boolean[] results = executor.execute(commandEnvelope.command);
-                cosManager.remove(commandEnvelope);
+                remove(commandEnvelope);
                 hibridReplier.manageReply(commandEnvelope, results);
             }
         } catch (Throwable e) {
@@ -43,6 +39,19 @@ public class HibridWorker extends Thread {
             System.exit(workerId);
         }
     }
+
+    private CommandEnvelope getNextAvailableCommand() {
+        try {
+            return cosManager.readyQueue.take().commandEnvelope;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void remove(CommandEnvelope commandEnvelope) {
+        commandEnvelope.atomicNode.get().status.compareAndSet(LockFreeNode.RESERVED, LockFreeNode.REMOVED);
+    }
+
 
     @Override
     public String toString() {

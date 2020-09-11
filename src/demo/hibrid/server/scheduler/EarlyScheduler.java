@@ -4,6 +4,7 @@ import demo.hibrid.request.Command;
 import demo.hibrid.server.CommandEnvelope;
 import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.server.queue.QueuesManager;
+import demo.hibrid.stats.Stats;
 
 public class EarlyScheduler {
 
@@ -25,11 +26,12 @@ public class EarlyScheduler {
     }
 
     private void addToQueues(int requestId, Command command) {
+        assert Stats.queueSize(queuesManager.size()) : "DEBUG";
         assert command != null : "Invalid Argument, command == null";
         try {
             var commandEnvelope = new CommandEnvelope(requestId, command);
             for (int partition : commandEnvelope.distinctPartitions) {
-                queuesManager.putCommandIn(partition, commandEnvelope);
+                queuesManager.queues[partition].put(commandEnvelope);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -38,8 +40,6 @@ public class EarlyScheduler {
 
     @Override
     public String toString() {
-        return "EarlyScheduler{" +
-                "queuesManager=" + queuesManager +
-                '}';
+        return "EarlyScheduler{queuesManager=" + queuesManager + '}';
     }
 }

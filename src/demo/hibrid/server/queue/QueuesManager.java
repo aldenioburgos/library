@@ -3,26 +3,29 @@ package demo.hibrid.server.queue;
 import demo.hibrid.server.CommandEnvelope;
 import demo.hibrid.stats.Stats;
 
-import java.util.Arrays;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.TransferQueue;
 
 public class QueuesManager {
 
-    public final BlockingQueue<CommandEnvelope>[] queues;
+    public final TransferQueue<CommandEnvelope>[] queues;
 
-    public QueuesManager(int numQueues, int maxQueueSize) {
+    public QueuesManager(int numQueues) {
         Stats.partitions = numQueues;
-        this.queues = new BlockingQueue[numQueues];
+        this.queues = new TransferQueue[numQueues];
         for (int i = 0; i < queues.length; i++) {
-            queues[i] = new ArrayBlockingQueue<>(maxQueueSize);
+            queues[i] = new LinkedTransferQueue<>();
         }
     }
 
-    public void putCommandIn(int partition, CommandEnvelope commandEnvelope) throws InterruptedException {
-        queues[partition].put(commandEnvelope);
-    }
 
+    public int size(){
+        int size = 0;
+        for (int i = 0; i < queues.length; i++) {
+            size += queues[i].size();
+        }
+        return size;
+    }
 
     @Override
     public String toString() {

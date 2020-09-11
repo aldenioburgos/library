@@ -1,9 +1,12 @@
 package demo.hibrid.server.graph;
 
 import demo.hibrid.server.CommandEnvelope;
+import demo.hibrid.stats.Stats;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.Semaphore;
 
 public class COSManager {
@@ -11,6 +14,7 @@ public class COSManager {
     private final Semaphore ready;
     private final Semaphore space;
     public final COS[] graphs;
+    public final BlockingQueue<LockFreeNode> readyQueue = new LinkedTransferQueue<>();
 
     public COSManager(int numGraphs, int maxCOSSize, ConflictDefinition<CommandEnvelope> conflictDefinition) {
         assert numGraphs > 0 : "Invalid Argument numGraphs <= 0";
@@ -21,25 +25,12 @@ public class COSManager {
         this.space = new Semaphore(maxCOSSize);
         this.graphs = new COS[numGraphs];
         for (int i = 0; i < numGraphs; i++) {
-            this.graphs[i] = new COS(i,conflictDefinition, this);
+            this.graphs[i] = new COS(i, conflictDefinition, this);
         }
     }
 
-    public CommandEnvelope getFrom(int preferentialPartition){
-        assert preferentialPartition >= 0 : "Invalid Argument preferentialPartition < 0 ";
-        assert preferentialPartition < graphs.length : "Invalid Argument preferentialPartition >= graphs.length";
 
-        Optional<CommandEnvelope> optServerCommand;
-        int i = 0;
-        acquireReady();
-        do {
-            var choosenPartition = (preferentialPartition + i++) % graphs.length;
-            optServerCommand = graphs[choosenPartition].tryGet();
-        } while (optServerCommand.isEmpty());
-        return optServerCommand.get();
-    }
-
-    private void acquireReady() {
+    public void acquireReady() {
         try {
             ready.acquire();
         } catch (InterruptedException e) {
@@ -47,11 +38,16 @@ public class COSManager {
         }
     }
 
-    void releaseReady() {
+    public void releaseReady() {
         this.ready.release();
     }
 
+    public void releaseSpace() {
+        this.space.release();
+    }
+
     public void acquireSpace() {
+        assert Stats.cosSize(space.availablePermits()): "DEBUG";
         try {
             space.acquire();
         } catch (InterruptedException e) {
@@ -59,17 +55,18 @@ public class COSManager {
         }
     }
 
-    public void remove(CommandEnvelope commandEnvelope) {
-        commandEnvelope.atomicNode.get().markRemoved();
-        this.space.release();
-    }
 
     @Override
     public String toString() {
         return "COSManager{" +
                 " ready=" + ready.availablePermits() +
                 ", space=" + space.availablePermits() +
-                ", graphs=" + Arrays.toString(graphs)+
+                ", graphs=" + Arrays.toString(graphs) +
                 '}';
     }
+
+    public void addToReadyQueue(LockFreeNode it) {
+        readyQueue.add(it);
+    }
 }
+

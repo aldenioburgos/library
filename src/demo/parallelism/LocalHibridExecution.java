@@ -12,14 +12,15 @@ import demo.hibrid.server.graph.ConflictDefinitionDefault;
 import demo.hibrid.server.queue.QueuesManager;
 import demo.hibrid.server.scheduler.EarlyScheduler;
 import demo.hibrid.server.scheduler.LateScheduler;
+import demo.hibrid.stats.Stats;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static demo.parallelism.util.ThreadUtil.join;
-import static demo.parallelism.util.ThreadUtil.start;
+import static demo.util.Utils.join;
+import static demo.util.Utils.start;
 
 
 public class LocalHibridExecution implements HibridReplier {
@@ -38,14 +39,14 @@ public class LocalHibridExecution implements HibridReplier {
 
     public static void main(String[] args) {
         if (args.length == 7) {
-            var numParticoes = Integer.valueOf(args[0]);
+            var tamLista = Integer.valueOf(args[0]);
             var numWorkerThreads = Integer.valueOf(args[1]);
-            var tamLista = Integer.valueOf(args[2]);
+            var numParticoes = Integer.valueOf(args[2]);
             var percTransacoesGlobais = Integer.valueOf(args[3]);
             var percEscritas = Integer.valueOf(args[4]);
             var numeroOperacoes = Integer.valueOf(args[5]);
             var tamParticoes = Integer.valueOf(args[6]);
-            System.out.println("Many edges executing!");
+            System.out.println("Many edges com array executing!");
             System.out.print("{ n partitions: " + numParticoes);
             System.out.print(", n workers: " + numWorkerThreads);
             System.out.print(", list size: " + tamLista);
@@ -59,7 +60,7 @@ public class LocalHibridExecution implements HibridReplier {
             localHibridExecution2.scheduleCommands();
             localHibridExecution2.joinServerThreads();
         } else {
-            System.out.println("Modo de uso: java demo.parallelism.LocalHibridExecution <numParticoes> <numWorkerThreads> <tamListas> <percTransacoesGlobais> <percEscritas> <numOperacoes> <tamParticoes>");
+            System.out.println("Modo de uso: java demo.parallelism.LocalHibridExecution <tamListas> <numWorkerThreads> <numParticoes> <percTransacoesGlobais> <percEscritas> <numOperacoes> <tamParticoes>");
         }
 
     }
@@ -84,7 +85,7 @@ public class LocalHibridExecution implements HibridReplier {
                                 Integer tamParticoes) {
         this.hibridReplier = this;
         this.executor = new ListExecutor(tamLista, numParticoes);
-        this.queuesManager = new QueuesManager(numParticoes, numeroOperacoes);
+        this.queuesManager = new QueuesManager(numParticoes);
         this.conflictDefinition = new ConflictDefinitionDefault();
         this.cosManager = new COSManager(numParticoes, tamParticoes, conflictDefinition);
         this.earlyScheduler = new EarlyScheduler(queuesManager,cosManager);
@@ -107,7 +108,7 @@ public class LocalHibridExecution implements HibridReplier {
     private LateScheduler[] createLateSchedulers(int numParticoes, QueuesManager queuesManager, COSManager cosManager) {
         var lateSchedulers = new LateScheduler[numParticoes];
         for (int i = 0; i < lateSchedulers.length; i++) {
-            lateSchedulers[i] = new LateScheduler(i, queuesManager.queues[i], cosManager.graphs[i]);
+            lateSchedulers[i] = new LateScheduler(i, queuesManager, cosManager);
         }
         return lateSchedulers;
     }
@@ -126,14 +127,15 @@ public class LocalHibridExecution implements HibridReplier {
             long endTimeInNanos = System.nanoTime();
             String throughput = calculateThroughput(startTimestampInNanos, endTimeInNanos, commands.length);
             System.out.println("}: Throughput=" + throughput);
+            assert Stats.print(commands.length);
             System.exit(0);
         }
     }
 
     private String calculateThroughput(long start, long end, long numOperations) {
         var nanos = end - start;
-        var seconds = BigDecimal.valueOf(nanos).divide(BigDecimal.valueOf(1_000_000_000));
-        var tp = BigDecimal.valueOf(numOperations).divide(seconds, RoundingMode.HALF_DOWN);
+        BigDecimal seconds = BigDecimal.valueOf(nanos).divide(BigDecimal.valueOf(1_000_000_000));
+        BigDecimal tp = BigDecimal.valueOf(numOperations).divide(seconds, RoundingMode.HALF_DOWN);
         return String.valueOf(tp);
     }
 

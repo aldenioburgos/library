@@ -17,7 +17,6 @@ public class HibridServiceReplicaMock extends HibridServiceReplica {
     protected void reply(Response response) {
         if (context.isEmpty()) {
             Stats.end = System.nanoTime();
-            Stats.print();
             System.exit(0);
         }
     }

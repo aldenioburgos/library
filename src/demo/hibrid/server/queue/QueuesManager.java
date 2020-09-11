@@ -3,6 +3,7 @@ package demo.hibrid.server.queue;
 import demo.hibrid.server.CommandEnvelope;
 import demo.hibrid.stats.Stats;
 
+import java.util.Arrays;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TransferQueue;
 
@@ -19,7 +20,7 @@ public class QueuesManager {
     }
 
 
-    public int size(){
+    public int size() {
         int size = 0;
         for (int i = 0; i < queues.length; i++) {
             size += queues[i].size();
@@ -29,10 +30,7 @@ public class QueuesManager {
 
     @Override
     public String toString() {
-        return "QueuesManager{" +
-                "queue[0]=" + queues[0].peek() +
-                "queue[1]=" + queues[1].peek() +
-                '}';
+        return "QueuesManager{queues=" + Arrays.toString(queues) + '}';
     }
 
 }

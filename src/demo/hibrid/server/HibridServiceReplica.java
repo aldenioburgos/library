@@ -83,7 +83,7 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
 
     private Thread[] initReplicaWorkers() {
         for (int i = 0; i < workers.length; i++) {
-            workers[i] = new HibridWorker(i, i % cosManager.graphs.length, cosManager, executor, hibridReplier);
+            workers[i] = new HibridWorker(i, i % lateSchedulers.length, cosManager, executor, hibridReplier);
             workers[i].start();
         }
         return workers;

@@ -2,13 +2,13 @@ package demo.hibrid.server.graph;
 
 
 import demo.hibrid.server.CommandEnvelope;
-import demo.util.Utils;
 import demo.util.Utils.Action;
 
+import java.util.Arrays;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static demo.util.Utils.fillWith;
@@ -16,50 +16,41 @@ import static demo.util.Utils.fillWith;
 
 public class LockFreeNode {
     /*
-     NEW -> INSERTED -> READY -> RESERVED -> REMOVED
+     NEW -> INSERTED -> READY -> REMOVED
      */
     public static final int NEW = 0;
     public static final int INSERTED = 1;
     public static final int READY = 2;
-    public static final int RESERVED = 3;
-    public static final int REMOVED = 5;
+    public static final int COMPLETED = 3;
     public final AtomicInteger status;
     public final CommandEnvelope commandEnvelope;
-    public final COS cos;
 
     public final Edge[] listeners;
     public final LongAdder dependencies = new LongAdder();
-    public final Lock readLock;
-    public final Lock writeLock;
+    public final ReentrantReadWriteLock.WriteLock writeLock;
+    public final ReentrantReadWriteLock.ReadLock readLock;
 
-    public LockFreeNode(CommandEnvelope commandEnvelope, COS cos) {
-        assert cos != null : "Não pode criar um node sem COS!";
-
-        this.listeners = new Edge[cos.cosManager.graphs.length];
+    public LockFreeNode(CommandEnvelope commandEnvelope, int numPartitions) {
+        var lock = new ReentrantReadWriteLock();
+        this.readLock = lock.readLock();
+        this.writeLock = lock.writeLock();
+        this.listeners = new Edge[numPartitions];
         fillWith(listeners, Edge::new);
-        this.cos = cos;
         this.commandEnvelope = commandEnvelope;
         this.status = new AtomicInteger(NEW);
-        var lock = new ReentrantReadWriteLock();
-        readLock = lock.readLock();
-        writeLock = lock.writeLock();
     }
 
-    public boolean testReady() {
-        if (dependencies.intValue() == 0 && status.compareAndSet(INSERTED, READY)) {
-            cos.releaseReady();
-            return true;
-        }
-        return false;
-    }
 
+    public boolean isReady(){
+        return (dependencies.intValue() == 0 && status.compareAndSet(INSERTED, READY));
+    }
 
     @Override
     public String toString() {
         return "{status=" + status +
                 ", data=" + commandEnvelope +
                 ", dependencies=" + dependencies +
-                ", listeners=" + listeners +
+                ", listeners=" + Arrays.toString(listeners) +
                 '}';
     }
 
@@ -90,6 +81,7 @@ public class LockFreeNode {
         }
 
         public void insert(LockFreeNode newNode) {
+            if (this.node != null) throw new UnsupportedOperationException("Método insert só deve ser executado no head da lista!");
             Edge aux = this;
             while (aux.node != newNode && (aux.nextEdge.get() != null || !aux.nextEdge.compareAndSet(null, new Edge(newNode)))) {
                 aux = aux.nextEdge.get();

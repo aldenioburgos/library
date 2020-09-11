@@ -3,43 +3,23 @@ package demo.hibrid.server.graph;
 import demo.hibrid.server.CommandEnvelope;
 import demo.hibrid.stats.Stats;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TransferQueue;
 
 public class COSManager {
 
-    private final Semaphore ready;
     private final Semaphore space;
-    public final COS[] graphs;
-    public final BlockingQueue<LockFreeNode> readyQueue = new LinkedTransferQueue<>();
+    private final ConflictDefinition<CommandEnvelope> conflictDefinition;
+    public final TransferQueue<LockFreeNode> readyQueue = new LinkedTransferQueue<>();
+    public final TransferQueue<LockFreeNode> completedQueue = new LinkedTransferQueue<>();
 
     public COSManager(int numGraphs, int maxCOSSize, ConflictDefinition<CommandEnvelope> conflictDefinition) {
         assert numGraphs > 0 : "Invalid Argument numGraphs <= 0";
         assert maxCOSSize > 0 : "Invalid Argument maxCOSSize <= 0";
         assert conflictDefinition != null : "Invalid Argument conflictDefinition == null";
-
-        this.ready = new Semaphore(0);
+        this.conflictDefinition = conflictDefinition;
         this.space = new Semaphore(maxCOSSize);
-        this.graphs = new COS[numGraphs];
-        for (int i = 0; i < numGraphs; i++) {
-            this.graphs[i] = new COS(i, conflictDefinition, this);
-        }
-    }
-
-
-    public void acquireReady() {
-        try {
-            ready.acquire();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void releaseReady() {
-        this.ready.release();
     }
 
     public void releaseSpace() {
@@ -47,7 +27,7 @@ public class COSManager {
     }
 
     public void acquireSpace() {
-        assert Stats.cosSize(space.availablePermits()): "DEBUG";
+        assert Stats.cosSize(150-space.availablePermits()) : "DEBUG";
         try {
             space.acquire();
         } catch (InterruptedException e) {
@@ -59,14 +39,17 @@ public class COSManager {
     @Override
     public String toString() {
         return "COSManager{" +
-                " ready=" + ready.availablePermits() +
                 ", space=" + space.availablePermits() +
-                ", graphs=" + Arrays.toString(graphs) +
                 '}';
     }
 
     public void addToReadyQueue(LockFreeNode it) {
         readyQueue.add(it);
+    }
+
+
+    public boolean isDependent(CommandEnvelope commandEnvelope, CommandEnvelope commandEnvelope1) {
+        return conflictDefinition.isDependent(commandEnvelope, commandEnvelope1);
     }
 }
 

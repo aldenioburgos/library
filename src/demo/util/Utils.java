@@ -39,5 +39,9 @@ public class Utils {
     public interface Filter<T> {
         boolean apply(T t);
     }
+
+    public interface Fold<T> {
+        void apply(T t1, T t2);
+    }
 }
 

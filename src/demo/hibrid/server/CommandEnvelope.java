@@ -23,6 +23,10 @@ public class CommandEnvelope {
         this.atomicNode = new AtomicReference<>(null);
     }
 
+    public LockFreeNode getNode(){
+        return atomicNode.get();
+    }
+
 
     @Override
     public String toString() {

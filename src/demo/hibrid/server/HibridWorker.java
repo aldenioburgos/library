@@ -3,6 +3,10 @@ package demo.hibrid.server;
 import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.server.graph.LockFreeNode;
 
+import java.util.stream.Collectors;
+
+import static demo.hibrid.server.graph.LockFreeNode.*;
+
 /**
  * @author aldenio
  */
@@ -29,9 +33,9 @@ public class HibridWorker extends Thread {
     public void run() {
         try {
             while (true) {
-                CommandEnvelope commandEnvelope = getNextAvailableCommand();
+                CommandEnvelope commandEnvelope = cosManager.readyQueue.take().commandEnvelope;
                 boolean[] results = executor.execute(commandEnvelope.command);
-                remove(commandEnvelope);
+                markCompleted(commandEnvelope.getNode());
                 hibridReplier.manageReply(commandEnvelope, results);
             }
         } catch (Throwable e) {
@@ -40,17 +44,30 @@ public class HibridWorker extends Thread {
         }
     }
 
-    private CommandEnvelope getNextAvailableCommand() {
-        try {
-            return cosManager.readyQueue.take().commandEnvelope;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+
+    private void markCompleted(LockFreeNode lockFreeNode) {
+        if (lockFreeNode.status.compareAndSet(READY, COMPLETED)) {
+            try {
+                lockFreeNode.writeLock.lock();
+                notifyListeners(lockFreeNode);
+            } finally {
+                lockFreeNode.writeLock.unlock();
+            }
+            cosManager.releaseSpace();
         }
     }
 
-    private void remove(CommandEnvelope commandEnvelope) {
-        commandEnvelope.atomicNode.get().status.compareAndSet(LockFreeNode.RESERVED, LockFreeNode.REMOVED);
+    private void notifyListeners(LockFreeNode currentNode) {
+        for (var listenersHead : currentNode.listeners) {
+            listenersHead.forEach(it -> {
+                it.dependencies.decrement();
+                if (it.isReady()) {
+                    cosManager.addToReadyQueue(it);
+                }
+            });
+        }
     }
+
 
 
     @Override

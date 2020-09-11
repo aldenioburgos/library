@@ -1,4 +1,4 @@
-nome=BFT-Hibrid_edges_array-executable.jar
+nome=BFT-Hibrid-with-lists-executable.jar
 
 rm -rf build
 mkdir build

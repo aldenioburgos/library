@@ -7,6 +7,6 @@
 perf stat -d java -jar ../dist/BFT-Hibrid_many_edges-executable.jar  6 10 1000 0 0 10000000 150
 perf stat -d java -jar ../dist/BFT-Hibrid_edges_array-executable.jar  6 10 1000 0 0 10000000 150
 
-
 perf stat -d java -jar ../dist/BFT-Hibrid_edges_array-executable.jar  1000 10 6 0 0 10000000 150
+perf stat -d java -jar ../dist/BFT-Hibrid-with-lists-executable.jar  1000 10 6 0 0 10000000 150
 

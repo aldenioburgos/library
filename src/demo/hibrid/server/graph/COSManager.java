@@ -12,7 +12,6 @@ public class COSManager {
     private final Semaphore space;
     private final ConflictDefinition<CommandEnvelope> conflictDefinition;
     public final TransferQueue<LockFreeNode> readyQueue = new LinkedTransferQueue<>();
-    public final TransferQueue<LockFreeNode> completedQueue = new LinkedTransferQueue<>();
 
     public COSManager(int numGraphs, int maxCOSSize, ConflictDefinition<CommandEnvelope> conflictDefinition) {
         assert numGraphs > 0 : "Invalid Argument numGraphs <= 0";

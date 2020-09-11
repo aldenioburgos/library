@@ -11,8 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-import static demo.hibrid.server.graph.LockFreeNode.*;
-
 /**
  * @author aldenio
  */
@@ -35,11 +33,6 @@ public class LateScheduler extends Thread {
         this.cosManager = cosManager;
     }
 
-
-    public boolean tryToCreateNodeFor(CommandEnvelope commandEnvelope) {
-        return (commandEnvelope.getNode() == null &&
-                commandEnvelope.atomicNode.compareAndSet(null, new LockFreeNode(commandEnvelope, numPartitions)));
-    }
 
 
     @Override
@@ -79,6 +72,11 @@ public class LateScheduler extends Thread {
                 throw new IllegalStateException("AtomicCounter == 0 and inserted == true");
             }
         }
+    }
+
+    public boolean tryToCreateNodeFor(CommandEnvelope commandEnvelope) {
+        return (commandEnvelope.getNode() == null &&
+                commandEnvelope.atomicNode.compareAndSet(null, new LockFreeNode(commandEnvelope, numPartitions)));
     }
 
     private void removeCompletedAndInsertDependencies(List<LockFreeNode> nodes, CommandEnvelope commandEnvelope) {

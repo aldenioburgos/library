@@ -76,7 +76,7 @@ public class LateScheduler extends Thread {
                     cosManager.readyQueue.add(newNode);
                 }
             } else {
-                throw new IllegalStateException("AtomicCounter == 0 and status != NEW");
+                throw new IllegalStateException("AtomicCounter == 0 and inserted == true");
             }
         }
     }

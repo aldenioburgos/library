@@ -30,7 +30,7 @@ public class HibridWorker extends Thread {
         try {
             while (true) {
                 CommandEnvelope commandEnvelope = cosManager.readyQueue.take().commandEnvelope;
-                boolean[] results = executor.execute(commandEnvelope.command);
+                boolean[] results = new boolean[]{true, true};//executor.execute(commandEnvelope.command);
                 markCompleted(commandEnvelope.getNode());
                 hibridReplier.manageReply(commandEnvelope, results);
             }

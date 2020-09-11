@@ -3,10 +3,6 @@ package demo.hibrid.server;
 import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.server.graph.LockFreeNode;
 
-import java.util.stream.Collectors;
-
-import static demo.hibrid.server.graph.LockFreeNode.*;
-
 /**
  * @author aldenio
  */
@@ -46,7 +42,7 @@ public class HibridWorker extends Thread {
 
 
     private void markCompleted(LockFreeNode lockFreeNode) {
-        if (lockFreeNode.status.compareAndSet(READY, COMPLETED)) {
+        if (lockFreeNode.completed.compareAndSet(false, true)) {
             try {
                 lockFreeNode.writeLock.lock();
                 notifyListeners(lockFreeNode);

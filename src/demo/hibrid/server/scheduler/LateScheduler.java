@@ -6,10 +6,10 @@ import demo.hibrid.server.graph.LockFreeNode;
 import demo.hibrid.server.queue.QueuesManager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.stream.Collectors;
 
 import static demo.hibrid.server.graph.LockFreeNode.*;
 
@@ -22,8 +22,8 @@ public class LateScheduler extends Thread {
     private final BlockingQueue<CommandEnvelope> queue;
     private final COSManager cosManager;
     private final int numPartitions;
-    private List<LockFreeNode> myNodes;
-    private List<LockFreeNode> otherNodes;
+    private final List<LockFreeNode> myNodes;
+    private final List<LockFreeNode> otherNodes;
 
     public LateScheduler(int id, QueuesManager queuesManager, COSManager cosManager) {
         super("LateScheduler[" + id + "]");
@@ -61,8 +61,9 @@ public class LateScheduler extends Thread {
         boolean chegueiPrimeiro = tryToCreateNodeFor(commandEnvelope);
         LockFreeNode newNode = commandEnvelope.getNode();
 
-        myNodes.stream().filter(it -> cosManager.isDependent(commandEnvelope, it.commandEnvelope)).forEach(it -> insertDependentNode(it, newNode));
-        otherNodes.stream().filter(it -> cosManager.isDependent(commandEnvelope, it.commandEnvelope)).forEach(it -> insertDependentNode(it, newNode));
+        removeCompletedAndInsertDependencies(myNodes, commandEnvelope);
+        removeCompletedAndInsertDependencies(otherNodes, commandEnvelope);
+
         if (chegueiPrimeiro) {
             myNodes.add(newNode);
         } else {
@@ -70,7 +71,7 @@ public class LateScheduler extends Thread {
         }
 
         if (commandEnvelope.atomicCounter.decrementAndGet() == 0) {
-            if (newNode.status.compareAndSet(NEW, INSERTED)) {
+            if (newNode.inserted.compareAndSet(false, true)) {
                 if (newNode.isReady()) {
                     cosManager.readyQueue.add(newNode);
                 }
@@ -78,27 +79,32 @@ public class LateScheduler extends Thread {
                 throw new IllegalStateException("AtomicCounter == 0 and status != NEW");
             }
         }
-        removeCompletedNodes();
+    }
+
+    private void removeCompletedAndInsertDependencies(List<LockFreeNode> nodes, CommandEnvelope commandEnvelope) {
+        Iterator<LockFreeNode> myIterator = nodes.iterator();
+        while (myIterator.hasNext()) {
+            LockFreeNode myNode = myIterator.next();
+            if (myNode.completed.get()) {
+                myIterator.remove();
+            } else if (cosManager.isDependent(commandEnvelope, myNode.commandEnvelope)) {
+                insertDependentNode(myNode, commandEnvelope.getNode());
+            }
+        }
     }
 
     private void insertDependentNode(LockFreeNode oldNode, LockFreeNode newNode) {
         try {
             oldNode.readLock.lock();
-            if (oldNode.status.get() != COMPLETED) {
+            if (!oldNode.completed.get()) {
                 oldNode.listeners[id].insert(newNode);
                 newNode.dependencies.increment();
             }
-        }finally {
+        } finally {
             oldNode.readLock.unlock();
         }
 
     }
-    
-    private void removeCompletedNodes() {
-        myNodes = myNodes.stream().filter(it -> it.status.get() != COMPLETED).collect(Collectors.toList());
-        otherNodes = otherNodes.stream().filter(it -> it.status.get() != COMPLETED).collect(Collectors.toList());
-    }
-
 
 
     @Override

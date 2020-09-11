@@ -5,8 +5,7 @@ import demo.hibrid.server.CommandEnvelope;
 import demo.util.Utils.Action;
 
 import java.util.Arrays;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -15,14 +14,10 @@ import static demo.util.Utils.fillWith;
 
 
 public class LockFreeNode {
-    /*
-     NEW -> INSERTED -> READY -> REMOVED
-     */
-    public static final int NEW = 0;
-    public static final int INSERTED = 1;
-    public static final int READY = 2;
-    public static final int COMPLETED = 3;
-    public final AtomicInteger status;
+
+    public final AtomicBoolean inserted = new AtomicBoolean(false);
+    public final AtomicBoolean ready = new AtomicBoolean(false);
+    public final AtomicBoolean completed = new AtomicBoolean(false);
     public final CommandEnvelope commandEnvelope;
 
     public final Edge[] listeners;
@@ -37,17 +32,16 @@ public class LockFreeNode {
         this.listeners = new Edge[numPartitions];
         fillWith(listeners, Edge::new);
         this.commandEnvelope = commandEnvelope;
-        this.status = new AtomicInteger(NEW);
     }
 
 
     public boolean isReady(){
-        return (dependencies.intValue() == 0 && status.compareAndSet(INSERTED, READY));
+        return (dependencies.intValue() == 0 && ready.compareAndSet(false, true));
     }
 
     @Override
     public String toString() {
-        return "{status=" + status +
+        return "{status=" +
                 ", data=" + commandEnvelope +
                 ", dependencies=" + dependencies +
                 ", listeners=" + Arrays.toString(listeners) +

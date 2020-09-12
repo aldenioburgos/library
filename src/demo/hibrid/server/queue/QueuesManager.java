@@ -1,6 +1,6 @@
 package demo.hibrid.server.queue;
 
-import demo.hibrid.server.CommandEnvelope;
+import demo.hibrid.server.graph.LockFreeNode;
 import demo.hibrid.stats.Stats;
 
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.concurrent.TransferQueue;
 
 public class QueuesManager {
 
-    public final TransferQueue<CommandEnvelope>[] queues;
+    public final TransferQueue<LockFreeNode>[] queues;
 
     public QueuesManager(int numQueues) {
         Stats.partitions = numQueues;

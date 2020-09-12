@@ -1,6 +1,5 @@
 package demo.hibrid.server.graph;
 
-import demo.hibrid.server.CommandEnvelope;
 import demo.hibrid.stats.Stats;
 
 import java.util.concurrent.LinkedTransferQueue;
@@ -10,11 +9,10 @@ import java.util.concurrent.TransferQueue;
 public class COSManager {
 
     private final Semaphore space;
-    private final ConflictDefinition<CommandEnvelope> conflictDefinition;
+    private final ConflictDefinition<LockFreeNode> conflictDefinition;
     public final TransferQueue<LockFreeNode> readyQueue = new LinkedTransferQueue<>();
 
-    public COSManager(int numGraphs, int maxCOSSize, ConflictDefinition<CommandEnvelope> conflictDefinition) {
-        assert numGraphs > 0 : "Invalid Argument numGraphs <= 0";
+    public COSManager(int maxCOSSize, ConflictDefinition<LockFreeNode> conflictDefinition) {
         assert maxCOSSize > 0 : "Invalid Argument maxCOSSize <= 0";
         assert conflictDefinition != null : "Invalid Argument conflictDefinition == null";
         this.conflictDefinition = conflictDefinition;
@@ -47,8 +45,8 @@ public class COSManager {
     }
 
 
-    public boolean isDependent(CommandEnvelope commandEnvelope, CommandEnvelope commandEnvelope1) {
-        return conflictDefinition.isDependent(commandEnvelope, commandEnvelope1);
+    public boolean isDependent(LockFreeNode newNode, LockFreeNode oldNode) {
+        return conflictDefinition.isDependent(newNode, oldNode);
     }
 }
 

@@ -1,6 +1,5 @@
 package demo.hibrid.server.scheduler;
 
-import demo.hibrid.server.CommandEnvelope;
 import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.server.graph.LockFreeNode;
 import demo.hibrid.server.queue.QueuesManager;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TransferQueue;
 
 /**
  * @author aldenio
@@ -17,19 +16,19 @@ import java.util.concurrent.BlockingQueue;
 public class LateScheduler extends Thread {
 
     private final int id;
-    private final BlockingQueue<CommandEnvelope> queue;
-    private final COSManager cosManager;
     private final int numPartitions;
+    private final COSManager cosManager;
+    private final TransferQueue<LockFreeNode> queue;
     private final List<LockFreeNode> myNodes;
     private final List<LockFreeNode> otherNodes;
 
-    public LateScheduler(int id, QueuesManager queuesManager, COSManager cosManager) {
+    public LateScheduler(int id, int numPartitions, QueuesManager queuesManager, COSManager cosManager) {
         super("LateScheduler[" + id + "]");
         this.id = id;
         this.myNodes = new LinkedList<>();
         this.otherNodes = new LinkedList<>();
         this.queue = queuesManager.queues[id];
-        this.numPartitions = queuesManager.queues.length;
+        this.numPartitions = numPartitions;
         this.cosManager = cosManager;
     }
 
@@ -39,7 +38,7 @@ public class LateScheduler extends Thread {
     public void run() {
         try {
             while (true) {
-                List<CommandEnvelope> commands = new ArrayList<>();
+                List<LockFreeNode> commands = new ArrayList<>();
                 commands.add(queue.take());
                 queue.drainTo(commands);
                 commands.forEach(this::schedule);
@@ -50,12 +49,11 @@ public class LateScheduler extends Thread {
         }
     }
 
-    private void schedule(CommandEnvelope commandEnvelope) {
-        boolean chegueiPrimeiro = tryToCreateNodeFor(commandEnvelope);
-        LockFreeNode newNode = commandEnvelope.getNode();
+    private void schedule(LockFreeNode newNode) {
+        boolean chegueiPrimeiro = newNode.created.compareAndSet(false, true);
 
-        removeCompletedAndInsertDependencies(myNodes, commandEnvelope);
-        removeCompletedAndInsertDependencies(otherNodes, commandEnvelope);
+        removeCompletedAndInsertDependencies(myNodes, newNode);
+        removeCompletedAndInsertDependencies(otherNodes, newNode);
 
         if (chegueiPrimeiro) {
             myNodes.add(newNode);
@@ -63,7 +61,7 @@ public class LateScheduler extends Thread {
             otherNodes.add(newNode);
         }
 
-        if (commandEnvelope.atomicCounter.decrementAndGet() == 0) {
+        if (newNode.atomicCounter.decrementAndGet() == 0) {
             if (newNode.inserted.compareAndSet(false, true)) {
                 if (newNode.isReady()) {
                     cosManager.readyQueue.add(newNode);
@@ -74,19 +72,15 @@ public class LateScheduler extends Thread {
         }
     }
 
-    public boolean tryToCreateNodeFor(CommandEnvelope commandEnvelope) {
-        return (commandEnvelope.getNode() == null &&
-                commandEnvelope.atomicNode.compareAndSet(null, new LockFreeNode(commandEnvelope, numPartitions)));
-    }
 
-    private void removeCompletedAndInsertDependencies(List<LockFreeNode> nodes, CommandEnvelope commandEnvelope) {
+    private void removeCompletedAndInsertDependencies(List<LockFreeNode> nodes, LockFreeNode node) {
         Iterator<LockFreeNode> myIterator = nodes.iterator();
         while (myIterator.hasNext()) {
             LockFreeNode myNode = myIterator.next();
             if (myNode.completed.get()) {
                 myIterator.remove();
-            } else if (cosManager.isDependent(commandEnvelope, myNode.commandEnvelope)) {
-                insertDependentNode(myNode, commandEnvelope.getNode());
+            } else if (cosManager.isDependent(node, myNode)) {
+                insertDependentNode(myNode, node);
             }
         }
     }

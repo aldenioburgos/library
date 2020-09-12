@@ -1,5 +1,7 @@
 package demo.hibrid.server;
 
+import demo.hibrid.server.graph.LockFreeNode;
+
 public interface HibridReplier {
-    void manageReply(CommandEnvelope commandEnvelope, boolean[] results) ;
+    void manageReply(LockFreeNode node, boolean[] results) ;
 }

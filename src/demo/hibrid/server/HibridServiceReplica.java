@@ -1,10 +1,12 @@
 package demo.hibrid.server;
 
+import demo.hibrid.request.Command;
 import demo.hibrid.request.CommandResult;
 import demo.hibrid.request.Request;
 import demo.hibrid.request.Response;
 import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.server.graph.ConflictDefinitionDefault;
+import demo.hibrid.server.graph.LockFreeNode;
 import demo.hibrid.server.queue.QueuesManager;
 import demo.hibrid.server.scheduler.EarlyScheduler;
 import demo.hibrid.server.scheduler.LateScheduler;
@@ -30,8 +32,8 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     public HibridServiceReplica(int id, int queueSize, int cosSize, int numPartitions, int numWorkers, ExecutorInterface executor) {
         super(id, executor, null);
         this.queuesManager = new QueuesManager(numPartitions);
-        this.cosManager = new COSManager(numPartitions, cosSize, new ConflictDefinitionDefault());
-        this.earlyScheduler = new EarlyScheduler(queuesManager, cosManager);
+        this.cosManager = new COSManager( cosSize, new ConflictDefinitionDefault());
+        this.earlyScheduler = new EarlyScheduler(queuesManager, cosManager, numPartitions);
         this.lateSchedulers = new LateScheduler[numPartitions];
         this.workers = new HibridWorker[numWorkers];
         this.executor = executor;
@@ -42,20 +44,20 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     // Métodos que fazem o trabalho dessa replica
     ////////////////////////////////////////////////////////////////////
     public void processRequest(Request request) {
-        var requestId = request.getId();
-        var commands = request.getCommands();
+        int requestId = request.getId();
+        Command[] commands = request.getCommands();
 
         context.put(requestId, new HibridRequestContext(request));
         earlyScheduler.schedule(requestId, commands);
     }
 
-    public void manageReply(CommandEnvelope commandEnvelope, boolean[] results) {
-        var ctx = context.get(commandEnvelope.requestId);
-        var commandResult = new CommandResult(commandEnvelope.command.id, results);
+    public void manageReply(LockFreeNode node, boolean[] results) {
+        HibridRequestContext ctx = context.get(node.requestId);
+        var commandResult = new CommandResult(node.command.id, results);
         ctx.add(commandResult);
         if (ctx.isRequestFinished()) {
-            var response = new Response(commandEnvelope.requestId, ctx.getResults());
-            context.remove(commandEnvelope.requestId);
+            var response = new Response(node.requestId, ctx.getResults());
+            context.remove(node.requestId);
             reply(response);
         }
     }
@@ -65,8 +67,8 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
     // Métodos para criar e executar as threads dos schedulers e workes.
     ////////////////////////////////////////////////////////////////////
     public Thread[] start() {
-        var um = initLateSchedulers();
-        var dois = initReplicaWorkers();
+        Thread[] um = initLateSchedulers();
+        Thread[] dois = initReplicaWorkers();
         var soma = new Thread[um.length+dois.length];
         System.arraycopy(um,0,soma, 0, um.length);
         System.arraycopy(dois, 0, soma, um.length,dois.length);
@@ -75,7 +77,7 @@ public class HibridServiceReplica extends AbstractServiceReplica implements Hibr
 
     private Thread[] initLateSchedulers() {
         for (int i = 0; i < lateSchedulers.length; i++) {
-            lateSchedulers[i] = new LateScheduler(i, queuesManager, cosManager);
+            lateSchedulers[i] = new LateScheduler(i, lateSchedulers.length, queuesManager, cosManager);
             lateSchedulers[i].start();
         }
         return lateSchedulers;

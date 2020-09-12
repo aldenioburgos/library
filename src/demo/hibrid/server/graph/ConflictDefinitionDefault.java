@@ -1,12 +1,11 @@
 package demo.hibrid.server.graph;
 
 import demo.hibrid.request.Command;
-import demo.hibrid.server.CommandEnvelope;
 
-public class ConflictDefinitionDefault implements ConflictDefinition<CommandEnvelope> {
+public class ConflictDefinitionDefault implements ConflictDefinition<LockFreeNode> {
 
     @Override
-    public boolean isDependent(CommandEnvelope newNode, CommandEnvelope oldNode) {
+    public boolean isDependent(LockFreeNode newNode, LockFreeNode oldNode) {
         return newNode.command.type == Command.ADD || oldNode.command.type == Command.ADD;
     }
 }

@@ -2,13 +2,13 @@ package demo.parallelism;
 
 import demo.hibrid.request.Command;
 import demo.hibrid.request.Request;
-import demo.hibrid.server.CommandEnvelope;
 import demo.hibrid.server.HibridReplier;
 import demo.hibrid.server.HibridWorker;
 import demo.hibrid.server.ListExecutor;
 import demo.hibrid.server.graph.COSManager;
 import demo.hibrid.server.graph.ConflictDefinition;
 import demo.hibrid.server.graph.ConflictDefinitionDefault;
+import demo.hibrid.server.graph.LockFreeNode;
 import demo.hibrid.server.queue.QueuesManager;
 import demo.hibrid.server.scheduler.EarlyScheduler;
 import demo.hibrid.server.scheduler.LateScheduler;
@@ -32,7 +32,7 @@ public class LocalHibridExecution implements HibridReplier {
     private final ListExecutor executor;
     private final HibridWorker[] hibridWorkers;
     private final HibridReplier hibridReplier;
-    private final ConflictDefinition<CommandEnvelope> conflictDefinition;
+    private final ConflictDefinition<LockFreeNode> conflictDefinition;
     private final Command[] commands;
     private final AtomicInteger commandsLeft;
     private long startTimestampInNanos;
@@ -87,8 +87,8 @@ public class LocalHibridExecution implements HibridReplier {
         this.executor = new ListExecutor(tamLista, numParticoes);
         this.queuesManager = new QueuesManager(numParticoes);
         this.conflictDefinition = new ConflictDefinitionDefault();
-        this.cosManager = new COSManager(numParticoes, tamParticoes, conflictDefinition);
-        this.earlyScheduler = new EarlyScheduler(queuesManager,cosManager);
+        this.cosManager = new COSManager(tamParticoes, conflictDefinition);
+        this.earlyScheduler = new EarlyScheduler(queuesManager, cosManager, numParticoes);
         this.lateSchedulers = createLateSchedulers(numParticoes, queuesManager, cosManager);
         this.hibridWorkers = createWorkers(numWorkerThreads, numParticoes, cosManager, executor, hibridReplier);
         // criação dos comandos
@@ -108,7 +108,7 @@ public class LocalHibridExecution implements HibridReplier {
     private LateScheduler[] createLateSchedulers(int numParticoes, QueuesManager queuesManager, COSManager cosManager) {
         var lateSchedulers = new LateScheduler[numParticoes];
         for (int i = 0; i < lateSchedulers.length; i++) {
-            lateSchedulers[i] = new LateScheduler(i, queuesManager, cosManager);
+            lateSchedulers[i] = new LateScheduler(i, lateSchedulers.length, queuesManager, cosManager);
         }
         return lateSchedulers;
     }
@@ -121,7 +121,7 @@ public class LocalHibridExecution implements HibridReplier {
     }
 
     @Override
-    public void manageReply(CommandEnvelope commandEnvelope, boolean[] results) {
+    public void manageReply(LockFreeNode node, boolean[] results) {
         int howManyCommandsAreLeft = commandsLeft.decrementAndGet();
         if (howManyCommandsAreLeft == 0) {
             long endTimeInNanos = System.nanoTime();

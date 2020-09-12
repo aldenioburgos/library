@@ -1,37 +1,49 @@
 package demo.hibrid.server.graph;
 
 
-import demo.hibrid.server.CommandEnvelope;
+import demo.hibrid.request.Command;
 import demo.util.Utils.Action;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import static demo.util.Utils.fillWith;
 
 
 public class LockFreeNode {
 
+    public final int requestId;
+    public final Command command;
+    public final int[] distinctPartitions;
+    public final AtomicInteger atomicCounter;
+
+    public final AtomicBoolean created = new AtomicBoolean(false);
     public final AtomicBoolean inserted = new AtomicBoolean(false);
     public final AtomicBoolean ready = new AtomicBoolean(false);
     public final AtomicBoolean completed = new AtomicBoolean(false);
-    public final CommandEnvelope commandEnvelope;
+
 
     public final Edge[] listeners;
     public final LongAdder dependencies = new LongAdder();
-    public final ReentrantReadWriteLock.WriteLock writeLock;
-    public final ReentrantReadWriteLock.ReadLock readLock;
+    public final WriteLock writeLock;
+    public final ReadLock readLock;
 
-    public LockFreeNode(CommandEnvelope commandEnvelope, int numPartitions) {
+    public LockFreeNode(int requestId, Command command, int numPartitions) {
         var lock = new ReentrantReadWriteLock();
         this.readLock = lock.readLock();
         this.writeLock = lock.writeLock();
         this.listeners = new Edge[numPartitions];
         fillWith(listeners, Edge::new);
-        this.commandEnvelope = commandEnvelope;
+        this.requestId = requestId;
+        this.command = command;
+        this.distinctPartitions = command.distinctPartitions();
+        this.atomicCounter = new AtomicInteger(distinctPartitions.length);
     }
 
 
@@ -42,7 +54,6 @@ public class LockFreeNode {
     @Override
     public String toString() {
         return "{status=" +
-                ", data=" + commandEnvelope +
                 ", dependencies=" + dependencies +
                 ", listeners=" + Arrays.toString(listeners) +
                 '}';
@@ -62,7 +73,7 @@ public class LockFreeNode {
 
         @Override
         public String toString() {
-            return ((node == null) ? "[" : node.commandEnvelope.command.id) + ((nextEdge.get() == null) ? "]" : ", " + nextEdge);
+            return ((node == null) ? "[" : node.command.id) + ((nextEdge.get() == null) ? "]" : ", " + nextEdge);
         }
 
         public void forEach(Action<LockFreeNode> action){

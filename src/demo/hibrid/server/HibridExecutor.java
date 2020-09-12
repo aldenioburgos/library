@@ -1,7 +1,5 @@
 package demo.hibrid.server;
 
-import bftsmart.tom.MessageContext;
-import bftsmart.tom.server.SingleExecutable;
 import demo.hibrid.request.Command;
 
 import java.util.Random;

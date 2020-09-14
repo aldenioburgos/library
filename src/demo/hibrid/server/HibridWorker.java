@@ -30,7 +30,7 @@ public class HibridWorker extends Thread {
         try {
             while (true) {
                 LockFreeNode newNode = cosManager.readyQueue.take();
-                boolean[] results = new boolean[]{true, true};//executor.execute(newNode.command);
+                boolean[] results = executor.execute(newNode.command);
                 markCompleted(newNode);
                 hibridReplier.manageReply(newNode, results);
             }
@@ -42,13 +42,13 @@ public class HibridWorker extends Thread {
 
 
     private void markCompleted(LockFreeNode lockFreeNode) {
-        if (lockFreeNode.completed.compareAndSet(false, true)) {
-//            try {
-//                lockFreeNode.writeLock.lock();
-//                //notifyListeners(lockFreeNode);
-//            } finally {
-//                lockFreeNode.writeLock.unlock();
-//            }
+        if (lockFreeNode.completed =  true) {
+            try {
+                lockFreeNode.writeLock.lock();
+                notifyListeners(lockFreeNode);
+            } finally {
+                lockFreeNode.writeLock.unlock();
+            }
             cosManager.releaseSpace();
         }
     }

@@ -23,10 +23,11 @@ public class LockFreeNode {
     public final int[] distinctPartitions;
     public final AtomicInteger atomicCounter;
 
+    public boolean inserted = false;
+    public boolean completed =false;
+
     public final AtomicBoolean created = new AtomicBoolean(false);
-    public final AtomicBoolean inserted = new AtomicBoolean(false);
     public final AtomicBoolean ready = new AtomicBoolean(false);
-    public final AtomicBoolean completed = new AtomicBoolean(false);
 
 
     public final Edge[] listeners;
@@ -48,7 +49,7 @@ public class LockFreeNode {
 
 
     public boolean isReady(){
-        return (dependencies.intValue() == 0 && ready.compareAndSet(false, true));
+        return (inserted && dependencies.intValue() == 0 && ready.compareAndSet(false, true));
     }
 
     @Override

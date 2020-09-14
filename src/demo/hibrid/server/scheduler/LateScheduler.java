@@ -61,13 +61,14 @@ public class LateScheduler extends Thread {
             otherNodes.add(newNode);
         }
 
-        if (newNode.atomicCounter.decrementAndGet() == 0) {
-            if (newNode.inserted.compareAndSet(false, true)) {
-                if (newNode.isReady()) {
-                    cosManager.readyQueue.add(newNode);
-                }
+        if (newNode.atomicCounter.decrementAndGet() == 0){
+            if (newNode.dependencies.intValue() == 0) {
+                cosManager.readyQueue.add(newNode);
             } else {
-                throw new IllegalStateException("AtomicCounter == 0 and inserted == true");
+                newNode.inserted = true;
+                if (newNode.isReady()){
+                    cosManager.addToReadyQueue(newNode);
+                }
             }
         }
     }
@@ -77,7 +78,7 @@ public class LateScheduler extends Thread {
         Iterator<LockFreeNode> myIterator = nodes.iterator();
         while (myIterator.hasNext()) {
             LockFreeNode myNode = myIterator.next();
-            if (myNode.completed.get()) {
+            if (myNode.completed) {
                 myIterator.remove();
             } else if (cosManager.isDependent(node, myNode)) {
                 insertDependentNode(myNode, node);
@@ -88,7 +89,7 @@ public class LateScheduler extends Thread {
     private void insertDependentNode(LockFreeNode oldNode, LockFreeNode newNode) {
         try {
             oldNode.readLock.lock();
-            if (!oldNode.completed.get()) {
+            if (!oldNode.completed) {
                 oldNode.listeners[id].insert(newNode);
                 newNode.dependencies.increment();
             }

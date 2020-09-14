@@ -42,23 +42,23 @@ public class HibridWorker extends Thread {
 
 
     private void markCompleted(LockFreeNode lockFreeNode) {
-        if (lockFreeNode.completed =  true) {
-            try {
-                lockFreeNode.writeLock.lock();
-                notifyListeners(lockFreeNode);
-            } finally {
-                lockFreeNode.writeLock.unlock();
-            }
-            cosManager.releaseSpace();
+        lockFreeNode.completed =  true;
+        try {
+            lockFreeNode.writeLock.lock();
+            notifyListeners(lockFreeNode);
+        } finally {
+            lockFreeNode.writeLock.unlock();
         }
+        cosManager.releaseSpace();
+
     }
 
     private void notifyListeners(LockFreeNode currentNode) {
         for (var listenersHead : currentNode.listeners) {
-            listenersHead.forEach(node -> {
-                node.dependencies.decrement();
-                if (node.isReady()) {
-                    cosManager.addToReadyQueue(node);
+            listenersHead.forEach(listenerNode -> {
+                listenerNode.dependencies.decrement();
+                if (listenerNode.isReady()) {
+                    cosManager.addToReadyQueue(listenerNode);
                 }
             });
         }

@@ -33,7 +33,6 @@ public class LateScheduler extends Thread {
     }
 
 
-
     @Override
     public void run() {
         try {
@@ -50,25 +49,19 @@ public class LateScheduler extends Thread {
     }
 
     private void schedule(LockFreeNode newNode) {
-        boolean chegueiPrimeiro = newNode.created.compareAndSet(false, true);
-
         removeCompletedAndInsertDependencies(myNodes, newNode);
         removeCompletedAndInsertDependencies(otherNodes, newNode);
 
-        if (chegueiPrimeiro) {
+        if (newNode.distinctPartitions[0] == id) {
             myNodes.add(newNode);
         } else {
             otherNodes.add(newNode);
         }
 
-        if (newNode.atomicCounter.decrementAndGet() == 0){
-            if (newNode.dependencies.intValue() == 0) {
-                cosManager.readyQueue.add(newNode);
-            } else {
-                newNode.inserted = true;
-                if (newNode.isReady()){
-                    cosManager.addToReadyQueue(newNode);
-                }
+        if (newNode.atomicCounter.decrementAndGet() == 0) {
+            newNode.inserted = true;
+            if (newNode.isReady()) {
+                cosManager.addToReadyQueue(newNode);
             }
         }
     }

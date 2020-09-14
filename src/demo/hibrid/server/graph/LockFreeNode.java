@@ -24,9 +24,7 @@ public class LockFreeNode {
     public final AtomicInteger atomicCounter;
 
     public boolean inserted = false;
-    public boolean completed =false;
-
-    public final AtomicBoolean created = new AtomicBoolean(false);
+    public boolean completed = false;
     public final AtomicBoolean ready = new AtomicBoolean(false);
 
 
@@ -48,7 +46,7 @@ public class LockFreeNode {
     }
 
 
-    public boolean isReady(){
+    public boolean isReady() {
         return (inserted && dependencies.intValue() == 0 && ready.compareAndSet(false, true));
     }
 
@@ -77,7 +75,7 @@ public class LockFreeNode {
             return ((node == null) ? "[" : node.command.id) + ((nextEdge.get() == null) ? "]" : ", " + nextEdge);
         }
 
-        public void forEach(Action<LockFreeNode> action){
+        public void forEach(Action<LockFreeNode> action) {
             if (this.node != null) throw new UnsupportedOperationException("Método forEach só pode ser executado no head da lista!");
             Edge aux = this.nextEdge.get();
             while (aux != null) {

@@ -7,7 +7,6 @@ import demo.util.Utils.Action;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -58,9 +57,13 @@ public class LockFreeNode {
                 '}';
     }
 
+
+    /**
+     *
+     */
     public static class Edge {
         public final LockFreeNode node;
-        public final AtomicReference<Edge> nextEdge = new AtomicReference<>();
+        public Edge nextEdge;
 
         public Edge() {
             node = null;
@@ -72,24 +75,24 @@ public class LockFreeNode {
 
         @Override
         public String toString() {
-            return ((node == null) ? "[" : node.command.id) + ((nextEdge.get() == null) ? "]" : ", " + nextEdge);
+            return ((node == null) ? "[" : node.command.id) + ((nextEdge == null) ? "]" : ", " + nextEdge);
         }
 
         public void forEach(Action<LockFreeNode> action) {
-            if (this.node != null) throw new UnsupportedOperationException("Método forEach só pode ser executado no head da lista!");
-            Edge aux = this.nextEdge.get();
+            Edge aux = this.nextEdge;
             while (aux != null) {
                 action.apply(aux.node);
-                aux = aux.nextEdge.get();
+                aux = aux.nextEdge;
             }
         }
 
         public void insert(LockFreeNode newNode) {
-            if (this.node != null) throw new UnsupportedOperationException("Método insert só deve ser executado no head da lista!");
             Edge aux = this;
-            while (aux.node != newNode && (aux.nextEdge.get() != null || !aux.nextEdge.compareAndSet(null, new Edge(newNode)))) {
-                aux = aux.nextEdge.get();
+            while (aux.nextEdge != null) {
+                if (aux.node == newNode) return;
+                aux = aux.nextEdge;
             }
+            aux.nextEdge = new Edge(newNode);
         }
     }
 }

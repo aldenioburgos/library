@@ -46,7 +46,7 @@ public class LocalHibridExecution implements HibridReplier {
             var percEscritas = Integer.valueOf(args[4]);
             var numeroOperacoes = Integer.valueOf(args[5]);
             var tamParticoes = Integer.valueOf(args[6]);
-            System.out.println("sem o commandenvelope!");
+            System.out.println("Teste com throws!");
             System.out.print("{ n partitions: " + numParticoes);
             System.out.print(", n workers: " + numWorkerThreads);
             System.out.print(", list size: " + tamLista);

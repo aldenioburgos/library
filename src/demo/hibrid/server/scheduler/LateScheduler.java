@@ -55,7 +55,8 @@ public class LateScheduler extends Thread {
         if (newNode.distinctPartitions[0] == id) {
             myNodes.add(newNode);
         } else {
-            otherNodes.add(newNode);
+            throw new RuntimeException("Tem mais de uma partição!");
+//            otherNodes.add(newNode);
         }
 
         if (newNode.atomicCounter.decrementAndGet() == 0) {
@@ -80,16 +81,16 @@ public class LateScheduler extends Thread {
     }
 
     private void insertDependentNode(LockFreeNode oldNode, LockFreeNode newNode) {
-        try {
-            oldNode.readLock.lock();
-            if (!oldNode.completed) {
-                oldNode.listeners[id].insert(newNode);
-                newNode.dependencies.increment();
-            }
-        } finally {
-            oldNode.readLock.unlock();
-        }
-
+        throw new RuntimeException("Tem um nó dependente aqui!");
+//        try {
+//            oldNode.readLock.lock();
+//            if (!oldNode.completed) {
+//                oldNode.listeners[id].insert(newNode);
+//                newNode.dependencies.increment();
+//            }
+//        } finally {
+//            oldNode.readLock.unlock();
+//        }
     }
 
 

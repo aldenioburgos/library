@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author aldenio
  */
-public abstract class AbstractServiceReplica extends ServiceReplica  {
+public abstract class AbstractServiceReplica extends ServiceReplica implements HibridReplier  {
 
     protected final Map<Integer, TOMMessage> msgStore= new ConcurrentHashMap<>();
     
@@ -39,7 +39,7 @@ public abstract class AbstractServiceReplica extends ServiceReplica  {
 
     protected abstract void processRequest(Request request);
 
-    protected void reply(Response response) {
+    public void reply(Response response) {
         TOMMessage message = msgStore.remove(response.getId());
         message.reply = new TOMMessage(id, message.getSession(),message.getSequence(), response.toBytes(), SVController.getCurrentViewId());
         replier.manageReply(message, null);

@@ -2,6 +2,7 @@ package demo.parallelism;
 
 import demo.hibrid.request.Command;
 import demo.hibrid.request.Request;
+import demo.hibrid.request.Response;
 import demo.hibrid.server.HibridReplier;
 import demo.hibrid.server.HibridWorker;
 import demo.hibrid.server.ListExecutor;
@@ -127,9 +128,15 @@ public class LocalHibridExecution implements HibridReplier {
             long endTimeInNanos = System.nanoTime();
             String throughput = calculateThroughput(startTimestampInNanos, endTimeInNanos, commands.length);
             System.out.println("}: Throughput=" + throughput);
-            assert Stats.print(commands.length);
+            assert Stats.numOperations(commands.length);
+            assert Stats.print();
             System.exit(0);
         }
+    }
+
+    @Override
+    public void reply(Response response) {
+
     }
 
     private String calculateThroughput(long start, long end, long numOperations) {

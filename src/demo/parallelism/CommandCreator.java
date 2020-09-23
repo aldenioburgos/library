@@ -7,10 +7,10 @@ import java.util.Random;
 public class CommandCreator {
 
     public static Command[] createCommands(int numeroOperacoes,
-                                     int percTransacoesGlobais,
-                                     int percEscritas,
-                                     int numParticoes,
-                                     int tamLista) {
+                                             int percTransacoesGlobais,
+                                             int percEscritas,
+                                             int numParticoes,
+                                             int tamLista) {
         Random rand = new Random();
         Command[] commands = new Command[numeroOperacoes];
         for (int i = 0; i < commands.length; i++) {
@@ -21,14 +21,14 @@ public class CommandCreator {
 
 
     private static Command createListCommand(Random rand, int numPartitions, int percTransacoesGlobais, int tamLista, int percEscritas) {
-        int[] selectedPartitions = selectPartitions(rand, numPartitions, percTransacoesGlobais);
-        int[] selectedIndexes = selectIndexes(rand, selectedPartitions.length, tamLista);
+        Integer[] selectedPartitions = selectPartitions(rand, numPartitions, percTransacoesGlobais);
+        Integer[] selectedIndexes = selectIndexes(rand, selectedPartitions.length, tamLista);
         int operationType = isWriteOperation(rand, percEscritas) ? Command.ADD : Command.GET;
 
         return new Command(operationType, selectedPartitions, selectedIndexes);
     }
 
-    private static int[] selectPartitions(Random rand, int numPartitions, int percTransacoesGlobais) {
+    private static Integer[] selectPartitions(Random rand, int numPartitions, int percTransacoesGlobais) {
         int selector = rand.nextInt(100);
         if (selector < percTransacoesGlobais) {
             return allPartitions(numPartitions);
@@ -37,24 +37,24 @@ public class CommandCreator {
         }
     }
 
-    private static int[] selectIndexes(Random rand, int numSelectedPartitions, int tamLista) {
-        int[] indexes = new int[numSelectedPartitions];
+    private static Integer[] selectIndexes(Random rand, int numSelectedPartitions, int tamLista) {
+        Integer[] indexes = new Integer[numSelectedPartitions];
         for (int i = 0; i < numSelectedPartitions; i++) {
             indexes[i] = rand.nextInt(tamLista);
         }
         return indexes;
     }
 
-    private static int[] allPartitions(int numPartitions) {
-        int[] partitions = new int[numPartitions];
+    private static Integer[] allPartitions(int numPartitions) {
+        Integer[] partitions = new Integer[numPartitions];
         for (int i = 0; i < numPartitions; i++) {
             partitions[i] = i;
         }
         return partitions;
     }
 
-    private static int[] selectPartition(Random rand, int numPartitions) {
-        int[] partition = new int[1];
+    private static Integer[] selectPartition(Random rand, int numPartitions) {
+        Integer[] partition = new Integer[1];
         partition[0] = rand.nextInt(numPartitions);
         return partition;
     }

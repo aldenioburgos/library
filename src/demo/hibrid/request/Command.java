@@ -3,8 +3,9 @@ package demo.hibrid.request;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class Command {
     public static final int ADD = 1;
@@ -13,37 +14,37 @@ public class Command {
 
     public final int id;
     public final int type;
-    public final int[] partitions;
-    public final int[] indexes;
+    public final Integer[] partitions;
+    public final Integer[] indexes;
 
-    public Command(int id, int type, int[] partition, int... indexes) {
+    public Command(int id, int type, Integer[] partitions, Integer[] indexes) {
         assert type == ADD || type == GET : "Unkown command type: " + type;
         this.id = id;
         this.type = type;
-        this.partitions = partition;
+        this.partitions = partitions;
         this.indexes = indexes;
     }
 
-    public Command(int type, int[] partition, int... indexes) {
-        this(idGenerator.getAndAdd(1), type, partition, indexes);
+    public Command(int type, Integer[] partitions, Integer []indexes) {
+        this(idGenerator.getAndAdd(1), type, partitions, indexes);
     }
 
-    public int[] distinctPartitions(){
-        return Arrays.stream(partitions).distinct().toArray();
+    public Set<Integer> distinctPartitions(){
+        return new HashSet<>(Arrays.asList(partitions));
     }
 
     public static Command fromBytes(DataInputStream dis) throws IOException {
         var id = dis.readInt();
         var type = dis.readInt();
-        var partitions = new int[dis.readInt()];
+        var partitions = new Integer[dis.readInt()];
         for (int i = 0; i < partitions.length; i++) {
             partitions[i] = dis.readInt();
         }
-        var indexes = new int[dis.readInt()];
+        var indexes = new Integer[dis.readInt()];
         for (int i = 0; i < indexes.length; i++) {
             indexes[i] = dis.readInt();
         }
-        return new Command(id, type, partitions,indexes);
+        return new Command(id, type, partitions, indexes);
     }
 
     public void toBytes(DataOutputStream dos) throws IOException {

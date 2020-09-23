@@ -19,7 +19,7 @@ public class LockFreeNode {
 
     public final int requestId;
     public final Command command;
-    public final int[] distinctPartitions;
+    public final Integer[] distinctPartitions;
     public final AtomicInteger atomicCounter;
 
     public boolean inserted = false;
@@ -40,7 +40,7 @@ public class LockFreeNode {
         fillWith(listeners, Edge::new);
         this.requestId = requestId;
         this.command = command;
-        this.distinctPartitions = command.distinctPartitions();
+        this.distinctPartitions = command.distinctPartitions().toArray(Integer[]::new);
         this.atomicCounter = new AtomicInteger(distinctPartitions.length);
     }
 

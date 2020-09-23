@@ -3,22 +3,38 @@ package demo.hibrid.server.scheduler;
 import demo.hibrid.request.Command;
 import demo.hibrid.request.CommandResult;
 import demo.hibrid.server.graph.ConflictDefinition;
+import demo.hibrid.stats.Stats;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
 
 public class Partition {
     private final Node<CommandPair> commands = new Node();
     private final ConflictDefinition<Command> conflict;
+    private final Semaphore space;
 
-
-    public Partition(ConflictDefinition<Command> conflict) {
+    public Partition(ConflictDefinition<Command> conflict, int size) {
         this.conflict = conflict;
+        this.space = new Semaphore(size);
     }
 
-    public List<CompletableFuture<CommandResult>> add(Command command, CompletableFuture<CommandResult> futureResult) {
+    public  void releaseSpace() {
+        this.space.release();
+    }
+
+    private void acquireSpace() {
+        assert Stats.cosSize(150-space.availablePermits());
+        try {
+            this.space.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public synchronized List<CompletableFuture<CommandResult>> add(Command command, CompletableFuture<CommandResult> futureResult) {
+        this.acquireSpace();
         List<CompletableFuture<CommandResult>> dependentResults = new LinkedList<>();
         Node<CommandPair> aux = commands;
         while (aux.next != null) {
@@ -71,6 +87,6 @@ class CommandPair {
 
     @Override
     public String toString() {
-        return "{" + command.id + ", " + Arrays.toString(command.distinctPartitions()) + ", " + futureResult.isDone() + "}";
+        return "{" + command.id + ", " + command.distinctPartitions() + ", " + futureResult.isDone() + "}";
     }
 }

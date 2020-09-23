@@ -10,21 +10,19 @@ import demo.hibrid.server.graph.ConflictDefinition;
 import demo.hibrid.stats.Stats;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-import static java.util.concurrent.CompletableFuture.allOf;
+import static java.util.concurrent.CompletableFuture.*;
 
 public class FutureScheduler {
 
     private final ExecutorInterface executor;
     private final HibridReplier replier;
     private final Partition[] partitions;
-    private final Semaphore space;
-    private final ForkJoinPool workerPool;
-    private final ForkJoinPool partitionPool;
+
+//    private final ForkJoinPool workerPool;
+//    private final ForkJoinPool partitionPool;
 
     public FutureScheduler(HibridReplier replier,
                            ExecutorInterface executor,
@@ -32,69 +30,47 @@ public class FutureScheduler {
                            int cosSize,
                            int workerThreads,
                            ConflictDefinition<Command> conflictDefinition) {
-        this.space = new Semaphore(cosSize);
-        this.workerPool = new ForkJoinPool(workerThreads);
-        this.partitionPool = new ForkJoinPool(numPartitions);
+//        this.workerPool = new ForkJoinPool(workerThreads);
+//        this.partitionPool = new ForkJoinPool(numPartitions);
         this.replier = replier;
         this.executor = executor;
         this.partitions = new Partition[numPartitions];
         for (int i = 0; i < partitions.length; i++) {
-            partitions[i] = new Partition(conflictDefinition);
+            partitions[i] = new Partition(conflictDefinition, cosSize);
         }
     }
 
-    public void processRequest(Request request) {
+    public CompletableFuture<Void> processRequest(Request request) {
         int requestId = request.getId();
         Command[] commands = request.getCommands();
-        List<CompletableFuture<CommandResult>> results = new ArrayList<>(commands.length);
-        for (Command command : commands) {
-            assert Stats.cosSize(space.availablePermits());
-            acquireSpace();
-            results.add(schedule(requestId, command));
+        CompletableFuture<CommandResult>[] futureResults = new CompletableFuture[commands.length];
+        for (int i = 0; i < commands.length; i++) {
+            CompletableFuture<CommandResult> futureResult = futureResults[i] = new CompletableFuture<>();
+            Command command = commands[i];
+            supplyAsync(() -> schedule(command, futureResult))
+                    .thenAcceptAsync((dependencies) -> dependencies.forEach(CompletableFuture::join))
+                    .thenRunAsync(() -> execute(command, futureResult, requestId));
         }
-        allOf(results.toArray(CompletableFuture[]::new))
-                .thenRun(() -> manageReply(requestId, results));
+        return runAsync(()-> manageReply(requestId, futureResults));
     }
 
-    private CompletableFuture<CommandResult> schedule(int requestId, Command command) {
-        CompletableFuture<CommandResult> commandRun = new CompletableFuture<>();
-        List<CompletableFuture<?>> dependencies1 = new LinkedList<>();
-        List<CompletableFuture<?>> dependencies2 = new LinkedList<>();
-        int[] distinctPartitions = command.distinctPartitions();
-        for (int i = 0; i < distinctPartitions.length; i++) {
-            Partition partition = partitions[distinctPartitions[i]];
-            CompletableFuture<Void> inserirNaParticao = CompletableFuture.runAsync(()-> dependencies2.addAll(partition.add(command, commandRun)), partitionPool);
-            dependencies1.add(inserirNaParticao);
-        }
 
-        return allOf(dependencies1.toArray(CompletableFuture[]::new))
-                .thenCombineAsync(allOf(dependencies2.toArray(CompletableFuture[]::new)), (Void a, Void b) -> null)
-                .thenCombineAsync(CompletableFuture.supplyAsync(() -> execute(commandRun, command, requestId), workerPool), (a, b) -> b);
+    private List<CompletableFuture<?>> schedule(Command command, CompletableFuture<CommandResult> futureResult) {
+        List<CompletableFuture<?>> dependencies = new LinkedList<>();
+        command.distinctPartitions().forEach(it -> dependencies.addAll(partitions[it].add(command, futureResult)));
+        return dependencies;
     }
 
-    private CommandResult execute(CompletableFuture<CommandResult> commandRun, Command command, int requestId) {
-        var result = new CommandResult(requestId, executor.execute(command));
-        commandRun.complete(result);
-        releaseSpace();
-        return result;
+    private void execute(Command command, CompletableFuture<CommandResult> commandExecution, int requestId) {
+        boolean[] result = executor.execute(command);
+        commandExecution.complete(new CommandResult(requestId, result));
+        command.distinctPartitions().forEach(it -> partitions[it].releaseSpace());
     }
 
-    private void manageReply(int requestId, List<CompletableFuture<CommandResult>> futureResults) {
-        List<CommandResult> results = futureResults.stream().map(CompletableFuture::join).collect(Collectors.toList());
-        var response = new Response(requestId, results.toArray(CommandResult[]::new));
+    private void manageReply(int requestId, CompletableFuture<CommandResult>[] futureResults) {
+        CommandResult[] results = Arrays.stream(futureResults).map(CompletableFuture::join).toArray(CommandResult[]::new);
+        var response = new Response(requestId, results);
         replier.reply(response);
-    }
-
-    private void releaseSpace() {
-        this.space.release();
-    }
-
-    private void acquireSpace() {
-        try {
-            this.space.acquire();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 

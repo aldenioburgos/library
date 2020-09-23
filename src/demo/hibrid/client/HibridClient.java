@@ -64,13 +64,13 @@ public class HibridClient extends Thread {
 
     private Command createCommand() {
         int numPartitionsEnvolved = numPartitionsEnvolved(config, rand);
-        int[] selectedPartitions = selectPartitions(numPartitionsEnvolved);
-        int[] selectedIndexes = selectIndexes(selectedPartitions);
+        Integer[] selectedPartitions = selectPartitions(numPartitionsEnvolved);
+        Integer[] selectedIndexes = selectIndexes(selectedPartitions);
         return new Command(isWriteOperation(selectedPartitions) ? Command.ADD : Command.GET, selectedPartitions, selectedIndexes);
     }
 
 
-    private boolean isWriteOperation(int[] selectedPartitions) {
+    private boolean isWriteOperation(Integer[] selectedPartitions) {
         var result = true;
         var seletor = rand.nextInt(100);
         for (int selectedPartition : selectedPartitions) {
@@ -82,9 +82,9 @@ public class HibridClient extends Thread {
         return result;
     }
 
-    private int[] selectIndexes(int[] selectedPartitions) {
+    private Integer[] selectIndexes(Integer[] selectedPartitions) {
         assert selectedPartitions.length > 0 : "Deve haver ao menos uma partição selecionada.";
-        var indexes = new int[selectedPartitions.length];
+        var indexes = new Integer[selectedPartitions.length];
         for (int i = 0; i < selectedPartitions.length; i++) {
             indexes[i] = selectIndex(selectedPartitions[i]);
         }
@@ -111,8 +111,8 @@ public class HibridClient extends Thread {
         throw new RuntimeException("Sempre deve haver ao menos uma partição envolvida.");
     }
 
-    private int[] selectPartitions(int numPartitionsEnvolved) {
-        var partitions = new int[numPartitionsEnvolved];
+    private Integer[] selectPartitions(int numPartitionsEnvolved) {
+        var partitions = new Integer[numPartitionsEnvolved];
         for (int i = 0; i < partitions.length; i++) {
             partitions[i] = selectPartition();
         }

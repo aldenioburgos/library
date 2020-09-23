@@ -56,7 +56,7 @@ public class LocalHibridExecution implements HibridReplier {
             System.out.print(", n ops: " + numeroOperacoes);
             System.out.print(", cos size: " + tamParticoes);
 
-            var localHibridExecution2 = new LocalHibridExecution(numParticoes, numWorkerThreads, tamLista, percTransacoesGlobais, percEscritas, numeroOperacoes, tamParticoes);
+            var localHibridExecution2 = new LocalHibridExecution(1, numParticoes, numWorkerThreads, tamLista, percTransacoesGlobais, percEscritas, numeroOperacoes, tamParticoes);
             localHibridExecution2.startServerThreads();
             localHibridExecution2.scheduleCommands();
             localHibridExecution2.joinServerThreads();
@@ -77,13 +77,14 @@ public class LocalHibridExecution implements HibridReplier {
     }
 
 
-    public LocalHibridExecution(Integer numParticoes,
-                                Integer numWorkerThreads,
-                                Integer tamLista,
-                                Integer percTransacoesGlobais,
-                                Integer percEscritas,
-                                Integer numeroOperacoes,
-                                Integer tamParticoes) {
+    public LocalHibridExecution(int numClients,
+                                int numParticoes,
+                                int numWorkerThreads,
+                                int tamLista,
+                                int percTransacoesGlobais,
+                                int percEscritas,
+                                int numOperacoes,
+                                int tamParticoes) {
         this.hibridReplier = this;
         this.executor = new ListExecutor(tamLista, numParticoes);
         this.queuesManager = new QueuesManager(numParticoes);
@@ -93,7 +94,7 @@ public class LocalHibridExecution implements HibridReplier {
         this.lateSchedulers = createLateSchedulers(numParticoes, queuesManager, cosManager);
         this.hibridWorkers = createWorkers(numWorkerThreads, numParticoes, cosManager, executor, hibridReplier);
         // criação dos comandos
-        this.commands = CommandCreator.createCommands(numeroOperacoes, percTransacoesGlobais, percEscritas, numParticoes, tamLista);
+        this.commands = CommandCreator.createCommands(numOperacoes, percTransacoesGlobais, percEscritas, numParticoes, tamLista);
         this.commandsLeft = new AtomicInteger(commands.length);
     }
 
@@ -116,7 +117,7 @@ public class LocalHibridExecution implements HibridReplier {
 
 
     public void scheduleCommands() {
-        var request = new Request(0, 0, commands);
+        var request = new Request(0, 0, commands[0]);
         startTimestampInNanos = System.nanoTime();
         earlyScheduler.schedule(request.getId(), commands);
     }

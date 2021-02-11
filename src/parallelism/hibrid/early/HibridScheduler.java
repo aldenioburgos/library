@@ -1,19 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package parallelism.hibrid.early;
 
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.util.MultiOperationRequest;
-import java.util.Queue;
 import parallelism.MessageContextPair;
 import parallelism.MultiOperationCtx;
 import parallelism.ParallelMapping;
 import parallelism.hibrid.late.HibridLockFreeNode;
 import parallelism.late.graph.Vertex;
 import parallelism.scheduler.Scheduler;
+
+import java.util.Queue;
 
 /**
  *
@@ -91,29 +87,7 @@ public class HibridScheduler implements Scheduler {
 
     @Override
     public void schedule(MessageContextPair request) {
-
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
-        /*HibridClassToThreads ct = this.getClass(request.classId);
-        if (ct == null) {
-            System.err.println("CLASStoTHREADs MAPPING NOT FOUND");
-        }else if (ct.type == HibridClassToThreads.CONC) {//conc (só tem uma thread, então vai ser sempre na posição 0)
-            boolean inserted = false;
-            while (!inserted) {
-                inserted = ct.queues[0].offer(request);
-            }
-        } else { //sync (adicionar em todas as filas)... ja cria o node
-            request.node = new HibridLockFreeNode(request, Vertex.MESSAGE, null, queues.length, ct.tIds.length);
-            request.threadId = ct.tIds[ct.threadIndex];
-            ct.threadIndex = (ct.threadIndex+1)%ct.tIds.length;
-            
-            for (Queue q : ct.queues) {
-                boolean inserted = false;
-                while (!inserted) {
-                    inserted = q.offer(request);
-                }
-            }
-        }*/
     }
 
     public HibridClassToThreads getClass(int id) {

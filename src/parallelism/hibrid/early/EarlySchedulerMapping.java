@@ -1,33 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package parallelism.hibrid.early;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import parallelism.ClassToThreads;
 
+import java.util.*;
+
 /**
- *
  * @author eduardo
  */
 public class EarlySchedulerMapping {
 
     public HibridClassToThreads[] CtoT = null;
-
     public int[] partitions;
-    
-    public EarlySchedulerMapping() {
-    }
 
     public HibridClassToThreads[] generateMappings(int numPartitions) {
         partitions = new int[numPartitions];
@@ -40,40 +23,19 @@ public class EarlySchedulerMapping {
     public HibridClassToThreads[] generateMappings(int... partitions) {
         this.partitions = partitions;
         generate(partitions);
-        /* for(int i = 0; i < CtoT.length;i++){
-            System.out.println(CtoT[i]);
-        }*/
         return CtoT;
     }
 
     public int getClassId(int... partitions) {
         StringBuilder sb = new StringBuilder();
         for (int j = 0; j < partitions.length; j++) {
-            //System.out.print(iv[j]);
             sb.append(partitions[j]);
         }
-
-        //System.out.print("getClassId "+sb.toString().hashCode());
-        
         return sb.toString().hashCode();
     }
 
-   
-    
-    /*public static void main(String[] args) {
-        EarlySchedulerMapping em = new EarlySchedulerMapping();
-        em.generateMappings(0,1);
-        
-        int id = em.getClassId(0,1);
-        System.out.println("id: "+id);
-        
-        id = em.getClassId(0);
-        System.out.println("id: "+id);
-    }*/
-    
-    
+
     public void generate(int[] status) {
-        //int[] status = new int[]{0, 1, 2, 3}; //aqui pode ser qualquer objeto que implemente Comparable
         List<SortedSet<Comparable>> allCombList = new ArrayList<SortedSet<Comparable>>(); //aqui vai ficar a resposta
 
         for (int nstatus : status) {
@@ -108,8 +70,6 @@ public class EarlySchedulerMapping {
             }
         });
 
-        //System.out.println(allCombList);
-        //Iterator i = allCombList.iterator();
 
         this.CtoT = new HibridClassToThreads[allCombList.size()];
         for (int i = 0; i < this.CtoT.length; i++) {
@@ -120,10 +80,8 @@ public class EarlySchedulerMapping {
             }
             StringBuilder sb = new StringBuilder();
             for (int j = 0; j < ids.length; j++) {
-                //System.out.print(iv[j]);
                 sb.append(ids[j]);
             }
-           // System.out.println(sb.toString().hashCode());
             int type = ClassToThreads.CONC;
             if (ids.length > 1) {
                 type = ClassToThreads.SYNC;
@@ -131,21 +89,6 @@ public class EarlySchedulerMapping {
 
             this.CtoT[i] = new HibridClassToThreads(sb.toString().hashCode(), type, ids);
         }
-        /*while (i.hasNext()) {
-            Object[] ar = ((TreeSet) i.next()).toArray();
-            int[] iv = new int[ar.length];
-            for (int j = 0; j < iv.length; j++) {
-                iv[j] = Integer.parseInt(ar[j].toString());
-            }
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < iv.length; j++) {
-                //System.out.print(iv[j]);
-                sb.append(iv[j]);
-            }
-
-            System.out.println(sb.toString().hashCode());
-            
-        }*/
     }
 
 }

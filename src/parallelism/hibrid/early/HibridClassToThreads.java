@@ -1,15 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package parallelism.hibrid.early;
 
 
 import bftsmart.tom.core.messages.TOMMessage;
+
 import java.util.Queue;
-//import java.util.concurrent.CyclicBarrier;
-import parallelism.MessageContextPair;
 
 /**
  *
@@ -23,8 +17,6 @@ public class HibridClassToThreads {
     public int classId;
     
     public Queue<TOMMessage>[] queues;
-    //public CyclicBarrier barrier;
-    
     public int threadIndex = 0;
     
     public  HibridClassToThreads(int classId, int type, int[] ids) {
@@ -38,9 +30,6 @@ public class HibridClassToThreads {
             System.err.println("INCORRECT MAPPING");
         }
         this.queues = q;
-       /* if(this.type == SYNC){
-            this.barrier = new CyclicBarrier(tIds.length);
-        }*/
     }
     
     public String toString(){
@@ -50,11 +39,8 @@ public class HibridClassToThreads {
         }
          StringBuilder sb = new StringBuilder();
             for (int j = 0; j < tIds.length; j++) {
-                //System.out.print(iv[j]);
                 sb.append(tIds[j]+",");
             }
-        
-        
         return "CtoT [type:"+t+",classID:"+classId+", threads:"+sb.toString()+"]";
     }
     

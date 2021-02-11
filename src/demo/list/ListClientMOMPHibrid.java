@@ -16,20 +16,17 @@
  */
 package demo.list;
 
-//import bftsmart.tom.parallelism.ParallelMapping;
-import bftsmart.tom.core.messages.TOMMessage;
-import java.io.IOException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import bftsmart.util.ExtStorage;
+import parallelism.hibrid.early.EarlySchedulerMapping;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import parallelism.MessageContextPair;
-import parallelism.hibrid.early.EarlySchedulerMapping;
-import sun.security.provider.PolicyParser;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Example client

@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package parallelism.hibrid.late;
+
+import parallelism.late.graph.Vertex;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import parallelism.late.graph.Vertex;
 
 /**
  *
@@ -16,7 +12,6 @@ import parallelism.late.graph.Vertex;
 public class HibridLockFreeNode extends vNode {
 
     public AtomicBoolean reservedAtomic;
-    //public AtomicBoolean removedAtomic;
     public AtomicBoolean readyAtomic;
 
     public volatile boolean inserted = false;
@@ -32,7 +27,6 @@ public class HibridLockFreeNode extends vNode {
     public HibridLockFreeNode(Object data, Vertex vertex, ExtendedLockFreeGraph graph, int numParticions, int numConflic) {
         super(data, vertex, numParticions);
         reservedAtomic = new AtomicBoolean(false);
-        //removedAtomic = new AtomicBoolean(false);
         readyAtomic = new AtomicBoolean(false);
 
         headDepOn = new eNode[numParticions];
@@ -89,10 +83,6 @@ public class HibridLockFreeNode extends vNode {
             eNode ni = head1.getNext();
             while (ni.getVertex() != Vertex.TAIL) {
                 if (!((HibridLockFreeNode) ni.getDependentVNode()).isRemoved()) {//not removed
-                    /*if (remove) {
-                    System.out.println(this.getAsRequest() + " not ready because: "
-                            + ((HibridLockFreeNode) ni.getDependentVNode()).getAsRequest());
-                }*/
                     return 0;
                 }
                 ni = ni.getNext();
@@ -100,19 +90,9 @@ public class HibridLockFreeNode extends vNode {
 
         }
         if (readyAtomic.compareAndSet(false, true)) { //it is necessary to return true only once
-            //this.graph.addPermition();
-            /*if (remove) {
-                System.out.println(this.getAsRequest() + " ready for execution!");
-            }*/
-
             this.graph.ready.release();
             return 1;
         }
-        /*else {
-            if (remove) {
-                System.out.println(this.getAsRequest() + " ja tinha sido liberado!");
-            }
-        }*/
         return 0;
     }
 

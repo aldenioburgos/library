@@ -1,37 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package parallelism.hibrid;
 
-import parallelism.hibrid.late.ExtendedLockFreeGraph;
-import parallelism.hibrid.late.HibridLockFreeNode;
 import bftsmart.tom.core.messages.TOMMessage;
-import bftsmart.util.MultiOperationRequest;
 import demo.list.BFTList;
 import demo.list.MultipartitionMapping;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import parallelism.MessageContextPair;
-import parallelism.MultiOperationCtx;
 import parallelism.hibrid.early.EarlySchedulerMapping;
 import parallelism.hibrid.early.HibridClassToThreads;
 import parallelism.hibrid.early.HibridScheduler;
 import parallelism.hibrid.early.TOMMessageWrapper;
+import parallelism.hibrid.late.ExtendedLockFreeGraph;
+import parallelism.hibrid.late.HibridLockFreeNode;
 import parallelism.late.ConflictDefinition;
 import parallelism.late.graph.DependencyGraph;
 import parallelism.late.graph.LockFreeGraph;
 import parallelism.late.graph.Vertex;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -51,7 +41,6 @@ public class LocalHibridExecution {
     protected int numberPartitions = 0;
     protected int maxIndex = 0;
 
-    //protected long startTime = 0;
     protected int numRequests = 0;
     protected int numLate = 0;
 
@@ -61,9 +50,6 @@ public class LocalHibridExecution {
     private boolean hibrid = false;
     private ExtendedLockFreeGraph[] subgraphs; // for hibrid test
     protected LockFreeGraph lfg = null; // for lockfree test
-
-    //protected Semaphore space[] = null;                // counting semaphore for size of graph
-    //protected Semaphore ready = new Semaphore(0);  // tells if there is ready to execute
     private HibridScheduler scheduler;
 
     public static void main(String[] args) {
@@ -76,9 +62,6 @@ public class LocalHibridExecution {
         boolean hb = Boolean.parseBoolean(args[6]);
         int gs = Integer.parseInt(args[7]);
 
-        /*if (hb && (lt < np)) {//nao é possível hibrido com menos threads q partições
-            System.exit(0);
-        }*/
         if (hb) {
             lt = lt * np;
         }

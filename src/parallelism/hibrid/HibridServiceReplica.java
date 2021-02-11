@@ -1,42 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package parallelism.hibrid;
 
-import parallelism.hibrid.early.EarlySchedulerMapping;
-import parallelism.hibrid.late.HibridCOS;
-import parallelism.hibrid.late.MultiPartitionCOS;
-import parallelism.hibrid.late.vNode;
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.server.Executable;
 import bftsmart.tom.server.Recoverable;
 import bftsmart.tom.server.SingleExecutable;
 import bftsmart.util.MultiOperationRequest;
 import bftsmart.util.ThroughputStatistics;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import parallelism.ClassToThreads;
-import parallelism.ExecutionFIFOQueue;
-import parallelism.FIFOQueue;
 import parallelism.MessageContextPair;
 import parallelism.MultiOperationCtx;
-import parallelism.ParallelMapping;
 import parallelism.ParallelServiceReplica;
+import parallelism.hibrid.early.EarlySchedulerMapping;
 import parallelism.hibrid.early.HibridClassToThreads;
 import parallelism.hibrid.early.HibridScheduler;
 import parallelism.hibrid.early.TOMMessageWrapper;
 import parallelism.hibrid.late.ExtendedLockFreeGraph;
 import parallelism.hibrid.late.HibridLockFreeNode;
 import parallelism.late.ConflictDefinition;
-import parallelism.late.graph.COS;
 import parallelism.late.graph.Vertex;
-import parallelism.scheduler.DefaultScheduler;
-import parallelism.scheduler.Scheduler;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.util.Queue;
 
 /**
  *
@@ -46,11 +30,9 @@ public class HibridServiceReplica extends ParallelServiceReplica {
 
     private ExtendedLockFreeGraph[] subgraphs;
 
-    //public ThroughputStatistics earlyStatistics;
     public HibridServiceReplica(int id, Executable executor, Recoverable recoverer, int numPartitions, ConflictDefinition cd, int lateWorkers) {
         super(id, executor, recoverer, numPartitions);
         System.out.println("Criou um hibrid scheduler: partitions (early) = " + numPartitions + " workers (late) = " + lateWorkers);
-        //this.cos = new HibridCOS(150, cd, earlyWorkers, this.scheduler.getMapping());
 
         String path = "resultsHibrid_" + id + "_" + numPartitions + "_" + lateWorkers + ".txt";
         statistics = new ThroughputStatistics(id, lateWorkers, path, "");
@@ -88,7 +70,6 @@ public class HibridServiceReplica extends ParallelServiceReplica {
     }
 
     protected void initLateWorkers(int n, int id, int partitions) {
-
         System.out.println("n late: " + n);
         int tid = 0;
         for (int i = 0; i < n; i++) {
@@ -111,7 +92,6 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         @Override
         public void run() {
             while (true) {
-                //MessageContextPair msg = reqs.poll();
                 TOMMessage request = reqs.poll();
                 if (request != null) {
                     HibridClassToThreads ct = ((HibridScheduler) scheduler).getClass(request.getGroupId());
@@ -169,20 +149,15 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         }
 
         public void run() {
-            //System.out.println("rum: " + thread_id);
             MessageContextPair msg = null;
-            //int exec = 0;
             while (true) {
                 try {
                     //get
                     HibridLockFreeNode node = subgraphs[this.myPartition].get();
                     //execute
                     msg = node.getAsRequest();
-                    //msg.resp = ((SingleExecutable) executor).executeOrdered(msg.operation, null);
                     msg.resp = ((SingleExecutable) executor).executeOrdered(serialize(msg.opId, msg.operation), null);
 
-                    //MultiOperationCtx ctx = ctxs.get(msg.request.toString());
-                    //if (msg.ctx != null) {
                     msg.ctx.add(msg.index, msg.resp);
                     if (msg.ctx.response.isComplete() && !msg.ctx.finished && (msg.ctx.interger.getAndIncrement() == 0)) {
                         msg.ctx.finished = true;

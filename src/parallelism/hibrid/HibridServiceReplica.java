@@ -23,66 +23,55 @@ import java.io.DataOutputStream;
 import java.util.Queue;
 
 /**
- *
  * @author eduardo
  */
 public class HibridServiceReplica extends ParallelServiceReplica {
 
-    private ExtendedLockFreeGraph[] subgraphs;
+    private final ExtendedLockFreeGraph[] subgraphs;
 
     public HibridServiceReplica(int id, Executable executor, Recoverable recoverer, int numPartitions, ConflictDefinition cd, int lateWorkers) {
         super(id, executor, recoverer, numPartitions);
         System.out.println("Criou um hibrid scheduler: partitions (early) = " + numPartitions + " workers (late) = " + lateWorkers);
 
-        String path = "resultsHibrid_" + id + "_" + numPartitions + "_" + lateWorkers + ".txt";
-        statistics = new ThroughputStatistics(id, lateWorkers, path, "");
-
-        this.subgraphs = new ExtendedLockFreeGraph[numPartitions];
-        for (int i = 0; i < numPartitions; i++) {
-            this.subgraphs[i] = new ExtendedLockFreeGraph(cd, i, 150 / numPartitions);
-        }
-
+        statistics = new ThroughputStatistics(id, lateWorkers, "resultsHibrid_" + id + "_" + numPartitions + "_" + lateWorkers + ".txt", "");
+        subgraphs = createSubGraphs(numPartitions, cd);
         initLateWorkers(lateWorkers, id, numPartitions);
+    }
 
+    private ExtendedLockFreeGraph[] createSubGraphs(int numPartitions, ConflictDefinition cd) {
+        var graphs = new ExtendedLockFreeGraph[numPartitions];
+        for (int i = 0; i < numPartitions; i++) {
+            graphs[i] = new ExtendedLockFreeGraph(cd, i, 150 / numPartitions);
+        }
+        return graphs;
     }
 
     @Override
     protected void createScheduler(int initialWorkers) {
         if (initialWorkers <= 0) {
             initialWorkers = 1;
-
         }
-
-        this.scheduler = new HibridScheduler(initialWorkers,
-                new EarlySchedulerMapping().generateMappings(initialWorkers), 100000000);
+        this.scheduler = new HibridScheduler(initialWorkers, new EarlySchedulerMapping().generateMappings(initialWorkers), 100000000);
     }
 
     @Override
     protected void initWorkers(int n, int id) {
-
         System.out.println("n early: " + n);
-        int tid = 0;
         for (int i = 0; i < n; i++) {
-            new EarlyWorker(tid, ((HibridScheduler) this.scheduler).getAllQueues()[i]).start();
-            tid++;
+            new EarlyWorker(i, ((HibridScheduler) this.scheduler).getAllQueues()[i]).start();
         }
-
     }
 
     protected void initLateWorkers(int n, int id, int partitions) {
         System.out.println("n late: " + n);
-        int tid = 0;
         for (int i = 0; i < n; i++) {
-
-            new LateWorker(tid, partitions).start();
-            tid++;
+            new LateWorker(i, partitions).start();
         }
     }
 
     private class EarlyWorker extends Thread {
-
-        private int thread_id;
-        private Queue<TOMMessage> reqs = null;
+        private final int thread_id;
+        private Queue<TOMMessage> reqs;
 
         public EarlyWorker(int id, Queue<TOMMessage> reqs) {
             this.thread_id = id;
@@ -99,13 +88,10 @@ public class HibridServiceReplica extends ParallelServiceReplica {
                         MultiOperationRequest reqs = new MultiOperationRequest(request.getContent());
                         MultiOperationCtx ctx = new MultiOperationCtx(reqs.operations.length, request);
                         for (int i = 0; i < reqs.operations.length; i++) {
-
                             subgraphs[thread_id].insert(new HibridLockFreeNode(
                                     new MessageContextPair(request, request.groupId, i, reqs.operations[i], reqs.opId, ctx),
                                     Vertex.MESSAGE, subgraphs[thread_id], subgraphs.length, 0), false, false);
-
                         }
-
                     } else if (ct.type == HibridClassToThreads.SYNC) {
                         TOMMessageWrapper mw = (TOMMessageWrapper) request;
 
@@ -122,9 +108,8 @@ public class HibridServiceReplica extends ParallelServiceReplica {
     }
 
     private class LateWorker extends Thread {
-
-        private int thread_id;
-        private int myPartition = 0;
+        private final int thread_id;
+        private final int myPartition;
 
         public LateWorker(int id, int partitions) {
             this.thread_id = id;
@@ -132,15 +117,11 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         }
 
         public byte[] serialize(short opId, short value) {
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                DataOutputStream oos = new DataOutputStream(baos);
-
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                 DataOutputStream oos = new DataOutputStream(baos)) {
                 oos.writeShort(opId);
-
                 oos.writeShort(value);
-
-                oos.close();
+                oos.flush();
                 return baos.toByteArray();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -161,11 +142,9 @@ public class HibridServiceReplica extends ParallelServiceReplica {
                     msg.ctx.add(msg.index, msg.resp);
                     if (msg.ctx.response.isComplete() && !msg.ctx.finished && (msg.ctx.interger.getAndIncrement() == 0)) {
                         msg.ctx.finished = true;
-                        msg.ctx.request.reply = new TOMMessage(id, msg.ctx.request.getSession(),
-                                msg.ctx.request.getSequence(), msg.ctx.response.serialize(), SVController.getCurrentViewId());
+                        msg.ctx.request.reply = new TOMMessage(id, msg.ctx.request.getSession(), msg.ctx.request.getSequence(), msg.ctx.response.serialize(), SVController.getCurrentViewId());
                         replier.manageReply(msg.ctx.request, null);
                     }
-                    //}
                     statistics.computeStatistics(thread_id, 1);
                     //remove
                     subgraphs[this.myPartition].remove(node);

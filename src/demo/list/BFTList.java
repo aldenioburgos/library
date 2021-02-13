@@ -68,7 +68,6 @@ public class BFTList<V> implements List<V> {
             out = new ByteArrayOutputStream();
             DataOutputStream dos = new DataOutputStream(out);
             dos.writeInt(ADD);
-            //dos.writeInt(key.intValue());
 
             ObjectOutputStream out1 = new ObjectOutputStream(out);
             out1.writeObject(e);
@@ -76,7 +75,6 @@ public class BFTList<V> implements List<V> {
             byte[] rep = null;
             if (parallel) {
                 rep = proxy.invokeParallel(out.toByteArray(), ParallelMapping.SYNC_ALL);
-
             } else {
                 rep = proxy.invokeOrdered(out.toByteArray());
             }

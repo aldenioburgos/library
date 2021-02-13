@@ -50,56 +50,7 @@ public class LocalHibridExecution {
     private boolean hibrid = false;
     private ExtendedLockFreeGraph[] subgraphs; // for hibrid test
     protected LockFreeGraph lfg = null; // for lockfree test
-    private HibridScheduler scheduler;
-
-    public static void main(String[] args) {
-        int entries = Integer.parseInt(args[0]);
-        int lt = Integer.parseInt(args[1]);
-        int np = Integer.parseInt(args[2]);
-        int pG = Integer.parseInt(args[3]);
-        int pW = Integer.parseInt(args[4]);
-        int numReq = Integer.parseInt(args[5]);
-        boolean hb = Boolean.parseBoolean(args[6]);
-        int gs = Integer.parseInt(args[7]);
-
-        if (hb) {
-            lt = lt * np;
-        }
-
-        LocalHibridExecution exec = new LocalHibridExecution(entries, lt, np, pG, pW, numReq, gs, hb);
-
-        LateWorker[] w = exec.init();
-        int seconds = 20;
-        try {
-            Thread.sleep(seconds * 1000);//20 segundos
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-        int total = 0;
-        for (int i = 0; i < w.length; i++) {
-            total = total + w[i].processed;
-        }
-
-        long tp = total / seconds;
-        System.out.println("TP [partitions: " + np + ", late workers: " + lt + "] :" + tp);
-        String filePath = null;
-        if (hb) {
-            filePath = "hibrid_" + np + "_" + lt + "_" + entries + "_" + pG + "_" + pW + ".txt";
-        } else {
-            filePath = "lockfree_" + np + "_" + lt + "_" + entries + "_" + pG + "_" + pW + ".txt";
-        }
-        PrintWriter pw;
-        try {
-            pw = new PrintWriter(new FileWriter(new File(filePath)));
-            pw.println(np + " " + lt + " " + tp);
-            pw.flush();
-            pw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(LocalHibridExecution.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        System.exit(0);
-    }
+    private final HibridScheduler scheduler;
 
     public LocalHibridExecution(int entries, int lateThreads, int numberPartitions, int pG, int pW, int numReqs, int graphsize, boolean hibrid) {
         this.hibrid = hibrid;
@@ -107,8 +58,7 @@ public class LocalHibridExecution {
         this.pl = pW;
         this.numberPartitions = numberPartitions;
         this.numLate = lateThreads;
-        this.scheduler = new HibridScheduler(numberPartitions,
-                new EarlySchedulerMapping().generateMappings(numberPartitions), numReqs / numberPartitions);
+        this.scheduler = new HibridScheduler(numberPartitions, new EarlySchedulerMapping().generateMappings(numberPartitions), numReqs / numberPartitions);
         this.maxIndex = entries;
         this.numRequests = numReqs;
 
@@ -276,7 +226,6 @@ public class LocalHibridExecution {
 
             @Override
             public boolean isDependent(MessageContextPair r1, MessageContextPair r2) {
-
                 switch (r1.opId) {
                     case MultipartitionMapping.GR:
                         if (conflictR1(r2.opId)
@@ -687,16 +636,91 @@ public class LocalHibridExecution {
             initEarlyWorkers(numberPartitions);
         }
         Client c = new Client(pg, pl, numRequests);
-        //startTime = System.nanoTime();
         c.start();
         return lw;
     }
 
-    private class Client extends Thread {
+    public static void main(String[] args) {
+        int entries = Integer.parseInt(args[0]);
+        int lt = Integer.parseInt(args[1]);
+        int np = Integer.parseInt(args[2]);
+        int pG = Integer.parseInt(args[3]);
+        int pW = Integer.parseInt(args[4]);
+        int numReq = Integer.parseInt(args[5]);
+        boolean hb = Boolean.parseBoolean(args[6]);
+        int gs = Integer.parseInt(args[7]);
 
-        int pGlobal = 0;
-        int pW = 0;
-        int numRequests = 0;
+        if (hb) {
+            lt = lt * np;
+        }
+
+        LocalHibridExecution exec = new LocalHibridExecution(entries, lt, np, pG, pW, numReq, gs, hb);
+
+        LateWorker[] w = exec.init();
+        int seconds = 20;
+        try {
+            Thread.sleep(seconds * 1000);//20 segundos
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        int total = 0;
+        for (LateWorker lateWorker : w) {
+            total = total + lateWorker.processed;
+        }
+
+        long tp = total / seconds;
+        System.out.println("TP [partitions: " + np + ", late workers: " + lt + "] :" + tp);
+        String filePath;
+        if (hb) {
+            filePath = "hibrid_" + np + "_" + lt + "_" + entries + "_" + pG + "_" + pW + ".txt";
+        } else {
+            filePath = "lockfree_" + np + "_" + lt + "_" + entries + "_" + pG + "_" + pW + ".txt";
+        }
+
+        try (var fw = new FileWriter(filePath);
+             var pw = new PrintWriter(fw)){
+            pw.println(np + " " + lt + " " + tp);
+            pw.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(LocalHibridExecution.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        System.exit(0);
+    }
+
+    private void initEarlyWorkers(int numPartitions) {
+        System.out.println("n early: " + numPartitions);
+        int tid = 0;
+        for (int i = 0; i < numPartitions; i++) {
+            new EarlyWorker(tid, this.scheduler.getAllQueues()[i]).start();
+            tid++;
+        }
+    }
+
+    private LateWorker[] initLateWorkers(int total, int partitions) {
+        System.out.println("n late: " + total);
+        int tid = 0;
+        LateWorker[] ret = new LateWorker[total];
+        if (hibrid) {
+            for (int i = 0; i < total; i++) {
+                ret[i] = new LateWorker(tid, partitions);
+                ret[i].start();
+                tid++;
+            }
+        } else {
+            for (int i = 0; i < total; i++) {
+                ret[i] = new LFLateWorker(tid, partitions);
+                ret[i].start();
+                tid++;
+            }
+        }
+        return ret;
+    }
+
+    private class Client extends Thread {
+        private final int pGlobal;
+        private final int pW;
+        private final int numRequests;
         MessageContextPair[] reqs = null;
 
         public Client(int pG, int pW, int numRequests) {
@@ -833,7 +857,6 @@ public class LocalHibridExecution {
                 }
 
                 if (p == -1) { //GW
-                    //int index = maxIndex - 1;
                     if (all >= 10) {
                         int opId = 200 + (conf[0] + 1) * 10 + (conf[1] + 1);
                         reqs[i] = new MessageContextPair(tm, em.getClassId(conf),
@@ -843,7 +866,6 @@ public class LocalHibridExecution {
                                 indexRand.nextInt(maxIndex), (short) 0, (short) MultipartitionMapping.GW, null);
                     }
                 } else if (p == -2) {//GR
-                    //int index = maxIndex - 1;
                     if (all >= 10) {
                         int opId = 100 + (conf[0] + 1) * 10 + (conf[1] + 1);
                         reqs[i] = new MessageContextPair(tm, em.getClassId(conf),
@@ -854,59 +876,27 @@ public class LocalHibridExecution {
                     }
                 } else if (op == BFTList.ADD) {
                     switch (p) {
-                        case 1:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(0), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.W1, null);
-                            break;
-                        case 2:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(1), indexRand.nextInt(maxIndex),(short) 0, MultipartitionMapping.W2, null);
-                            break;
-                        case 3:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(2), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.W3, null);
-                            break;
-                        case 4:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(3), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.W4, null);
-                            break;
-                        case 5:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(4), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.W5, null);
-                            break;
-                        case 6:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(5), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.W6, null);
-                            break;
-                        case 7:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(6), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.W7, null);
-                            break;
-                        default:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(7), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.W8, null);
-                            break;
+                        case 1 -> reqs[i] = new MessageContextPair(tm, em.getClassId(0), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.W1, null);
+                        case 2 -> reqs[i] = new MessageContextPair(tm, em.getClassId(1), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.W2, null);
+                        case 3 -> reqs[i] = new MessageContextPair(tm, em.getClassId(2), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.W3, null);
+                        case 4 -> reqs[i] = new MessageContextPair(tm, em.getClassId(3), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.W4, null);
+                        case 5 -> reqs[i] = new MessageContextPair(tm, em.getClassId(4), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.W5, null);
+                        case 6 -> reqs[i] = new MessageContextPair(tm, em.getClassId(5), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.W6, null);
+                        case 7 -> reqs[i] = new MessageContextPair(tm, em.getClassId(6), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.W7, null);
+                        default -> reqs[i] = new MessageContextPair(tm, em.getClassId(7), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.W8, null);
                     }
 
                 } else if (op == BFTList.CONTAINS) {
 
                     switch (p) {
-                        case 1:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(0), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.R1, null);
-                            break;
-                        case 2:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(1), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.R2, null);
-                            break;
-                        case 3:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(2), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.R3, null);
-                            break;
-                        case 4:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(3), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.R4, null);
-                            break;
-                        case 5:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(4), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.R5, null);
-                            break;
-                        case 6:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(5), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.R6, null);
-                            break;
-                        case 7:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(6), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.R7, null);
-                            break;
-                        default:
-                            reqs[i] = new MessageContextPair(tm, em.getClassId(7), indexRand.nextInt(maxIndex), (short)0, MultipartitionMapping.R8, null);
-                            break;
+                        case 1 -> reqs[i] = new MessageContextPair(tm, em.getClassId(0), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.R1, null);
+                        case 2 -> reqs[i] = new MessageContextPair(tm, em.getClassId(1), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.R2, null);
+                        case 3 -> reqs[i] = new MessageContextPair(tm, em.getClassId(2), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.R3, null);
+                        case 4 -> reqs[i] = new MessageContextPair(tm, em.getClassId(3), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.R4, null);
+                        case 5 -> reqs[i] = new MessageContextPair(tm, em.getClassId(4), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.R5, null);
+                        case 6 -> reqs[i] = new MessageContextPair(tm, em.getClassId(5), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.R6, null);
+                        case 7 -> reqs[i] = new MessageContextPair(tm, em.getClassId(6), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.R7, null);
+                        default -> reqs[i] = new MessageContextPair(tm, em.getClassId(7), indexRand.nextInt(maxIndex), (short) 0, MultipartitionMapping.R8, null);
                     }
 
                 }
@@ -914,40 +904,24 @@ public class LocalHibridExecution {
             }
 
             System.out.println("Criacao das requisições finalizada!");
-            //statistics.start();
         }
 
         @Override
         public void run() {
-
             if (hibrid) {
-                for (int i = 0; i < reqs.length; i++) {
-                    scheduler.schedule(reqs[i]);
+                for (MessageContextPair req : reqs) {
+                    scheduler.schedule(req);
                 }
             } else {
-                for (int i = 0; i < reqs.length; i++) {
-
+                for (MessageContextPair req : reqs) {
                     try {
-                        lfg.insert(reqs[i]);
+                        lfg.insert(req);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
                 }
-
             }
-
             System.out.println("Fim do envio!");
-
-        }
-
-    }
-
-    private void initEarlyWorkers(int numPartitions) {
-        System.out.println("n early: " + numPartitions);
-        int tid = 0;
-        for (int i = 0; i < numPartitions; i++) {
-            new EarlyWorker(tid, this.scheduler.getAllQueues()[i]).start();
-            tid++;
         }
     }
 
@@ -988,27 +962,6 @@ public class LocalHibridExecution {
         }
     }
 
-    private LateWorker[] initLateWorkers(int total, int partitions) {
-
-        System.out.println("n late: " + total);
-        int tid = 0;
-        LateWorker[] ret = new LateWorker[total];
-        if (hibrid) {
-            for (int i = 0; i < total; i++) {
-                ret[i] = new LateWorker(tid, partitions);
-                ret[i].start();
-                tid++;
-            }
-        } else {
-            for (int i = 0; i < total; i++) {
-                ret[i] = new LFLateWorker(tid, partitions);
-                ret[i].start();
-                tid++;
-            }
-        }
-        return ret;
-    }
-
     private class LFLateWorker extends LateWorker {
 
         public LFLateWorker(int id, int partitions) {
@@ -1016,13 +969,10 @@ public class LocalHibridExecution {
         }
 
         public void run() {
-
             while (true) {
                 try {
                     Object node = lfg.get();
-
                     execute(((DependencyGraph.vNode) node).getAsRequest());
-
                     lfg.remove(node);
                     processed++;
                 } catch (InterruptedException ex) {
@@ -1034,54 +984,31 @@ public class LocalHibridExecution {
     }
 
     private class LateWorker extends Thread {
-
         protected int thread_id;
         protected int myPartition = 0;
         protected int numPartitions;
-
         public int processed = 0;
 
         public LateWorker(int id, int partitions) {
             this.thread_id = id;
             this.myPartition = thread_id % partitions;
-            //System.out.println("my partition: " + this.myPartition);
             this.numPartitions = partitions;
         }
 
         public void run() {
-
             while (true) {
                 try {
                     HibridLockFreeNode node = subgraphs[this.myPartition].get();
-
                     execute(node.getAsRequest());
-
                     subgraphs[this.myPartition].remove(node);
-
                     processed++;
-
-                    /* if (node.getAsRequest().request != null) {
-                        long end = System.nanoTime();
-
-                        long total = (end - startTime) / 1000000000;
-                        long tp = numRequests / total;
-                        System.out.println("TP [partitions: " + numPartitions + ", late workers: " + numLate + "] :" + tp);
-                        String filePath = "hibrid_" + numPartitions + "_" + numLate + "_" + maxIndex + "_" + pg + "_" + pl + ".txt";
-                        PrintWriter pw = new PrintWriter(new FileWriter(new File(filePath)));
-                        pw.println(numPartitions + " " + numLate + " " + tp);
-                        pw.flush();
-                        pw.close();
-                        System.exit(0);
-                    }*/
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
             }
-
         }
 
         public boolean add(int value, int pId) {
-            //System.out.println("VAI EXECUTAR ADD "+pId);
             boolean ret = false;
             switch (pId) {
                 case MultipartitionMapping.W1:

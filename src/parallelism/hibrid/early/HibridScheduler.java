@@ -12,7 +12,6 @@ import parallelism.scheduler.Scheduler;
 import java.util.Queue;
 
 /**
- *
  * @author eduardo
  */
 public class HibridScheduler implements Scheduler {
@@ -67,8 +66,8 @@ public class HibridScheduler implements Scheduler {
             }
         } else { //sync (adicionar em todas as filas)... ja cria o node FAZER O BATCH EM UM UNICO NODE AQUI
 
-            MultiOperationRequest reqs = new MultiOperationRequest(request.getContent());
-            MultiOperationCtx ctx = new MultiOperationCtx(reqs.operations.length, request);
+            MultiOperationRequest reqs = getNewMultiOperationRequest(request);
+            MultiOperationCtx ctx = new MultiOperationCtx(reqs.getNumOperations(), request);
             for (int i = 0; i < reqs.operations.length; i++) {
                 TOMMessageWrapper mw = new TOMMessageWrapper(new MessageContextPair(request, request.groupId, i, reqs.operations[i], reqs.opId, ctx));
                 mw.msg.node = new HibridLockFreeNode(mw.msg, Vertex.MESSAGE, null, queues.length, ct.tIds.length);
@@ -85,6 +84,10 @@ public class HibridScheduler implements Scheduler {
         }
     }
 
+    protected MultiOperationRequest getNewMultiOperationRequest(TOMMessage request) {
+        return new MultiOperationRequest(request.getContent());
+    }
+
     @Override
     public void schedule(MessageContextPair request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -99,7 +102,4 @@ public class HibridScheduler implements Scheduler {
         return null;
     }
 
-    public int getExecutorThread(int classId) {
-        return this.getClass(classId).tIds[0];
-    }
 }

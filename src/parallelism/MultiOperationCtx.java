@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package parallelism;
 
 import bftsmart.tom.core.messages.TOMMessage;
@@ -29,7 +24,6 @@ public class MultiOperationCtx {
     
     public void add(int index, byte[] resp){
         this.response.add(index, resp);
-        //return this.response.isComplete();
     }
     
     

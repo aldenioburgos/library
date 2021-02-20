@@ -3,7 +3,7 @@ package demo.coin;
 import bftsmart.tom.MessageContext;
 import bftsmart.tom.server.SingleExecutable;
 import demo.coin.core.CoinGlobalState;
-import demo.coin.core.CoinOperation;
+import demo.coin.core.transactions.CoinOperation;
 
 public class CoinExecutor implements SingleExecutable {
 

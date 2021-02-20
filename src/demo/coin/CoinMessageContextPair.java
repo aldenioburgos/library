@@ -1,7 +1,7 @@
 package demo.coin;
 
 import bftsmart.tom.core.messages.TOMMessage;
-import demo.coin.core.CoinOperation;
+import demo.coin.core.transactions.CoinOperation;
 import parallelism.MessageContextPair;
 import parallelism.MultiOperationCtx;
 import parallelism.hibrid.late.HibridLockFreeNode;

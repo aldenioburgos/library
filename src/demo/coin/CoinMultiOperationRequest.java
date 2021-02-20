@@ -1,7 +1,7 @@
 package demo.coin;
 
 import bftsmart.util.MultiOperationRequest;
-import demo.coin.core.CoinOperation;
+import demo.coin.core.transactions.CoinOperation;
 
 import java.io.*;
 

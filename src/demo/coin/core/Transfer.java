@@ -1,4 +1,6 @@
-package demo.coin;
+package demo.coin.core;
+
+import demo.coin.util.CryptoUtil;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,44 +10,50 @@ import java.util.stream.Collectors;
 
 public class Transfer extends CoinOperation {
 
-    public static final byte OP_TYPE = 1;
-    private List<Input> inputs;
-    private List<Output> outputs;
+    // data
+    protected List<Input> inputs;
+    protected List<Output> outputs;
 
 
-    public Transfer() {
+    protected Transfer() {
     }
 
-    public Transfer(byte[] issuer, byte[] signature, List<Input> inputs, List<Output> outputs) {
-        super(issuer, signature);
+    public Transfer(byte[] issuer, List<Input> inputs, List<Output> outputs, byte currency) {
+        super(issuer, currency);
         this.inputs = inputs;
         this.outputs = outputs;
     }
 
     @Override
-    protected void loadFromWorker(DataInputStream dis) throws IOException {
-        super.loadFromWorker(dis);
+    protected void loadDataFrom(DataInputStream dis) throws IOException {
+        super.loadDataFrom(dis);
         // inputs
-        byte numInputs = dis.readByte();
-        inputs = new ArrayList<>(numInputs);
-        for (int i = 0; i < numInputs; i++) {
-            inputs.add(Input.read(dis));
-        }
+        this.inputs = readInputs(dis);
+        this.outputs = readOutputs(dis);
+    }
+
+    protected List<Output> readOutputs(DataInputStream dis) throws IOException {
         //outputs
         byte numOutputs = dis.readByte();
-        outputs = new ArrayList<>(numOutputs);
+        List<Output> auxOutputs = new ArrayList<>(numOutputs);
         for (int i = 0; i < numOutputs; i++) {
-            outputs.add(Output.read(dis));
+            auxOutputs.add(Output.read(dis));
         }
+        return auxOutputs;
+    }
+
+    protected List<Input> readInputs(DataInputStream dis) throws IOException {
+        byte numInputs = dis.readByte();
+        List<Input>  auxInputs = new ArrayList<>(numInputs);
+        for (int i = 0; i < numInputs; i++) {
+            auxInputs.add(Input.read(dis));
+        }
+        return auxInputs;
     }
 
     @Override
-    public void writeTo(DataOutputStream dos) throws IOException {
-        super.writeTo(dos);
-        writeDataTo(dos);
-    }
-
-    private void writeDataTo(DataOutputStream dos) throws IOException {
+    protected void writeDataTo(DataOutputStream dos) throws IOException {
+        super.writeDataTo(dos);
         // inputs
         dos.writeByte(inputs.size());
         for (Input input : inputs) {
@@ -58,33 +66,32 @@ public class Transfer extends CoinOperation {
         }
     }
 
+
     @Override
     protected byte getOpType() {
-        return OP_TYPE;
+        return TRANSFER_TYPE;
     }
 
     @Override
-    public boolean isValid(CoinGlobalState globalState) {
+    public boolean isInvalid(CoinGlobalState globalState) {
         boolean validInputs = isValidInputs(globalState);
         boolean validOutputs = isValidOutputs(globalState);
 
-        // TODO a assinatura do emissor da transação está correta?
-
         // a soma das entradas é igual a soma das saídas?
         if (validInputs && validOutputs) {
-            Set<Utxo> coins = globalState.getUtxos(issuer);
+            Set<Utxo> coins = globalState.listUtxos(issuer, currency);
             var usedCoins = coins.stream().filter(it -> inputs.contains(new Input(it.getTransactionHash(), it.getOutputPosition())));
             long inputsTotalValue = usedCoins.map(Utxo::getValue).reduce(0L, Long::sum);
             long outputsTotalValue = outputs.stream().map(Output::getValue).reduce(0L, Long::sum);
             validOutputs = inputsTotalValue == outputsTotalValue;
         }
 
-        return super.isValid(globalState) && validInputs && validOutputs;
+        return super.isInvalid(globalState) || !validInputs || !validOutputs;
     }
 
     private boolean isValidOutputs(CoinGlobalState globalState) {
         // a transação tem saídas? Os arrays tem o tamanho certo e as saídas tem valor positivo?
-        return outputs.size() > 0 && outputs.stream().allMatch(it -> it.receiverPubKey.length == 32 && it.value > 0);
+        return outputs.size() > 0 && outputs.stream().allMatch(it -> it.receiverPubKey.length == ISSUER_SIZE && it.value > 0);
     }
 
     private boolean isValidInputs(CoinGlobalState globalState) {
@@ -92,14 +99,14 @@ public class Transfer extends CoinOperation {
         boolean validInputs = inputs.size() > 0;
 
         // As entradas tem o tamanho certo e um indice de saída válido?
-        validInputs = validInputs && inputs.stream().allMatch(it -> it.transactionHash.length == 32 && it.outputIndex >= 0);
+        validInputs = validInputs && inputs.stream().allMatch(it -> it.transactionHash.length == HASH_SIZE && it.outputIndex >= 0);
 
         // existe entrada repetida?
         validInputs = validInputs && inputs.stream().distinct().count() == inputs.size();
 
         // todas as entradas foram encontradas?
         if (validInputs) {
-            Set<Utxo> coins = globalState.getUtxos(issuer);
+            Set<Utxo> coins = globalState.listUtxos(issuer, currency);
             validInputs = inputs.stream().map(it -> new Utxo(it.transactionHash, it.outputIndex)).allMatch(coins::contains);
         }
         return validInputs;
@@ -108,25 +115,20 @@ public class Transfer extends CoinOperation {
     @Override
     public void execute(CoinGlobalState globalState) {
         // a transação é valida?
-        if (!isValid(globalState)) {
+        if (isInvalid(globalState)) {
             throw new IllegalArgumentException("Transação inválida <" + this + ">.");
         }
 
         // atualiza o global state
         // consumir os utxos de entrada.
-        globalState.removeUtxos(issuer, inputs.stream().map(it -> new UtxoAddress(it.transactionHash, it.outputIndex)).collect(Collectors.toSet()));
+        globalState.removeUtxos(issuer, inputs.stream().map(it -> new UtxoAddress(it.transactionHash, it.outputIndex)).collect(Collectors.toSet()), currency);
         // criar os utxos de saída.
         for (int i = 0; i < outputs.size(); i++) {
             Output output = outputs.get(i);
-            globalState.addUtxo(output.receiverPubKey, getTransactionHash(), (byte) i, output.value);
+            globalState.addUtxo(output.receiverPubKey, CryptoUtil.hash(toByteArray()), (byte) i, output.value, currency);
         }
     }
 
-
-    @Override
-    public byte[] getDataBytes() {
-        return new byte[0]; //TODO
-    }
 
     @Override
     public String toString() {
@@ -137,7 +139,7 @@ public class Transfer extends CoinOperation {
                 '}';
     }
 
-    private static final class Input {
+    protected static  class Input {
         byte[] transactionHash;
         byte outputIndex;
 
@@ -147,7 +149,7 @@ public class Transfer extends CoinOperation {
         }
 
         static Input read(DataInputStream dis) throws IOException {
-            var auxTransactionHash = dis.readNBytes(32);
+            var auxTransactionHash = dis.readNBytes(HASH_SIZE);
             var auxOutputIndex = dis.readByte();
             return new Input(auxTransactionHash, auxOutputIndex);
         }
@@ -181,17 +183,17 @@ public class Transfer extends CoinOperation {
         }
     }
 
-    private static final class Output {
+    protected static class Output {
         byte[] receiverPubKey;
         Long value;
 
-        private Output(byte[] receiverPubKey, Long value) {
+        public Output(byte[] receiverPubKey, Long value) {
             this.receiverPubKey = receiverPubKey;
             this.value = value;
         }
 
         static Output read(DataInputStream dis) throws IOException {
-            var auxReceiver = dis.readNBytes(32);
+            var auxReceiver = dis.readNBytes(ISSUER_SIZE);
             var auxValue = dis.readLong();
             return new Output(auxReceiver, auxValue);
         }
@@ -201,9 +203,6 @@ public class Transfer extends CoinOperation {
             dos.writeLong(value);
         }
 
-        public byte[] getReceiverPubKey() {
-            return receiverPubKey;
-        }
 
         public Long getValue() {
             return value;

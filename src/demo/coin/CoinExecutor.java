@@ -2,6 +2,8 @@ package demo.coin;
 
 import bftsmart.tom.MessageContext;
 import bftsmart.tom.server.SingleExecutable;
+import demo.coin.core.CoinGlobalState;
+import demo.coin.core.CoinOperation;
 
 public class CoinExecutor implements SingleExecutable {
 
@@ -9,9 +11,13 @@ public class CoinExecutor implements SingleExecutable {
 
     @Override
     public byte[] executeOrdered(byte[] bytes, MessageContext messageContext) {
-        CoinOperation op = CoinOperation.loadFrom(bytes);
-        op.execute(globalState);
-        return new byte[]{1};
+        try {
+            CoinOperation op = CoinOperation.loadFrom(bytes);
+            op.execute(globalState);
+            return new byte[]{1};
+        } catch (RuntimeException e) {
+            return new byte[]{0};
+        }
     }
 
 

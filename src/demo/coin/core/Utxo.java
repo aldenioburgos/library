@@ -1,4 +1,4 @@
-package demo.coin;
+package demo.coin.core;
 
 import java.util.Objects;
 

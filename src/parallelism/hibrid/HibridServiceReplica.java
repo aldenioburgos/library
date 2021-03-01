@@ -69,6 +69,16 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
     private class EarlyWorker extends Thread {
         private final int thread_id;
         private Queue<TOMMessage> reqs;
@@ -84,10 +94,12 @@ public class HibridServiceReplica extends ParallelServiceReplica {
                 TOMMessage request = reqs.poll();
                 if (request != null) {
                     HibridClassToThreads ct = ((HibridScheduler) scheduler).getClass(request.getGroupId());
+
                     if (ct.type == HibridClassToThreads.CONC) {
                         MultiOperationRequest reqs = new MultiOperationRequest(request.getContent());
                         MultiOperationCtx ctx = new MultiOperationCtx(reqs.operations.length, request);
                         for (int i = 0; i < reqs.operations.length; i++) {
+
                             subgraphs[thread_id].insert(new HibridLockFreeNode(
                                     new MessageContextPair(request, request.groupId, i, reqs.operations[i], reqs.opId, ctx),
                                     Vertex.MESSAGE, subgraphs[thread_id], subgraphs.length, 0), false, false);
@@ -136,7 +148,7 @@ public class HibridServiceReplica extends ParallelServiceReplica {
                     //get
                     HibridLockFreeNode node = subgraphs[this.myPartition].get();
                     //execute
-                    msg = node.getAsRequest();
+                    msg = (MessageContextPair) node.getData();
                     msg.resp = ((SingleExecutable) executor).executeOrdered(serialize(msg.opId, msg.operation), null);
 
                     msg.ctx.add(msg.index, msg.resp);

@@ -18,7 +18,8 @@ public class CoinGlobalState {
         this.minters = minters;
         this.users = users;
         this.utxos = new Map[Byte.MAX_VALUE];
-        this.currencies = currencies;
+        this.currencies = Arrays.copyOf(currencies, currencies.length);
+        Arrays.sort(this.currencies);
         initShards();
     }
 
@@ -37,31 +38,28 @@ public class CoinGlobalState {
         return minters.contains(minter);
     }
 
-    public boolean isUser(byte[] user){
+    public boolean isUser(byte[] user) {
         return users.contains(user);
     }
 
-    public boolean isCurrency(byte currency){
-        for (byte item : currencies){
-            if (item == currency) return true;
-        }
-        return false;
+    public boolean isCurrency(byte currency) {
+        return Arrays.binarySearch(currencies, currency) >= 0;
     }
 
-    public Set<Utxo> listUtxos(byte[] owner, byte currency) {
+    public Set<Utxo> listUtxos(byte[] owner, int currency) {
         Set<Utxo> oldUtxos = utxos[currency].get(owner);
         //noinspection unchecked
         return (oldUtxos == null) ? Collections.EMPTY_SET : Set.copyOf(oldUtxos);
     }
 
     public void removeUtxos(byte[] owner, Set<UtxoAddress> addresses, byte currency) {
-        Set<Utxo> oldUtxos =  utxos[currency].get(owner);
+        Set<Utxo> oldUtxos = utxos[currency].get(owner);
         Set<Utxo> utxosToRemove = addresses.stream().map(Utxo::new).collect(Collectors.toSet());
         oldUtxos.removeAll(utxosToRemove);
     }
 
-    public void addUtxo(byte[] owner, byte[] transactionHash, byte outputPosition, long value, byte currency) {
-        Set<Utxo> oldUtxos =  utxos[currency].get(owner);
+    public void addUtxo(int currency, byte[] owner, byte[] transactionHash, int outputPosition, long value) {
+        Set<Utxo> oldUtxos = utxos[currency].get(owner);
         oldUtxos.add(new Utxo(transactionHash, outputPosition, value));
     }
 }

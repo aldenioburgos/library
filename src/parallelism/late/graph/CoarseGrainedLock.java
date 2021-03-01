@@ -5,9 +5,10 @@
  */
 package parallelism.late.graph;
 
+import parallelism.late.ConflictDefinition;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import parallelism.late.ConflictDefinition;
 
 
 /**

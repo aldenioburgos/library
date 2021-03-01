@@ -5,11 +5,11 @@
  */
 package parallelism.late.graph;
 
+import parallelism.MessageContextPair;
+import parallelism.late.ConflictDefinition;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import parallelism.MessageContextPair;
-import parallelism.late.LateScheduler;
-import parallelism.late.ConflictDefinition;
 
 
 /**

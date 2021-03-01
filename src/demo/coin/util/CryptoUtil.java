@@ -1,6 +1,5 @@
 package demo.coin.util;
 
-import java.io.IOException;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;

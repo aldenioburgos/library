@@ -5,20 +5,11 @@
  */
 package parallelism.late;
 
-import parallelism.MessageContextPair;
-
-
 /**
- *
  * @author eduardo
  */
-public abstract class ConflictDefinition {
+public interface ConflictDefinition {
 
-    public ConflictDefinition() {
-    }
- 
-     public abstract boolean isDependent(MessageContextPair r1, MessageContextPair r2);
-    
-    
-    
+    boolean isDependent(Object r1, Object r2);
+
 }

@@ -5,19 +5,13 @@
  */
 package parallelism.late;
 
-import parallelism.MessageContextPair;
-
 /**
  *
  * @author eduardo
  */
-public class DefaultConflictDefinition extends ConflictDefinition{
+public class DefaultConflictDefinition implements ConflictDefinition {
 
-    public DefaultConflictDefinition() {
-    }
-
-    @Override
-    public boolean isDependent(MessageContextPair r1, MessageContextPair r2) {
+    public boolean isDependent(Object r1, Object r2) {
         return true;
     }
     

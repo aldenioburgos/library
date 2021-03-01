@@ -12,10 +12,6 @@
  */
 package bftsmart.tom;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.concurrent.TimeUnit;
-
 import bftsmart.reconfiguration.ReconfigureReply;
 import bftsmart.reconfiguration.views.View;
 import bftsmart.tom.core.messages.TOMMessage;
@@ -23,6 +19,10 @@ import bftsmart.tom.core.messages.TOMMessageType;
 import bftsmart.tom.util.Extractor;
 import bftsmart.tom.util.Logger;
 import bftsmart.tom.util.TOMUtil;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class implements a TOMSender and represents a proxy to be used on the

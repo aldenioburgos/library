@@ -5,9 +5,6 @@
  */
 package parallelism.late.graph;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import parallelism.late.LateScheduler;
 import parallelism.late.ConflictDefinition;
 
 /**

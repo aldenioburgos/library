@@ -5,9 +5,10 @@
  */
 package parallelism.late.graph;
 
-import java.util.concurrent.Semaphore;
-import parallelism.late.ConflictDefinition;
 import parallelism.MessageContextPair;
+import parallelism.late.ConflictDefinition;
+
+import java.util.concurrent.Semaphore;
 
 /**
  *

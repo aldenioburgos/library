@@ -6,11 +6,12 @@ public class Utxo {
     private final UtxoAddress address;
     private final long value;
 
-    public Utxo(byte[] transactionHash, byte outputPosition) {
-        this(new UtxoAddress(transactionHash, outputPosition));
-    }
-    public Utxo(byte[] transactionHash, byte outputPosition, long value) {
+    public Utxo(byte[] transactionHash, int outputPosition, long value) {
         this(new UtxoAddress(transactionHash, outputPosition), value);
+    }
+
+    public Utxo(byte[] transactionHash, int outputPosition) {
+        this(new UtxoAddress(transactionHash, outputPosition), 0);
     }
 
     public Utxo(UtxoAddress address) {
@@ -39,7 +40,7 @@ public class Utxo {
         return value;
     }
 
-    public Byte getOutputPosition() {
+    public int getOutputPosition() {
         return address.getOutputPosition();
     }
 

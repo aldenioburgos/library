@@ -8,15 +8,12 @@ package parallelism.scheduler;
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.core.messages.TOMMessageType;
 import bftsmart.util.MultiOperationRequest;
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import parallelism.ClassToThreads;
 import parallelism.MessageContextPair;
 import parallelism.MultiOperationCtx;
 import parallelism.ParallelMapping;
+
+import java.util.Queue;
 
 /**
  *

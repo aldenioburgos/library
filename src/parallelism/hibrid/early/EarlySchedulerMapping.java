@@ -10,13 +10,11 @@ import java.util.*;
 public class EarlySchedulerMapping {
 
     public HibridClassToThreads[] CtoT = null;
+    private int numPartitions;
     public int[] partitions;
 
     public HibridClassToThreads[] generateMappings(int numPartitions) {
-        partitions = new int[numPartitions];
-        for (int i = 0; i < numPartitions; i++) {
-            partitions[i] = i;
-        }
+        this.numPartitions = numPartitions;
         return generateMappings(partitions);
     }
 
@@ -36,16 +34,16 @@ public class EarlySchedulerMapping {
 
 
     public void generate(int[] status) {
-        List<SortedSet<Comparable>> allCombList = new ArrayList<SortedSet<Comparable>>(); //aqui vai ficar a resposta
+        List<SortedSet<Integer>> allCombList = new ArrayList<>(); //aqui vai ficar a resposta
 
         for (int nstatus : status) {
-            allCombList.add(new TreeSet<Comparable>(Arrays.asList(nstatus))); //insiro a combinação "1 a 1" de cada item
+            allCombList.add(new TreeSet<>(List.of(nstatus))); //insiro a combinação "1 a 1" de cada item
         }
 
         for (int nivel = 1; nivel < status.length; nivel++) {
-            List<SortedSet<Comparable>> statusAntes = new ArrayList<SortedSet<Comparable>>(allCombList); //crio uma cópia para poder não iterar sobre o que já foi
-            for (Set<Comparable> antes : statusAntes) {
-                SortedSet<Comparable> novo = new TreeSet<Comparable>(antes); //para manter ordenado os objetos dentro do set
+            List<SortedSet<Integer>> statusAntes = new ArrayList<>(allCombList); //crio uma cópia para poder não iterar sobre o que já foi
+            for (Set<Integer> antes : statusAntes) {
+                SortedSet<Integer> novo = new TreeSet<>(antes); //para manter ordenado os objetos dentro do set
                 novo.add(status[nivel]);
                 if (!allCombList.contains(novo)) { //testo para ver se não está repetido
                     allCombList.add(novo);
@@ -53,25 +51,8 @@ public class EarlySchedulerMapping {
             }
         }
 
-        Collections.sort(allCombList, new Comparator<SortedSet<Comparable>>() { //aqui só para organizar a saída de modo "bonitinho"
-
-            @Override
-            public int compare(SortedSet<Comparable> o1, SortedSet<Comparable> o2) {
-                int sizeComp = o1.size() - o2.size();
-                if (sizeComp == 0) {
-                    Iterator<Comparable> o1iIterator = o1.iterator();
-                    Iterator<Comparable> o2iIterator = o2.iterator();
-                    while (sizeComp == 0 && o1iIterator.hasNext()) {
-                        sizeComp = o1iIterator.next().compareTo(o2iIterator.next());
-                    }
-                }
-                return sizeComp;
-
-            }
-        });
-
-
         this.CtoT = new HibridClassToThreads[allCombList.size()];
+
         for (int i = 0; i < this.CtoT.length; i++) {
             Object[] ar = ((TreeSet) allCombList.get(i)).toArray();
             int[] ids = new int[ar.length];

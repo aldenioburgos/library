@@ -17,17 +17,14 @@
 package demo.list;
 
 //import bftsmart.tom.parallelism.ParallelMapping;
-import java.io.IOException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-//import bftsmart.tom.ServiceProxy;
-//import bftsmart.tom.core.messages.TOMMessageType;
 import bftsmart.util.Storage;
-import java.util.Random;
+
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Example client that updates a BFT replicated service (a counter).

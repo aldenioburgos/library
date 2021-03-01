@@ -10,14 +10,14 @@ import bftsmart.tom.server.Executable;
 import bftsmart.tom.server.Recoverable;
 import bftsmart.tom.server.SingleExecutable;
 import bftsmart.util.ThroughputStatistics;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.util.concurrent.CyclicBarrier;
 import parallelism.MessageContextPair;
-import parallelism.MultiOperationCtx;
 import parallelism.ParallelMapping;
 import parallelism.ParallelServiceReplica;
 import parallelism.late.graph.DependencyGraph;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.util.concurrent.CyclicBarrier;
 
 /**
  *

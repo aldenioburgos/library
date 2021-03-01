@@ -9,7 +9,7 @@ import parallelism.MessageContextPair;
  */
 public class TOMMessageWrapper extends TOMMessage{
 
-    public MessageContextPair msg = null;
+    public MessageContextPair msg;
     
     
     public TOMMessageWrapper(MessageContextPair msg) {

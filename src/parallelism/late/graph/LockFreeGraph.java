@@ -5,8 +5,9 @@
  */
 package parallelism.late.graph;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import parallelism.late.ConflictDefinition;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *

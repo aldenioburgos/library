@@ -5,13 +5,10 @@
  */
 package parallelism;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.LinkedBlockingQueue;
 import parallelism.hibrid.early.SPSCQueue;
+
+import java.util.Queue;
+import java.util.concurrent.CyclicBarrier;
 
 
 /**

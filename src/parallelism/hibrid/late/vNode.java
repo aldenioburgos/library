@@ -1,6 +1,5 @@
 package parallelism.hibrid.late;
 
-import parallelism.MessageContextPair;
 import parallelism.late.graph.Vertex;
 
 /**
@@ -28,11 +27,6 @@ public class vNode {
         }
         this.next = null;                           // LINKING
 
-    }
-
-    // DATA kept in node and kind of node (head, tail, message)
-    public MessageContextPair getAsRequest() {
-        return (MessageContextPair) data;
     }
 
     public Object getData() {

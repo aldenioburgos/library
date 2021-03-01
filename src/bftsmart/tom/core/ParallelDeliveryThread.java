@@ -12,15 +12,15 @@
  */
 package bftsmart.tom.core;
 
-import java.util.logging.Level;
-
 import bftsmart.reconfiguration.ServerViewController;
 import bftsmart.tom.ServiceReplica;
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.core.messages.TOMMessageType;
 import bftsmart.tom.server.Recoverable;
-import java.util.concurrent.BrokenBarrierException;
 import parallelism.ParallelServiceReplica;
+
+import java.util.concurrent.BrokenBarrierException;
+import java.util.logging.Level;
 
 /**
  * This class implements a thread which will deliver totally ordered requests to

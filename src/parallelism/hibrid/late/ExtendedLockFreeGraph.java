@@ -35,11 +35,6 @@ public class ExtendedLockFreeGraph {
         this.space = new Semaphore(subGraphSize);
     }
 
-    private boolean isDependent(MessageContextPair thisRequest, MessageContextPair otherRequest) {
-        return this.cd.isDependent(thisRequest, otherRequest);
-    }
-
-
     public HibridLockFreeNode get() throws InterruptedException {
         this.ready.acquire();
         HibridLockFreeNode aux = (HibridLockFreeNode) head;
@@ -101,7 +96,7 @@ public class ExtendedLockFreeGraph {
             }
             // this helps removing several consecutive marked to remove
             // in the limit case, aux2 is tail
-            if ((aux.getVertex() != Vertex.HEAD) && isDependent(newvNode.getAsRequest(), aux.getAsRequest())) {//if node conflicts
+            if ((aux.getVertex() != Vertex.HEAD) && this.cd.isDependent(newvNode.getData(), aux.getData())) {//if node conflicts
                 //newvNode.dependsMore();                    // new node depends on one more
                 newvNode.insertDepOn(aux, myPartition);
                 aux.insert(newvNode, myPartition);                       // add edge from older to newer
@@ -112,7 +107,7 @@ public class ExtendedLockFreeGraph {
                 aux = (HibridLockFreeNode) aux.getNext();
             }
         }
-        if ((aux.getVertex() != Vertex.HEAD) && isDependent(newvNode.getAsRequest(), aux.getAsRequest())) { //if node conflicts
+        if ((aux.getVertex() != Vertex.HEAD) && this.cd.isDependent(newvNode.getData(), aux.getData())) { //if node conflicts
             newvNode.insertDepOn(aux, myPartition);
             aux.insert(newvNode, myPartition);
         }                                                  // added all needed edges TO new node
@@ -123,8 +118,8 @@ public class ExtendedLockFreeGraph {
             if (next.isRemoved()) {
                 it.remove();
             } else {
-                if (newvNode.getAsRequest().classId != next.getAsRequest().classId &&
-                        isDependent(newvNode.getAsRequest(), next.getAsRequest())) {//if node conflicts
+                if (((MessageContextPair)newvNode.getData()).classId != ((MessageContextPair)next.getData()).classId &&
+                        this.cd.isDependent(newvNode.getData(), next.getData())) {//if node conflicts
                     newvNode.insertDepOn(next, myPartition);
                     next.insert(newvNode, myPartition);                       // add edge from older to newer
                 }
@@ -147,7 +142,7 @@ public class ExtendedLockFreeGraph {
                 aux2 = (HibridLockFreeNode) aux.getNext();               // proceed with aux2 to next node
             }                                       // this helps removing several consecutive marked to remove
             // in the limit case, aux2 is tail
-            if ((aux.getVertex() != Vertex.HEAD) && isDependent(newvNode.getAsRequest(), aux.getAsRequest())) {//if node conflicts
+            if ((aux.getVertex() != Vertex.HEAD) && this.cd.isDependent(newvNode.getData(), aux.getData())) {//if node conflicts
                 //newvNode.dependsMore();                    // new node depends on one more
                 newvNode.insertDepOn(aux, myPartition);
                 aux.insert(newvNode, myPartition);                       // add edge from older to newer
@@ -158,7 +153,7 @@ public class ExtendedLockFreeGraph {
                 aux = (HibridLockFreeNode) aux.getNext();
             }
         }
-        if ((aux.getVertex() != Vertex.HEAD) && isDependent(newvNode.getAsRequest(), aux.getAsRequest())) { //if node conflicts
+        if ((aux.getVertex() != Vertex.HEAD) && this.cd.isDependent(newvNode.getData(), aux.getData())) { //if node conflicts
             newvNode.insertDepOn(aux, myPartition);
             aux.insert(newvNode, myPartition);
 
@@ -172,7 +167,7 @@ public class ExtendedLockFreeGraph {
             if (next.isRemoved()) {
                 it.remove();
             } else {
-                if (isDependent(newvNode.getAsRequest(), next.getAsRequest())) {//if node conflicts
+                if (this.cd.isDependent(newvNode.getData(), next.getData())) {//if node conflicts
                     newvNode.insertDepOn(next, myPartition);
                     next.insert(newvNode, myPartition);                       // add edge from older to newer
                 }

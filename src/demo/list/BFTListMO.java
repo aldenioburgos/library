@@ -6,13 +6,6 @@
 package demo.list;
 
 
-import bftsmart.util.MultiOperationRequest;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import parallelism.ParallelMapping;
-
 /**
  *
  * @author alchieri

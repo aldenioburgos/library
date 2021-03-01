@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class UtxoAddress {
     private final byte[] transactionHash;
-    private final byte outputPosition;
+    private final int outputPosition; // Esse campo é um unsignedbyte, usei integer pq não temos restrição de espaço
 
-    public UtxoAddress(byte[] transactionHash, byte outputPosition) {
+    public UtxoAddress(byte[] transactionHash, int outputPosition) {
         this.transactionHash = transactionHash;
         this.outputPosition = outputPosition;
     }
@@ -31,7 +31,7 @@ public class UtxoAddress {
         return transactionHash;
     }
 
-    public byte getOutputPosition() {
+    public int getOutputPosition() {
         return outputPosition;
     }
 }

@@ -7,10 +7,10 @@ package parallelism.late;
 
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.util.MultiOperationRequest;
-import parallelism.late.graph.COS;
 import parallelism.MessageContextPair;
 import parallelism.MultiOperationCtx;
 import parallelism.ParallelMapping;
+import parallelism.late.graph.COS;
 import parallelism.late.graph.CoarseGrainedLock;
 import parallelism.late.graph.FineGrainedLock;
 import parallelism.late.graph.LockFreeGraph;

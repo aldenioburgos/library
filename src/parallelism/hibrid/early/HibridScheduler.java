@@ -20,11 +20,12 @@ public class HibridScheduler implements Scheduler {
     private Queue<TOMMessage>[] queues;
 
     public HibridScheduler(int numberOfPartitions, HibridClassToThreads[] cToT, int queuesCapacity) {
-        queues = new Queue[numberOfPartitions];
+        this.classes = cToT;
+        this.queues = new Queue[numberOfPartitions];
+
         for (int i = 0; i < queues.length; i++) {
             queues[i] = new SPSCQueue(queuesCapacity);
         }
-        this.classes = cToT;
 
         for (int i = 0; i < this.classes.length; i++) {
             Queue<TOMMessage>[] q = new Queue[this.classes[i].tIds.length];
@@ -42,16 +43,6 @@ public class HibridScheduler implements Scheduler {
     @Override
     public int getNumWorkers() {
         return this.queues.length;
-    }
-
-    @Override
-    public ParallelMapping getMapping() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void scheduleReplicaReconfiguration() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -88,11 +79,6 @@ public class HibridScheduler implements Scheduler {
         return new MultiOperationRequest(request.getContent());
     }
 
-    @Override
-    public void schedule(MessageContextPair request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public HibridClassToThreads getClass(int id) {
         for (int i = 0; i < this.classes.length; i++) {
             if (this.classes[i].classId == id) {
@@ -100,6 +86,21 @@ public class HibridScheduler implements Scheduler {
             }
         }
         return null;
+    }
+
+    @Override
+    public ParallelMapping getMapping() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void scheduleReplicaReconfiguration() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void schedule(MessageContextPair request) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

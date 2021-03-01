@@ -1,4 +1,4 @@
-package demo.coin;
+package demo.coin.late;
 
 import bftsmart.tom.MessageContext;
 import bftsmart.tom.server.SingleExecutable;
@@ -13,10 +13,9 @@ public class CoinExecutor implements SingleExecutable {
     public byte[] executeOrdered(byte[] bytes, MessageContext messageContext) {
         try {
             CoinOperation op = CoinOperation.loadFrom(bytes);
-            op.execute(globalState);
-            return new byte[]{1};
+            return op.execute(globalState);
         } catch (RuntimeException e) {
-            return new byte[]{0};
+            return new byte[]{1};
         }
     }
 

@@ -15,7 +15,6 @@ import parallelism.late.graph.DependencyGraph;
 import parallelism.late.graph.LockFreeGraph;
 import parallelism.late.graph.Vertex;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -224,8 +223,9 @@ public class LocalHibridExecution {
                         || opId == MultipartitionMapping.R78;
             }
 
-            @Override
-            public boolean isDependent(MessageContextPair r1, MessageContextPair r2) {
+            public boolean isDependent(Object o1, Object o2) {
+                MessageContextPair r1 = (MessageContextPair)o1;
+                MessageContextPair r2 = (MessageContextPair)o2;
                 switch (r1.opId) {
                     case MultipartitionMapping.GR:
                         if (conflictR1(r2.opId)
@@ -999,7 +999,7 @@ public class LocalHibridExecution {
             while (true) {
                 try {
                     HibridLockFreeNode node = subgraphs[this.myPartition].get();
-                    execute(node.getAsRequest());
+                    execute((MessageContextPair) node.getData());
                     subgraphs[this.myPartition].remove(node);
                     processed++;
                 } catch (InterruptedException ex) {

@@ -16,42 +16,20 @@
  */
 package demo.list;
 
-import bftsmart.reconfiguration.ServerViewController;
-import bftsmart.statemanagement.ApplicationState;
-import bftsmart.statemanagement.StateManager;
-import bftsmart.statemanagement.strategy.StandardStateManager;
 import bftsmart.tom.MessageContext;
-import bftsmart.tom.ReplicaContext;
 import bftsmart.tom.ServiceReplica;
-import bftsmart.tom.leaderchange.CertifiedDecision;
-import bftsmart.tom.server.Recoverable;
 import bftsmart.tom.server.SingleExecutable;
-import bftsmart.tom.server.defaultservices.DefaultApplicationState;
-import bftsmart.tom.util.Storage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import parallelism.late.LateServiceReplica;
-import parallelism.late.ConflictDefinition;
 import parallelism.MessageContextPair;
-import parallelism.ParallelMapping;
-import parallelism.ParallelServiceReplica;
 import parallelism.ParallelServiceReplica;
 import parallelism.SequentialServiceReplica;
 import parallelism.hibrid.HibridServiceReplica;
 import parallelism.late.COSType;
+import parallelism.late.ConflictDefinition;
+import parallelism.late.LateServiceReplica;
+
+import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class ListServerMP implements SingleExecutable {
 
@@ -255,8 +233,9 @@ public final class ListServerMP implements SingleExecutable {
                             || opId == MultipartitionMapping.R78;
                 }
 
-                @Override
-                public boolean isDependent(MessageContextPair r1, MessageContextPair r2) {
+                public boolean isDependent(Object o1, Object o2) {
+                    MessageContextPair r1 = (MessageContextPair)o1;
+                    MessageContextPair r2 = (MessageContextPair)o2;
 
                     switch (r1.opId) {
                         case MultipartitionMapping.GR:

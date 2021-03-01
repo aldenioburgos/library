@@ -1,10 +1,11 @@
-package demo.coin;
+package demo.coin.late;
 
 import bftsmart.reconfiguration.ServerViewController;
 import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.server.Replier;
 import bftsmart.tom.server.SingleExecutable;
 import bftsmart.util.ThroughputStatistics;
+import demo.coin.core.operation.CoinSingleOperationContext;
 import parallelism.hibrid.late.ExtendedLockFreeGraph;
 import parallelism.hibrid.late.HibridLockFreeNode;
 
@@ -18,7 +19,13 @@ public class CoinLateWorker extends Thread {
     private ServerViewController SVController;
     private ThroughputStatistics statistics;
 
-    public CoinLateWorker(int id, int partitions, ExtendedLockFreeGraph[] subgraphs, SingleExecutable executor, Replier replier, ServerViewController SVController, ThroughputStatistics statistics) {
+    public CoinLateWorker(int id,
+                          int partitions,
+                          ExtendedLockFreeGraph[] subgraphs,
+                          SingleExecutable executor,
+                          Replier replier,
+                          ServerViewController SVController,
+                          ThroughputStatistics statistics) {
         this.thread_id = id;
         this.myPartition = id % partitions;
         this.subgraphs = subgraphs;
@@ -31,23 +38,20 @@ public class CoinLateWorker extends Thread {
     public void run() {
         while (true) {
             try {
-                //get
                 HibridLockFreeNode node = subgraphs[this.myPartition].get();
-                //execute
-                CoinMessageContextPair msg  = (CoinMessageContextPair)node.getAsRequest();
-                msg.resp = executor.executeOrdered( null/*TODO bytes da operação*/, null);
 
-                msg.ctx.add(msg.index, msg.resp);
-                if (msg.ctx.response.isComplete() && !msg.ctx.finished && (msg.ctx.interger.getAndIncrement() == 0)) {
-                    msg.ctx.finished = true;
-                    msg.ctx.request.reply = new TOMMessage(thread_id, msg.ctx.request.getSession(), msg.ctx.request.getSequence(), msg.ctx.response.serialize(), SVController.getCurrentViewId());
-                    replier.manageReply(msg.ctx.request, null);
+                CoinSingleOperationContext msg = (CoinSingleOperationContext) node.getData();
+                msg.setResponse(executor.executeOrdered(msg.operation, null));
+
+                if (msg.multiOperationCtx.isComplete()) {
+                    msg.setReply(new TOMMessage(thread_id, msg.getSession(), msg.getSequence(), msg.getResponseBytes(), SVController.getCurrentViewId()));
+                    replier.manageReply(msg.getTOMRequest(), null);
                 }
                 statistics.computeStatistics(thread_id, 1);
                 //remove
                 subgraphs[this.myPartition].remove(node);
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                throw new RuntimeException(ex);
             }
         }
     }

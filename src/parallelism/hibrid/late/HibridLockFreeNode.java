@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
  * @author eduardo
  */
 public class HibridLockFreeNode extends vNode {
@@ -16,7 +15,7 @@ public class HibridLockFreeNode extends vNode {
 
     public volatile boolean inserted = false;
     public volatile boolean removed = false;
-     
+
     public AtomicInteger atomicCounter;
 
     public eNode[] headDepOn;
@@ -24,31 +23,31 @@ public class HibridLockFreeNode extends vNode {
 
     public ExtendedLockFreeGraph graph;
 
-    public HibridLockFreeNode(Object data, Vertex vertex, ExtendedLockFreeGraph graph, int numParticions, int numConflic) {
-        super(data, vertex, numParticions);
+    public HibridLockFreeNode(Object data, Vertex vertex, ExtendedLockFreeGraph graph, int numPartitions, int numConflic) {
+        super(data, vertex, numPartitions);
         reservedAtomic = new AtomicBoolean(false);
         readyAtomic = new AtomicBoolean(false);
 
-        headDepOn = new eNode[numParticions];
-        tailDepOn = new eNode[numParticions];
+        headDepOn = new eNode[numPartitions];
+        tailDepOn = new eNode[numPartitions];
 
-        for (int i = 0; i < numParticions; i++) {
+        for (int i = 0; i < numPartitions; i++) {
             headDepOn[i] = new eNode(null, Vertex.HEAD);
             tailDepOn[i] = new eNode(null, Vertex.TAIL);
             headDepOn[i].setNext(tailDepOn[i]);
         }
 
         this.graph = graph;
-        if(numConflic > 0){
-           atomicCounter = new AtomicInteger(numConflic);
+        if (numConflic > 0) {
+            atomicCounter = new AtomicInteger(numConflic);
         }
         inserted = false;
     }
 
-    public boolean isRemoved(){
+    public boolean isRemoved() {
         return removed;
     }
-    
+
     public void insertDepOn(HibridLockFreeNode newNode, int myPartition) {
         eNode neweNode = new eNode(newNode, Vertex.MESSAGE);
         eNode aux = headDepOn[myPartition];

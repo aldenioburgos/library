@@ -134,7 +134,7 @@ public class Transfer extends CoinOperation {
             var utxoToRemove = inputs.stream()
                     .map(it -> new UtxoAddress(it.transactionHash, it.outputIndex))
                     .collect(Collectors.toSet());
-            globalState.removeUtxos(accounts.get(issuer), utxoToRemove, (byte) currency);
+            globalState.removeUtxos((byte) currency,accounts.get(issuer), utxoToRemove);
 
             // criar os utxos de saída.
             byte[] transactionHash = CryptoUtil.hash(toByteArray());

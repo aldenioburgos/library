@@ -67,9 +67,8 @@ public class ExtendedLockFreeGraph {
             try {
                 this.space.acquire();
                 insertNodeAndDependencies(newvNode);
-
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                throw new RuntimeException(ex);
             }
         }
         if (conflic) {

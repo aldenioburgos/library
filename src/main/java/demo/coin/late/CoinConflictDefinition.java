@@ -3,7 +3,6 @@ package demo.coin.late;
 import demo.coin.core.operation.CoinSingleOperationContext;
 import demo.coin.core.transactions.CoinOperation;
 import demo.coin.core.transactions.CoinOperation.OP_TYPE;
-import demo.coin.util.ByteUtils;
 import parallelism.late.ConflictDefinition;
 
 import java.util.Arrays;
@@ -21,9 +20,9 @@ public class CoinConflictDefinition implements ConflictDefinition {
         if (OP_TYPE.BALANCE.ordinal() == op1[0] && OP_TYPE.BALANCE.ordinal() == op2[0]) {
             return false;
         }
-        var accounts1 = readAccounts(op1, 1);
-        var accounts2 = readAccounts(op2, 1);
-        return accounts1.stream().anyMatch(it -> accounts2.contains(it));
+        Set<byte[]> accounts1 = readAccounts(op1, 1);
+        Set<byte[]> accounts2 = readAccounts(op2, 1);
+        return accounts1.stream().anyMatch(accounts2::contains);
     }
 
 

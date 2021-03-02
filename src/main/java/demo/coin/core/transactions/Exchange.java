@@ -19,7 +19,6 @@ import static demo.coin.util.ByteUtils.readByteSizedList;
 //   <op_type>   [<accounts>]         <signature>     <currency>  [<inputs>]            [<outputs>]
 //   <1>         <1>(<91>..<23205>)    <71>            <1>        <1>(<33>..<8415>)     <1>(<10>..<2550>)
 // total: 1      +1+(91..23205)        +71             +1         +1+(33..8415)         +1+(10..2550)       = 210.. 11132bytes
-
 public class Exchange extends Transfer {
 
     public Exchange(byte[] bytes) {
@@ -43,19 +42,6 @@ public class Exchange extends Transfer {
         this.inputs = readByteSizedList(dis, Input::read);
         this.outputs = readByteSizedList(dis, Exchange.Output::read);
     }
-
-
-//    private byte[] getCurrencies() {
-//        Set<Byte> outputCurrenciesSet = outputs.stream().map(it -> ((Output) it).currency).collect(Collectors.toSet());
-//        outputCurrenciesSet.remove(currency);
-//        byte[] currencies = new byte[outputCurrenciesSet.size() + 1];
-//        int i = 0;
-//        currencies[i] = currency;
-//        for (var item : outputCurrenciesSet) {
-//            currencies[++i] = item;
-//        }
-//        return currencies;
-//    }
 
     @Override
     protected boolean isValidOutputs(CoinGlobalState globalState) {
@@ -91,7 +77,7 @@ public class Exchange extends Transfer {
             Set<UtxoAddress> utxoToConsume = inputs.stream()
                     .map(it -> new UtxoAddress(it.transactionHash, it.outputIndex))
                     .collect(Collectors.toSet());
-            globalState.removeUtxos(accounts.get(issuer), utxoToConsume, (byte) currency);
+            globalState.removeUtxos((byte) currency, accounts.get(issuer), utxoToConsume);
 
             // criar os utxos de saída.
             byte[] transactionHash = CryptoUtil.hash(toByteArray());

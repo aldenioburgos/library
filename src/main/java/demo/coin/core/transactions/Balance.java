@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 //  /-------------header-------------------\-/---------body--------\
-//   <op_type>[    <accounts>   ]<signature> [ <currencies> ]
-//   <1>       <1>[<91>..<23205>]    <71>     <1>[<1>..<255>]
-// total: 1+1+(91..23205)+71                +  1+(1..255)           = 166..23534 bytes
+//   <op_type>[    <accounts>   ]<signature>  [<currencies>]
+//   <1>       <1>[<91>..<23205>]    <71>      <1>[<1>..<255>]
+// total: 1+1+(91..23205)+71                   +1+(1..255)           = 166..23534 bytes
 public class Balance extends CoinOperation {
 
     private byte[] currencies;

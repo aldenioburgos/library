@@ -8,8 +8,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 //  /------------header-------------\-/---------body--------\
-//   <op_type>[<accounts>]<signature> <currency><value>
-//   <1>       <1><91>    <71>        <1>       <8>
+//   <op_type>[<accounts>]<signature>  <currency><value>
+//   <1>       <1><91>    <71>         <1>       <8>
 // total: 1+1+91+71+1+8 = 173 bytes
 public class Mint extends CoinOperation {
 

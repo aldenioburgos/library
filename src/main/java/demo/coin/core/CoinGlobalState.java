@@ -1,6 +1,5 @@
 package demo.coin.core;
 
-import demo.coin.core.transactions.CoinOperation;
 import demo.coin.util.ByteArray;
 
 import java.util.*;
@@ -58,7 +57,7 @@ public class CoinGlobalState {
         return users.contains(new ByteArray(user));
     }
 
-    public boolean isCurrency(byte currency) {
+    public boolean isCurrency(int currency) {
         return Arrays.binarySearch(currencies, currency) >= 0;
     }
 

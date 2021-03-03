@@ -5,9 +5,11 @@ import java.util.Arrays;
 public class ByteArray {
 
     public byte[] bytes;
+    public int length;
 
     public ByteArray(byte[] bytes) {
         this.bytes = bytes;
+        this.length = bytes.length;
     }
 
     @Override

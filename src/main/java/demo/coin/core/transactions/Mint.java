@@ -6,6 +6,8 @@ import demo.coin.util.CryptoUtil;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.security.KeyPair;
+import java.util.Objects;
 
 //  /------------header-------------\-/---------body--------\
 //   <op_type>[<accounts>]<signature>  <currency><value>
@@ -14,14 +16,17 @@ import java.io.IOException;
 public class Mint extends CoinOperation {
 
     // data
-    private byte currency;
+    private int currency;
     private long value;
 
-    public Mint(byte[] issuer, long value, byte currency) {
-        super(issuer);
+    public Mint(KeyPair keypair, int currency, long value) {
+        super(keypair.getPublic().getEncoded());
+        if (currency < 0 || currency > 255) throw new IllegalArgumentException();
         this.currency = currency;
         this.value = value;
+        sign(keypair.getPrivate().getEncoded());
     }
+
 
     public Mint(byte[] bytes) {
         load(bytes);
@@ -36,7 +41,7 @@ public class Mint extends CoinOperation {
 
     @Override
     protected void loadDataFrom(DataInputStream dis) throws IOException {
-        currency = dis.readByte();
+        currency = dis.readUnsignedByte();
         value = dis.readLong();
     }
 
@@ -59,7 +64,7 @@ public class Mint extends CoinOperation {
             }
             // atualiza o global state: criar os utxos de saída para o próprio emissor.
             byte[] transactionHash = CryptoUtil.hash(toByteArray());
-            globalState.addUtxo(currency, accounts.get(this.issuer), transactionHash, 0, value);
+            globalState.addUtxo(currency, accounts.get(this.issuer).bytes, transactionHash, 0, value);
         } catch (Throwable e) {
             e.printStackTrace();
             return fail();
@@ -71,7 +76,24 @@ public class Mint extends CoinOperation {
     @Override
     public boolean isInvalid(CoinGlobalState globalState) {
         // as saídas tem valor positivo? //o emissor pode cunhar moedas?
-        return super.isInvalid(globalState) || (value <= 0) || !globalState.isMinter(accounts.get(this.issuer)) || !globalState.isCurrency(currency);
+        return super.isInvalid(globalState) || (value <= 0) || !globalState.isMinter(accounts.get(this.issuer).bytes) || !globalState.isCurrency(currency);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Mint))
+            return false;
+        if (!super.equals(o))
+            return false;
+        Mint mint = (Mint) o;
+        return currency == mint.currency && value == mint.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), currency, value);
     }
 
     @Override

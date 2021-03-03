@@ -1,11 +1,12 @@
 package demo.coin.util;
 
+import demo.coin.core.transactions.CoinOperation;
+
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
 
 public class CryptoUtil {
 
@@ -36,6 +37,8 @@ public class CryptoUtil {
     }
 
     public static byte[] sign(byte[] privateKeyBytes, byte[] dataToSign) {
+        if (privateKeyBytes == null) throw new IllegalArgumentException();
+        if (dataToSign == null || dataToSign.length != 32) throw new IllegalArgumentException();
         try {
             Signature signerEngine = Signature.getInstance(Signature_Algorithm_Name);
             PrivateKey privateKey = loadPrivateKey(privateKeyBytes);
@@ -49,6 +52,7 @@ public class CryptoUtil {
     }
 
     public static byte[] hash(byte[] data) {
+        if (data == null) throw new IllegalArgumentException();
         try {
             return MessageDigest.getInstance(HASH_Algorithm_Name).digest(data);
         } catch (NoSuchAlgorithmException e) {
@@ -57,6 +61,12 @@ public class CryptoUtil {
     }
 
     public static boolean checkSignature(byte[] publicKeyBytes, byte[] signedData, byte[] signature) {
+        if (publicKeyBytes == null || publicKeyBytes.length != CoinOperation.ISSUER_SIZE)
+            throw new IllegalArgumentException();
+        if (signedData == null || signedData.length != CoinOperation.HASH_SIZE)
+            throw new IllegalArgumentException();
+        if (signature == null)
+            throw new IllegalArgumentException();
         try {
             Signature signerEngine = Signature.getInstance(Signature_Algorithm_Name);
             PublicKey publicKey = loadPublicKey(publicKeyBytes);
@@ -69,22 +79,5 @@ public class CryptoUtil {
         }
     }
 
-    /**
-     * Função para teste local. Remover!
-     */
-    public static void main(String[] args) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        var keypair = generateKeyPair();
-        var data = "arruma a mala aearruma a mala aearruma a mala aearruma a mala aearruma a mala aearruma a mala aearruma a mala aearruma a mala ae".getBytes();
-        var priKeyBytes = keypair.getPrivate().getEncoded();
-        var pubKeyBytes = keypair.getPublic().getEncoded();
-        var signature = sign(priKeyBytes, data);
-        var hash = hash(data);
-        System.out.println(checkSignature(pubKeyBytes, data, signature));
 
-        System.out.println("Hash " + hash.length + ": " + Arrays.toString(hash));
-        System.out.println("Dat " + data.length + ": " + Arrays.toString(data));
-        System.out.println("Pri " + priKeyBytes.length + ": " + Arrays.toString(priKeyBytes));
-        System.out.println("Pub " + pubKeyBytes.length + ": " + Arrays.toString(pubKeyBytes));
-        System.out.println("Sig " + signature.length + ": " + Arrays.toString(signature));
-    }
 }

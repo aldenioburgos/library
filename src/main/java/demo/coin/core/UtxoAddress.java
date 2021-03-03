@@ -12,26 +12,36 @@ public class UtxoAddress {
         this.outputPosition = outputPosition;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UtxoAddress that = (UtxoAddress) o;
-        return outputPosition == that.outputPosition && Arrays.equals(transactionHash, that.transactionHash);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(outputPosition);
-        result = 31 * result + Arrays.hashCode(transactionHash);
-        return result;
-    }
-
     public byte[] getTransactionHash() {
         return transactionHash;
     }
 
     public int getOutputPosition() {
         return outputPosition;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof UtxoAddress))
+            return false;
+        UtxoAddress that = (UtxoAddress) o;
+        return getOutputPosition() == that.getOutputPosition() && Arrays.equals(getTransactionHash(), that.getTransactionHash());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(getOutputPosition());
+        result = 31 * result + Arrays.hashCode(getTransactionHash());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "transactionHash=" + Arrays.toString(transactionHash) +
+                ", outputPosition=" + outputPosition +
+                '}';
     }
 }

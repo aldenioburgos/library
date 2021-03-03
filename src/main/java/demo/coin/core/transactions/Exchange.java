@@ -77,13 +77,13 @@ public class Exchange extends Transfer {
             Set<UtxoAddress> utxoToConsume = inputs.stream()
                     .map(it -> new UtxoAddress(it.transactionHash, it.outputIndex))
                     .collect(Collectors.toSet());
-            globalState.removeUtxos((byte) currency, accounts.get(issuer), utxoToConsume);
+            globalState.removeUtxos((byte) currency, accounts.get(issuer).bytes, utxoToConsume);
 
             // criar os utxos de saída.
             byte[] transactionHash = CryptoUtil.hash(toByteArray());
             for (int i = 0; i < outputs.size(); i++) {
                 Exchange.Output output = (Exchange.Output) outputs.get(i);
-                globalState.addUtxo(output.currency, accounts.get(output.receiverAccountIndex), transactionHash, i, output.value);
+                globalState.addUtxo(output.currency, accounts.get(output.receiverAccountIndex).bytes, transactionHash, i, output.value);
             }
 
             // responder

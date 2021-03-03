@@ -23,19 +23,6 @@ public class Utxo {
         this.value = value;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Utxo utxo = (Utxo) o;
-        return Objects.equals(address, utxo.address);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(address);
-    }
-
     public long getValue() {
         return value;
     }
@@ -46,5 +33,28 @@ public class Utxo {
 
     public byte[] getTransactionHash() {
         return address.getTransactionHash();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Utxo))
+            return false;
+        Utxo utxo = (Utxo) o;
+        return getValue() == utxo.getValue() && Objects.equals(address, utxo.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(address, getValue());
+    }
+
+    @Override
+    public String toString() {
+        return "Utxo{" +
+                "address=" + address +
+                ", value=" + value +
+                '}';
     }
 }

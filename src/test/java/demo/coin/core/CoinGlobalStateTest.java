@@ -1,7 +1,6 @@
 package demo.coin.core;
 
 import demo.coin.util.CryptoUtil;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.InvalidAlgorithmParameterException;
@@ -13,12 +12,6 @@ import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CoinGlobalStateTest {
-
-
-    @BeforeEach
-    void setUp() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-
-    }
 
     @Test
     void isMinterNoMinter() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {

@@ -10,6 +10,22 @@ import java.util.function.Function;
 
 public class ByteUtils {
 
+    public static int[] byteArrayToIntArray(byte[] byteArray) {
+        int[] array = new int[byteArray.length];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = byteArray[i] & 0xff;
+        }
+        return array;
+    }
+
+    public static byte[] intArrayToByteArray(int[] intArray) {
+        byte[] array = new byte[intArray.length];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (byte) intArray[i];
+        }
+        return array;
+    }
+
     public static byte[] longToBytes(long x) {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
         buffer.putLong(0, x);

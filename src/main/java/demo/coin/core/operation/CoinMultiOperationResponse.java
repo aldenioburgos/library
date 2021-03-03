@@ -1,6 +1,7 @@
 package demo.coin.core.operation;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CoinMultiOperationResponse {
@@ -42,13 +43,41 @@ public class CoinMultiOperationResponse {
 
     public boolean isComplete() {
         for (int i = 0; i < responses.length; i++) {
-            if (responses[i] == null) return false;
+            if (responses[i] == null)
+                return false;
         }
         return complete.compareAndSet(false, true);
     }
 
     public void add(int i, byte[] response) {
+        if (i < 0 || i > this.responses.length) throw new IllegalArgumentException("i= " + i);
+        if (response == null) throw new IllegalArgumentException("response = null");
+
         this.responses[i] = response;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        CoinMultiOperationResponse that = (CoinMultiOperationResponse) o;
+        return Arrays.deepEquals(responses, that.responses);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(responses);
+    }
+
+    @Override
+    public String
+
+    toString() {
+        return "CoinMultiOperationResponse{" +
+                "responses=" + Arrays.toString(responses) +
+                ", complete=" + complete +
+                '}';
+    }
 }

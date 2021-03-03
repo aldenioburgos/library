@@ -71,7 +71,7 @@ public class Transfer extends CoinOperation {
 
     @Override
     public boolean isInvalid(CoinGlobalState globalState) {
-        if (!globalState.isUser(accounts.get(issuer))) return false;
+        if (!globalState.isUser(accounts.get(issuer).bytes)) return false;
         if (!globalState.isCurrency((byte) currency)) return false;
 
         boolean validInputs = isValidInputs(globalState);
@@ -80,7 +80,7 @@ public class Transfer extends CoinOperation {
 
         // a soma das entradas é igual a soma das saídas?
         if (validInputs && validOutputs) {
-            Set<Utxo> coins = globalState.listUtxos(accounts.get(issuer), currency);
+            Set<Utxo> coins = globalState.listUtxos(accounts.get(issuer).bytes, currency);
             long inputsTotalValue = coins.stream()
                     .filter(it -> inputs.contains(new Input(it.getTransactionHash(), it.getOutputPosition())))
                     .map(Utxo::getValue)
@@ -118,7 +118,7 @@ public class Transfer extends CoinOperation {
         if (inputs.stream().distinct().count() != inputs.size()) return false;
 
         // todas as entradas foram encontradas?
-        Set<Utxo> coins = globalState.listUtxos(accounts.get(issuer), currency);
+        Set<Utxo> coins = globalState.listUtxos(accounts.get(issuer).bytes, currency);
         return inputs.stream()
                 .map(it -> new Utxo(it.transactionHash, it.outputIndex))
                 .allMatch(coins::contains);
@@ -134,13 +134,13 @@ public class Transfer extends CoinOperation {
             var utxoToRemove = inputs.stream()
                     .map(it -> new UtxoAddress(it.transactionHash, it.outputIndex))
                     .collect(Collectors.toSet());
-            globalState.removeUtxos((byte) currency,accounts.get(issuer), utxoToRemove);
+            globalState.removeUtxos((byte) currency,accounts.get(issuer).bytes, utxoToRemove);
 
             // criar os utxos de saída.
             byte[] transactionHash = CryptoUtil.hash(toByteArray());
             for (int i = 0; i < outputs.size(); i++) {
                 Output output = outputs.get(i);
-                globalState.addUtxo(this.currency, accounts.get(output.receiverAccountIndex), transactionHash, i, output.value);
+                globalState.addUtxo(this.currency, accounts.get(output.receiverAccountIndex).bytes, transactionHash, i, output.value);
             }
         } catch (Throwable e) {
             e.printStackTrace();

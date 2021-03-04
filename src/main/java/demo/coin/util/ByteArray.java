@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class ByteArray {
 
-    public byte[] bytes;
-    public int length;
+    public final byte[] bytes;
+    public final int length;
 
     public ByteArray(byte[] bytes) {
         this.bytes = bytes;

@@ -2,7 +2,6 @@ package demo.coin.core.transactions;
 
 import demo.coin.core.CoinGlobalState;
 import demo.coin.core.Utxo;
-import demo.coin.util.ByteUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -18,8 +17,8 @@ import static demo.coin.util.ByteUtils.intArrayToByteArray;
 
 //  /-------------header-------------------\-/---------body--------\
 //   <op_type>[    <accounts>   ]<signature>  [<currencies>]
-//   <1>       <1>[<91>..<23205>]    <71>      <1>[<1>..<255>]
-// total: 1+1+(91..23205)+71                   +1+(1..255)           = 166..23534 bytes
+//   <1>       <1>[<91>..<23205>]    <71>      <1>[<1>..<256>]
+// total: 1+1+(91..23205)+71                   +1+(1..256)           = 166..23534 bytes
 public class Balance extends CoinOperation {
 
     private int[] currencies;
@@ -29,9 +28,8 @@ public class Balance extends CoinOperation {
     }
 
     public Balance(KeyPair keyPair, int... currencies) {
-        super(keyPair.getPublic().getEncoded());
-        if (Arrays.stream(currencies).anyMatch(it -> it < 0 || it > 255))
-            throw new IllegalArgumentException();
+        super(keyPair);
+        if (Arrays.stream(currencies).anyMatch(it -> it < 0 || it > 255)) throw new IllegalArgumentException();
         this.currencies = currencies;
         sign(keyPair.getPrivate().getEncoded());
     }
@@ -55,7 +53,7 @@ public class Balance extends CoinOperation {
              var dos = new DataOutputStream(baos)) {
             Map<Integer, Long> balances = new HashMap<>(currencies.length);
             for (int currency : currencies) {
-                long balance = globalState.listUtxos(accounts.get(issuer).bytes, currency).stream()
+                long balance = globalState.getUtxos(currency, accounts.get(issuer)).stream()
                         .map(Utxo::getValue)
                         .reduce(0L, Long::sum);
                 balances.put(currency, balance);

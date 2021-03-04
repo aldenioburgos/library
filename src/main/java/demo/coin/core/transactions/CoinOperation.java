@@ -5,6 +5,7 @@ import demo.coin.util.ByteArray;
 import demo.coin.util.CryptoUtil;
 
 import java.io.*;
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,20 +24,24 @@ public abstract class CoinOperation {
     public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE}
 
     public static final int ISSUER_SIZE = 91;
-    public static final int HASH_SIZE = 32;
+    public static final int HASH_SIZE   = 32;
+    public static final int BYTE_SIZE   = 256;
 
-    protected byte issuer;
-    protected List<ByteArray> accounts;
-    protected byte[] signature;
+    protected int             issuer;
+    protected byte[]          signature;
+    protected List<ByteArray> accounts = new ArrayList<>(BYTE_SIZE);
 
     protected CoinOperation() {
     }
 
-    public CoinOperation(byte[] issuer) {
-        this.issuer = 0;
-        this.accounts = new ArrayList<>();
-        this.accounts.add(new ByteArray(issuer));
+    public CoinOperation(KeyPair keyPair) {
+        //@formatter:off
+        if (keyPair == null || keyPair.getPublic() == null)                                                             throw new IllegalArgumentException();
+        if (keyPair.getPublic().getEncoded() == null || keyPair.getPublic().getEncoded().length != ISSUER_SIZE)         throw new IllegalArgumentException();
+        //@formatter:on
+        this.issuer = addAccount(new ByteArray(keyPair.getPublic().getEncoded()));
     }
+
 
     public static CoinOperation loadFrom(byte[] bytes) {
         int type = readUnsignedByte(bytes, 0);
@@ -48,11 +53,22 @@ public abstract class CoinOperation {
         };
     }
 
+    public static byte[] ok() {
+        return new byte[]{0};
+    }
+
+    public static byte[] fail() {
+        return new byte[]{1};
+    }
+
     public abstract byte[] execute(CoinGlobalState globalState);
 
-    public boolean isInvalid(CoinGlobalState globalState) {
-        var accValid = accounts != null && accounts.size() >= 1 && accounts.stream().allMatch(it -> it.length == ISSUER_SIZE && globalState.isUser(it.bytes));
-        return !(accValid && signature != null && checkSignature(accounts.get(issuer).bytes, hash(getDataBytes()), signature));
+    public void validate(CoinGlobalState globalState) {
+        //@formatter:off
+        if (accounts == null || accounts.size() <= 0)                                                                      throw new IllegalArgumentException();
+        if (accounts.stream().anyMatch(it -> it.length != ISSUER_SIZE || !globalState.isUser(it)))                         throw new IllegalArgumentException();
+        if (signature == null || !checkSignature(accounts.get(issuer).bytes, CryptoUtil.hash(getDataBytes()), signature))  throw new IllegalArgumentException();
+        //@formatter:on
     }
 
     public byte[] toByteArray() {
@@ -67,6 +83,10 @@ public abstract class CoinOperation {
         }
     }
 
+    public byte[] hash() {
+        return CryptoUtil.hash(toByteArray());
+    }
+
     protected abstract OP_TYPE getOpType();
 
     protected abstract void validateType(DataInputStream dis) throws IOException;
@@ -75,9 +95,18 @@ public abstract class CoinOperation {
 
     protected abstract void writeDataTo(DataOutputStream dos) throws IOException;
 
+    protected int addAccount(ByteArray account) {
+        int accountIndex = accounts.indexOf(account);
+        if (accountIndex < 0) {
+            accounts.add(account);
+            accountIndex = accounts.indexOf(account);
+        }
+        return accountIndex;
+    }
+
 
     protected void sign(byte[] privateKeyBytes) {
-        byte[] data = getDataBytes();
+        byte[] data       = getDataBytes();
         byte[] hashOfData = CryptoUtil.hash(data);
         this.signature = CryptoUtil.sign(privateKeyBytes, hashOfData);
     }
@@ -94,17 +123,10 @@ public abstract class CoinOperation {
         }
     }
 
-    protected byte[] ok() {
-        return new byte[]{0};
-    }
-
-    protected byte[] fail() {
-        return new byte[]{1};
-    }
 
     protected List<ByteArray> readAccounts(DataInputStream dis) throws IOException {
-        int numAccounts = dis.readUnsignedByte();
-        List<ByteArray> accs = new ArrayList<>(numAccounts);
+        int             numAccounts = dis.readUnsignedByte();
+        List<ByteArray> accs        = new ArrayList<>(numAccounts);
         for (int i = 0; i < numAccounts; i++) {
             accs.add(new ByteArray(dis.readNBytes(ISSUER_SIZE)));
         }
@@ -141,7 +163,6 @@ public abstract class CoinOperation {
     }
 
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -164,6 +185,5 @@ public abstract class CoinOperation {
         return "accounts=" + accounts +
                 ", issuer=" + issuer +
                 ", signature=" + Arrays.toString(signature);
-
     }
 }

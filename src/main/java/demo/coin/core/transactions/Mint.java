@@ -6,6 +6,7 @@ import demo.coin.util.CryptoUtil;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileLockInterruptionException;
 import java.security.KeyPair;
 import java.util.Objects;
 
@@ -20,8 +21,9 @@ public class Mint extends CoinOperation {
     private long value;
 
     public Mint(KeyPair keypair, int currency, long value) {
-        super(keypair.getPublic().getEncoded());
+        super(keypair);
         if (currency < 0 || currency > 255) throw new IllegalArgumentException();
+        if (value <= 0) throw new IllegalArgumentException();
         this.currency = currency;
         this.value = value;
         sign(keypair.getPrivate().getEncoded());
@@ -59,12 +61,10 @@ public class Mint extends CoinOperation {
     @Override
     public byte[] execute(CoinGlobalState globalState) {
         try {
-            if (isInvalid(globalState)) {
-                throw new IllegalArgumentException("Operação inválida <" + this + ">.");
-            }
+            validate(globalState);
             // atualiza o global state: criar os utxos de saída para o próprio emissor.
             byte[] transactionHash = CryptoUtil.hash(toByteArray());
-            globalState.addUtxo(currency, accounts.get(this.issuer).bytes, transactionHash, 0, value);
+            globalState.addUtxo(currency, accounts.get(this.issuer), transactionHash, 0, value);
         } catch (Throwable e) {
             e.printStackTrace();
             return fail();
@@ -74,9 +74,13 @@ public class Mint extends CoinOperation {
 
 
     @Override
-    public boolean isInvalid(CoinGlobalState globalState) {
-        // as saídas tem valor positivo? //o emissor pode cunhar moedas?
-        return super.isInvalid(globalState) || (value <= 0) || !globalState.isMinter(accounts.get(this.issuer).bytes) || !globalState.isCurrency(currency);
+    public void validate(CoinGlobalState globalState) {
+        super.validate(globalState);
+        //@formatter:off
+        if (value <= 0)                                                             throw new IllegalArgumentException();
+        if (!globalState.isMinter(accounts.get(this.issuer)))                       throw new IllegalArgumentException();
+        if (currency < 0 || currency > 255 || !globalState.isCurrency(currency))    throw new IllegalArgumentException();
+        //@formatter:on
     }
 
     @Override

@@ -61,12 +61,12 @@ public class CryptoUtil {
     }
 
     public static boolean checkSignature(byte[] publicKeyBytes, byte[] signedData, byte[] signature) {
-        if (publicKeyBytes == null || publicKeyBytes.length != CoinOperation.ISSUER_SIZE)
-            throw new IllegalArgumentException();
-        if (signedData == null || signedData.length != CoinOperation.HASH_SIZE)
-            throw new IllegalArgumentException();
-        if (signature == null)
-            throw new IllegalArgumentException();
+        //@formatter:off
+        if (publicKeyBytes == null || publicKeyBytes.length != CoinOperation.ISSUER_SIZE)      throw new IllegalArgumentException();
+        if (signedData == null || signedData.length != CoinOperation.HASH_SIZE)                throw new IllegalArgumentException();
+        if (signature == null)                                                                 throw new IllegalArgumentException();
+        //@formatter:on
+
         try {
             Signature signerEngine = Signature.getInstance(Signature_Algorithm_Name);
             PublicKey publicKey = loadPublicKey(publicKeyBytes);

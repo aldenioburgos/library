@@ -14,7 +14,7 @@ import java.util.Objects;
 import static demo.coin.util.ByteUtils.readUnsignedShort;
 
 /**
- * Suporta até 255 operações simultaneas.
+ * Suporta até 256 operações simultaneas.
  */
 public class CoinMultiOperationRequest {
 

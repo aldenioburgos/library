@@ -1,16 +1,17 @@
 package demo.coin.core.transactions;
 
 import demo.coin.core.CoinGlobalState;
-import demo.coin.core.UtxoAddress;
+import demo.coin.util.ByteArray;
 import demo.coin.util.CryptoUtil;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.security.KeyPair;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import static demo.coin.util.ByteUtils.readByteSizedList;
 
@@ -22,18 +23,34 @@ import static demo.coin.util.ByteUtils.readByteSizedList;
 public class Exchange extends Transfer {
 
     public Exchange(byte[] bytes) {
-        load(bytes);
+        super(bytes);
     }
 
-    public Exchange(byte[] issuer, List<Input> inputs, List<Output> outputs, byte currency) {
-        super(issuer, inputs, outputs, currency);
+    public Exchange(KeyPair keyPair, int currency, Map<CoinOperation, Integer> inputs, List<ContaValorMoeda> outputs) {
+        super(keyPair, currency, inputs, outputs);
     }
 
+    @Override
+    protected List<? extends Transfer.Output> convertToOutputs(List<? extends ContaValor> outputsGiven) {
+        //@formatter:off
+        if (!outputsGiven.stream().allMatch(it -> it instanceof ContaValorMoeda))
+            throw new IllegalArgumentException();
+        if (outputsGiven.stream().map(it -> ((ContaValorMoeda) it).c).anyMatch(it -> it == null || it < 0 || it > 255))
+            throw new IllegalArgumentException();
+        //@formatter:on
+        List<Output>          convertedOutputs = new ArrayList<>(outputsGiven.size());
+        List<ContaValorMoeda> outputsToConvert = (List<ContaValorMoeda>) outputsGiven;
+        for (var output : outputsToConvert) {
+            convertedOutputs.add(new Output(addAccount(output.a), output.b, output.c));
+        }
+        return convertedOutputs;
+    }
 
     @Override
     protected void validateType(DataInputStream dis) throws IOException {
         int type = dis.readUnsignedByte();
-        if (type != OP_TYPE.EXCHANGE.ordinal()) throw new RuntimeException("Invalid Type! " + type);
+        if (type != OP_TYPE.EXCHANGE.ordinal())
+            throw new RuntimeException("Invalid Type! " + type);
     }
 
     @Override
@@ -44,20 +61,11 @@ public class Exchange extends Transfer {
     }
 
     @Override
-    protected boolean isValidOutputs(CoinGlobalState globalState) {
-        // a transação tem saídas? Os arrays tem o tamanho certo e as saídas tem valor positivo?
-        if (outputs.size() <= 0) return false;
-
-        for (Output output : (List<Output>) outputs) {
-            if (output.receiverAccountIndex < 0 || output.receiverAccountIndex >= accounts.size()) return false;
-            if (output.value <= 0) return false;
-            if (!globalState.isCurrency(output.currency)) return false;
-        }
-
-        // pelo menos um recebedor tem que ser diferente do emitente
-        if (outputs.stream().allMatch(it -> it.receiverAccountIndex == issuer)) return false;
-
-        return true;
+    protected void validateOutputs(CoinGlobalState globalState) {
+        super.validateOutputs(globalState);
+        //@formatter:off
+        if (((List<Output>) outputs).stream().map(it -> it.currency).anyMatch(it -> it < 0 || it > 255 || !globalState.isCurrency(it)))   throw new IllegalArgumentException();
+        //@formatter:on
     }
 
     @Override
@@ -69,21 +77,16 @@ public class Exchange extends Transfer {
     public byte[] execute(CoinGlobalState globalState) {
         try {
             // a transação é valida?
-            if (isInvalid(globalState)) {
-                throw new IllegalArgumentException("Transação inválida <" + this + ">.");
-            }
+            validate(globalState);
 
             // consumir os utxos de entrada.
-            Set<UtxoAddress> utxoToConsume = inputs.stream()
-                    .map(it -> new UtxoAddress(it.transactionHash, it.outputIndex))
-                    .collect(Collectors.toSet());
-            globalState.removeUtxos((byte) currency, accounts.get(issuer).bytes, utxoToConsume);
+            globalState.removeUtxos(currency, accounts.get(issuer), getInputsAsUtxoAddresses());
 
             // criar os utxos de saída.
             byte[] transactionHash = CryptoUtil.hash(toByteArray());
             for (int i = 0; i < outputs.size(); i++) {
                 Exchange.Output output = (Exchange.Output) outputs.get(i);
-                globalState.addUtxo(output.currency, accounts.get(output.receiverAccountIndex).bytes, transactionHash, i, output.value);
+                globalState.addUtxo(output.currency, accounts.get(output.receiverAccountIndex), transactionHash, i, output.value);
             }
 
             // responder
@@ -106,19 +109,29 @@ public class Exchange extends Transfer {
                 '}';
     }
 
+    public static class ContaValorMoeda extends ContaValor {
+        public final Integer c;
+        public ContaValorMoeda(ByteArray conta, long valor, Integer moeda) {
+            super(conta, valor);
+            this.c = moeda;
+        }
+    }
 
     protected static class Output extends Transfer.Output {
-        private final byte currency;
+        public final int currency;
 
-        public Output(int receiverAccountIndex, Long value, byte currency) {
+        public Output(int receiverAccountIndex, long value, int currency) {
             super(receiverAccountIndex, value);
+            //@formatter:off
+            if (currency < 0 || currency > 255) throw new IllegalArgumentException();
+            //@formatter:on
             this.currency = currency;
         }
 
         static Exchange.Output read(DataInputStream dis) {
             try {
-                int auxReceiver = dis.readUnsignedByte();
-                long auxValue = dis.readLong();
+                int  auxReceiver = dis.readUnsignedByte();
+                long auxValue    = dis.readLong();
                 byte auxCurrency = dis.readByte();
                 return new Exchange.Output(auxReceiver, auxValue, auxCurrency);
             } catch (IOException e) {
@@ -126,18 +139,14 @@ public class Exchange extends Transfer {
             }
         }
 
-        public void write(DataOutputStream dos) {
+        @Override
+        public void writeTo(DataOutputStream dos) {
+            super.writeTo(dos);
             try {
-                dos.writeByte(receiverAccountIndex);
-                dos.writeLong(value);
                 dos.writeByte(currency);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        public Long getValue() {
-            return value;
         }
 
         @Override
@@ -149,6 +158,4 @@ public class Exchange extends Transfer {
                     '}';
         }
     }
-
-
 }

@@ -1,9 +1,13 @@
 package demo.coin.core;
 
+import demo.coin.core.transactions.Balance;
+import demo.coin.util.ByteArray;
 import demo.coin.util.CryptoUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
@@ -13,57 +17,50 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CoinGlobalStateTest {
 
+    KeyPair   keypair;
+    ByteArray pubkey;
+    KeyPair   otherKeypair;
+    ByteArray otherPubkey;
+
+    @BeforeEach
+    void setUp() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+        keypair = generateKeyPair();
+        pubkey = new ByteArray(keypair.getPublic().getEncoded());
+        otherKeypair = generateKeyPair();
+        otherPubkey = new ByteArray(otherKeypair.getPublic().getEncoded());
+    }
+
     @Test
-    void isMinterNoMinter() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+    void isMinterNoMinter() {
         var globalState = new CoinGlobalState();
-        var keypair = generateKeyPair();
-        assertFalse(globalState.isMinter(null));
-        assertFalse(globalState.isMinter(new byte[]{}));
-        assertFalse(globalState.isMinter(keypair.getPublic().getEncoded()));
+        assertThrows(IllegalArgumentException.class, () -> globalState.isMinter(null));
+        assertThrows(IllegalArgumentException.class, () -> globalState.isMinter(new ByteArray(new byte[]{})));
+        assertFalse(globalState.isMinter(pubkey));
+        assertFalse(globalState.isUser(pubkey));
+        assertFalse(globalState.isMinter(otherPubkey));
+        assertFalse(globalState.isUser(otherPubkey));
     }
 
     @Test
-    void isMinterWithMinter() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        var keypair = generateKeyPair();
-        var otherKeypair = generateKeyPair();
-        var minter = keypair.getPublic().getEncoded();
-        var globalState = new CoinGlobalState(Set.of(minter), emptySet(), (byte) 0);
-
-        assertFalse(globalState.isMinter(new byte[]{}));
-        assertFalse(globalState.isMinter(otherKeypair.getPublic().getEncoded()));
-        assertTrue(globalState.isMinter(minter));
-    }
-
-
-    @Test
-    void isUserNoUser() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        var globalState = new CoinGlobalState();
-        var keypair = generateKeyPair();
-        assertFalse(globalState.isUser(null));
-        assertFalse(globalState.isUser(new byte[]{}));
-        assertFalse(globalState.isUser(keypair.getPublic().getEncoded()));
-    }
-
-
-    @Test
-    void isUserWithUser() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        var keypair = generateKeyPair();
-        var otherKeypair = generateKeyPair();
-
-        var globalState = new CoinGlobalState(Set.of(keypair.getPublic().getEncoded()), emptySet(), (byte) 0);
-
-        assertFalse(globalState.isUser(new byte[]{}));
-        assertFalse(globalState.isUser(otherKeypair.getPublic().getEncoded()));
-        assertTrue(globalState.isUser(keypair.getPublic().getEncoded()));
+    void isMinterWithMinter() {
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  0);
+        assertFalse(globalState.isMinter(otherPubkey));
+        assertTrue(globalState.isMinter(pubkey));
     }
 
     @Test
-    void isCurrencyWithCurrency() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        var keypair = generateKeyPair();
-        var globalState = new CoinGlobalState(Set.of(keypair.getPublic().getEncoded()), emptySet(), (byte) 0);
-        assertFalse(globalState.isCurrency((byte) -1));
-        assertFalse(globalState.isCurrency((byte) 1));
-        assertTrue(globalState.isCurrency((byte) 0));
+    void isUserWithUser() {
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  0);
+        assertTrue(globalState.isUser(pubkey));
+        assertFalse(globalState.isUser(otherPubkey));
+    }
+
+    @Test
+    void isCurrencyWithCurrency() {
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  0);
+        assertFalse(globalState.isCurrency(-1));
+        assertFalse(globalState.isCurrency(1));
+        assertTrue(globalState.isCurrency(0));
     }
 
     @Test
@@ -73,19 +70,16 @@ public class CoinGlobalStateTest {
     }
 
     @Test
-    void addListAndListUtxo() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        var keypair = generateKeyPair();
-        var globalState = new CoinGlobalState(Set.of(keypair.getPublic().getEncoded()), emptySet(), (byte) 0, (byte) 1);
-        assertEquals(0, globalState.listUtxos(keypair.getPublic().getEncoded(), 0).size());
+    void addListAndListUtxo() {
 
-        globalState.addUtxo(0, keypair.getPublic().getEncoded(), CryptoUtil.hash(keypair.getPublic().getEncoded()),0, 1L);
-        assertEquals(0, globalState.listUtxos(keypair.getPublic().getEncoded(), 1).size());
-        assertEquals(1, globalState.listUtxos(keypair.getPublic().getEncoded(), 0).size());
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), (byte) 0, (byte) 1);
+        assertEquals(0, globalState.getUtxos(0, pubkey).size());
 
-        globalState.removeUtxos(1, keypair.getPublic().getEncoded(), Set.of(new UtxoAddress(CryptoUtil.hash(keypair.getPublic().getEncoded()), 0)));
-        assertEquals(0, globalState.listUtxos(keypair.getPublic().getEncoded(), 1).size());
+        globalState.addUtxo(0, pubkey, CryptoUtil.hash(pubkey.bytes), 0, 1L);
+        assertEquals(0, globalState.getUtxos(1, pubkey).size());
+        assertEquals(1, globalState.getUtxos(0, pubkey).size());
+
+        globalState.removeUtxos(1, pubkey, Set.of(new UtxoAddress(CryptoUtil.hash(pubkey.bytes), 0)));
+        assertEquals(0, globalState.getUtxos(1, pubkey).size());
     }
-
-
-
 }

@@ -3,19 +3,11 @@ package demo.coin.core;
 import java.util.Objects;
 
 public class Utxo {
-    private final UtxoAddress address;
-    private final long value;
+    public final UtxoAddress address;
+    public final long value;
 
     public Utxo(byte[] transactionHash, int outputPosition, long value) {
         this(new UtxoAddress(transactionHash, outputPosition), value);
-    }
-
-    public Utxo(byte[] transactionHash, int outputPosition) {
-        this(new UtxoAddress(transactionHash, outputPosition), 0);
-    }
-
-    public Utxo(UtxoAddress address) {
-        this(address, 0);
     }
 
     public Utxo(UtxoAddress address, long value) {

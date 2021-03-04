@@ -60,12 +60,12 @@ class CryptoUtilTest {
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, hash, null));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, null, signature));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(null, hash, signature));
-        assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, hash, Arrays.copyOf(signature, signature.length-1)));
-        assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, hash, Arrays.copyOf(signature, signature.length+1)));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, Arrays.copyOf(hash, hash.length+1), signature));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, Arrays.copyOf(hash, hash.length-1), signature));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(Arrays.copyOf(pubKeyBytes, pubKeyBytes.length-1), hash, signature));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(Arrays.copyOf(pubKeyBytes, pubKeyBytes.length+1), hash, signature));
+        assertThrows(RuntimeException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, hash, Arrays.copyOf(signature, signature.length-1)));
+        assertThrows(RuntimeException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, hash, Arrays.copyOf(signature, signature.length+1)));
     }
 
     @Test
@@ -76,6 +76,4 @@ class CryptoUtilTest {
         assertEquals(32, hash2.length);
         assertFalse(Arrays.equals(hash1, hash2));
     }
-
-
 }

@@ -6,14 +6,10 @@ import demo.coin.util.CryptoUtil;
 
 import java.io.*;
 import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static demo.coin.util.ByteUtils.readUnsignedByte;
 import static demo.coin.util.CryptoUtil.checkSignature;
-import static demo.coin.util.CryptoUtil.hash;
 
 //  /------------header--------------\
 //   <op_type>[<accounts>]<signature>
@@ -21,7 +17,7 @@ import static demo.coin.util.CryptoUtil.hash;
 // total: 1+1+(91..23205)+~72 = ~165..~23279 bytes
 public abstract class CoinOperation {
 
-    public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE}
+    public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE, REGISTER_USERS}
 
     public static final int ISSUER_SIZE = 91;
     public static final int HASH_SIZE   = 32;
@@ -50,6 +46,7 @@ public abstract class CoinOperation {
             case TRANSFER -> new Transfer(bytes);
             case EXCHANGE -> new Exchange(bytes);
             case BALANCE -> new Balance(bytes);
+            case REGISTER_USERS -> new RegisterUsers(bytes);
         };
     }
 
@@ -62,6 +59,8 @@ public abstract class CoinOperation {
     }
 
     public abstract byte[] execute(CoinGlobalState globalState);
+
+    public abstract int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement);
 
     public void validate(CoinGlobalState globalState) {
         //@formatter:off

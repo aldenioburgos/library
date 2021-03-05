@@ -1,9 +1,9 @@
 package demo.coin.early;
 
 
-import demo.coin.core.operation.CoinMultiOperationContext;
-import demo.coin.core.operation.CoinSingleOperationContext;
-import demo.coin.core.operation.OperationContext;
+import demo.coin.core.requestresponse.CoinMultiOperationContext;
+import demo.coin.core.requestresponse.CoinSingleOperationContext;
+import demo.coin.core.requestresponse.OperationContext;
 import parallelism.hibrid.late.ExtendedLockFreeGraph;
 import parallelism.hibrid.late.HibridLockFreeNode;
 import parallelism.late.graph.Vertex;

@@ -1,9 +1,9 @@
 package demo.coin.early;
 
 import bftsmart.tom.core.messages.TOMMessage;
-import demo.coin.core.operation.CoinMultiOperationContext;
-import demo.coin.core.operation.CoinSingleOperationContext;
-import demo.coin.core.operation.OperationContext;
+import demo.coin.core.requestresponse.CoinMultiOperationContext;
+import demo.coin.core.requestresponse.CoinSingleOperationContext;
+import demo.coin.core.requestresponse.OperationContext;
 import parallelism.MessageContextPair;
 import parallelism.ParallelMapping;
 import parallelism.hibrid.early.SPSCQueue;
@@ -30,9 +30,10 @@ public class CoinHibridScheduler implements Scheduler {
     @Override
     public void schedule(TOMMessage request) {
         CoinHibridClassToThreads cToT = classes.get(request.groupId);
-        if (cToT == null) {
-            throw new RuntimeException("CLASStoTHREADs MAPPING NOT FOUND");
-        }
+        //@formatter:off
+        if (cToT == null)   throw new RuntimeException("CLASStoTHREADs MAPPING NOT FOUND");
+        //@formatter:on
+
         CoinMultiOperationContext multiOperationCtx = new CoinMultiOperationContext(request, cToT);
         if (cToT.isConcurrent()) {
             boolean inserted = false;

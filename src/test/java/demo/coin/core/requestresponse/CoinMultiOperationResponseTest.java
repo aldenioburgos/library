@@ -1,4 +1,4 @@
-package demo.coin.core.operation;
+package demo.coin.core.requestresponse;
 
 import org.junit.jupiter.api.Test;
 

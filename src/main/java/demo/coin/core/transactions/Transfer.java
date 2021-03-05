@@ -74,6 +74,11 @@ public class Transfer extends CoinOperation {
     }
 
     @Override
+    public int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement) {
+        return ("["+currency+"]").hashCode();
+    }
+
+    @Override
     public void validate(CoinGlobalState globalState) {
         super.validate(globalState);
         //@formatter:off
@@ -185,6 +190,9 @@ public class Transfer extends CoinOperation {
     }
 
     public static class ContaValor extends Pair<ByteArray, Long> {
+        public ContaValor(KeyPair a, Long b) {
+            this(new ByteArray(a.getPublic().getEncoded()), b);
+        }
         public ContaValor(ByteArray a, Long b) {
             super(a, b);
         }

@@ -6,9 +6,10 @@ import demo.coin.util.CryptoUtil;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileLockInterruptionException;
 import java.security.KeyPair;
 import java.util.Objects;
+import java.util.Set;
+import java.util.SortedSet;
 
 //  /------------header-------------\-/---------body--------\
 //   <op_type>[<accounts>]<signature>  <currency><value>
@@ -20,6 +21,10 @@ public class Mint extends CoinOperation {
     private int currency;
     private long value;
 
+    public Mint(byte[] bytes) {
+        load(bytes);
+    }
+
     public Mint(KeyPair keypair, int currency, long value) {
         super(keypair);
         if (currency < 0 || currency > 255) throw new IllegalArgumentException();
@@ -29,16 +34,9 @@ public class Mint extends CoinOperation {
         sign(keypair.getPrivate().getEncoded());
     }
 
-
-    public Mint(byte[] bytes) {
-        load(bytes);
-    }
-
     @Override
     protected void validateType(DataInputStream dis) throws IOException {
-        // validate type
-        int type = dis.readUnsignedByte();
-        if (type != OP_TYPE.MINT.ordinal()) throw new RuntimeException("Invalid Type! " + type);
+        if (dis.readUnsignedByte() != OP_TYPE.MINT.ordinal()) throw new IllegalArgumentException("Invalid Type! ");
     }
 
     @Override
@@ -70,6 +68,11 @@ public class Mint extends CoinOperation {
             return fail();
         }
         return ok();
+    }
+
+    @Override
+    public int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement) {
+        return ("["+currency+"]").hashCode();
     }
 
 

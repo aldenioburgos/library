@@ -8,10 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static demo.coin.util.ByteUtils.readByteSizedList;
 
@@ -31,12 +28,19 @@ public class Exchange extends Transfer {
     }
 
     @Override
+    public int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement) {
+        SortedSet<Integer> partitions = new TreeSet<>(Set.of(currency));
+        for (var output : (List<Output>) outputs) {
+            partitions.add(output.currency);
+        }
+        return partitions.toString().hashCode();
+    }
+
+    @Override
     protected List<? extends Transfer.Output> convertToOutputs(List<? extends ContaValor> outputsGiven) {
         //@formatter:off
-        if (!outputsGiven.stream().allMatch(it -> it instanceof ContaValorMoeda))
-            throw new IllegalArgumentException();
-        if (outputsGiven.stream().map(it -> ((ContaValorMoeda) it).c).anyMatch(it -> it == null || it < 0 || it > 255))
-            throw new IllegalArgumentException();
+        if (!outputsGiven.stream().allMatch(it -> it instanceof ContaValorMoeda))                                           throw new IllegalArgumentException();
+        if (outputsGiven.stream().map(it -> ((ContaValorMoeda) it).c).anyMatch(it -> it == null || it < 0 || it > 255))     throw new IllegalArgumentException();
         //@formatter:on
         List<Output>          convertedOutputs = new ArrayList<>(outputsGiven.size());
         List<ContaValorMoeda> outputsToConvert = (List<ContaValorMoeda>) outputsGiven;
@@ -111,6 +115,7 @@ public class Exchange extends Transfer {
 
     public static class ContaValorMoeda extends ContaValor {
         public final Integer c;
+
         public ContaValorMoeda(ByteArray conta, long valor, Integer moeda) {
             super(conta, valor);
             this.c = moeda;

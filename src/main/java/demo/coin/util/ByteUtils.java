@@ -1,14 +1,25 @@
 package demo.coin.util;
 
+import io.netty.handler.codec.base64.Base64Encoder;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.function.Function;
 
 public class ByteUtils {
+
+    public static byte[] convertToByteArray(String text){
+        return Base64.getDecoder().decode(text);
+    }
+
+    public static String convertToText(byte[] bytes){
+        return Base64.getEncoder().encodeToString(bytes);
+    }
 
     public static int[] byteArrayToIntArray(byte[] byteArray) {
         int[] array = new int[byteArray.length];
@@ -44,7 +55,6 @@ public class ByteUtils {
         buffer.put(bytes, offset, Integer.BYTES);
         buffer.flip();//need flip
         return buffer.getInt();
-
     }
 
     public static int readUnsignedShort(byte[] bytes, int offset) {
@@ -59,7 +69,7 @@ public class ByteUtils {
     }
 
     public static <T> List<T> readByteSizedList(DataInputStream dis, Function<DataInputStream, T> reader) throws IOException {
-        int size = dis.readUnsignedByte();
+        int     size = dis.readUnsignedByte();
         List<T> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             list.add(reader.apply(dis));
@@ -73,6 +83,36 @@ public class ByteUtils {
             item.writeTo(dos);
         }
     }
+
+    public static void writeBooleanArrayAsBytes(DataOutputStream dos, boolean[] booleanArray) throws IOException {
+        int byteCounter = 0;
+        int data        = 0;
+        for (int i = 0; i < booleanArray.length; i++) {
+            data = (data << 1) | (booleanArray[i] ? 1 : 0);
+            if (++byteCounter == 8) {
+                dos.writeByte(data);
+                byteCounter = 0;
+                data = 0;
+            }
+        }
+        if (byteCounter > 0) {
+            data <<= 8 - byteCounter;
+            dos.writeByte(data);
+        }
+    }
+
+    public static void readBooleanArrayFromBytes(DataInputStream dis, boolean[] booleanArray) throws IOException {
+        int  byteCounter = 0;
+        byte data        = dis.readByte();
+        for (int i = 0; i < booleanArray.length; i++) {
+            booleanArray[i] = (data ^ 128) > 0;
+            data <<= 1;
+            if (++byteCounter == 8 && (i + 1) < booleanArray.length) {
+                data = dis.readByte();
+            }
+        }
+    }
+
 
     public interface Writable {
         void writeTo(DataOutputStream dos);

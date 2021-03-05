@@ -14,8 +14,8 @@ public class CoinGlobalState {
     private final Set<ByteArray>              users;
     private final Map<ByteArray, Set<Utxo>>[] utxos;
 
-    public CoinGlobalState() {
-        this(new HashSet<>(), new HashSet<>());
+    public CoinGlobalState(int... currencies) {
+        this(new HashSet<>(), new HashSet<>(), currencies);
     }
 
     public CoinGlobalState(Set<ByteArray> minters, Set<ByteArray> users, int... currencies) {
@@ -30,13 +30,18 @@ public class CoinGlobalState {
 
     private void validate() {
         //@formatter:off
-        if (Arrays.stream(currencies).anyMatch(it -> it > 255))                      throw new IllegalArgumentException("Illegal currency detected " + Arrays.toString(currencies));
+        if (Arrays.stream(currencies).anyMatch(it -> it >= 0 && it <= 255))          throw new IllegalArgumentException("Illegal currency detected " + Arrays.toString(currencies));
         if (minters.stream().anyMatch(it -> it.bytes.length != ISSUER_SIZE))         throw new IllegalArgumentException("Illegal minter detected " + minters);
         if (users.stream().anyMatch(it -> it.bytes.length != ISSUER_SIZE))           throw new IllegalArgumentException("Illegal user detected " + users);
         //@formatter:on
     }
 
     private void initShards() {
+        // root minter
+        var rootMinter = new ByteArray(new byte[ISSUER_SIZE]);
+        Arrays.fill(rootMinter.bytes, (byte) 0);
+        minters.add(rootMinter);
+
         // os mineradores também são usuários
         users.addAll(minters);
 
@@ -49,10 +54,29 @@ public class CoinGlobalState {
 
     public boolean isMinter(ByteArray minter) {
         //@formatter:off
-        if (minter == null || minter.length == 0) throw new IllegalArgumentException();
+        if (minter == null || minter.length == 0)       throw new IllegalArgumentException();
         //@formatter:on
         return minters.contains(minter);
     }
+
+    public void addMinter(ByteArray minter) {
+        //@formatter:off
+        if (minter == null || minter.length != ISSUER_SIZE) throw new IllegalArgumentException("Illegal minter detected " + minter);
+        //@formatter:on
+        this.minters.add(minter);
+        addUser(minter);
+    }
+
+    public void addUser(ByteArray user) {
+        //@formatter:off
+        if (user == null || user.length != ISSUER_SIZE) throw new IllegalArgumentException("Illegal user detected " + user);
+        //@formatter:on
+        this.users.add(user);
+        for (int currency : currencies) {
+            this.utxos[currency].put(user, new HashSet<>());
+        }
+    }
+
 
     public boolean isUser(ByteArray user) {
         return users.contains(user);

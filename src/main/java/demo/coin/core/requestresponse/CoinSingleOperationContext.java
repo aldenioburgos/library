@@ -1,4 +1,4 @@
-package demo.coin.core.operation;
+package demo.coin.core.requestresponse;
 
 import bftsmart.tom.core.messages.TOMMessage;
 import parallelism.hibrid.late.HibridLockFreeNode;

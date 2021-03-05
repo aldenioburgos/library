@@ -8,9 +8,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static demo.coin.util.ByteUtils.byteArrayToIntArray;
 import static demo.coin.util.ByteUtils.intArrayToByteArray;
@@ -30,7 +29,8 @@ public class Balance extends CoinOperation {
     public Balance(KeyPair keyPair, int... currencies) {
         super(keyPair);
         if (Arrays.stream(currencies).anyMatch(it -> it < 0 || it > 255)) throw new IllegalArgumentException();
-        this.currencies = currencies;
+        this.currencies = Arrays.copyOf(currencies, currencies.length);
+        Arrays.sort(this.currencies);
         sign(keyPair.getPrivate().getEncoded());
     }
 
@@ -70,6 +70,12 @@ public class Balance extends CoinOperation {
             e.printStackTrace();
             return fail();
         }
+    }
+
+    @Override
+    public int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement) {
+        SortedSet<Integer> partitions = new TreeSet<>(Arrays.stream(this.currencies).boxed().collect(Collectors.toSet()));
+        return partitions.toString().hashCode();
     }
 
     @Override

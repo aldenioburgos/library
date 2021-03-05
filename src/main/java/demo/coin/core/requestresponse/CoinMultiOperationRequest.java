@@ -1,4 +1,4 @@
-package demo.coin.core.operation;
+package demo.coin.core.requestresponse;
 
 import bftsmart.tom.core.messages.TOMMessage;
 import demo.coin.core.transactions.CoinOperation;
@@ -21,6 +21,13 @@ public class CoinMultiOperationRequest {
     public final TOMMessage request;
     private final List<ByteArray> operations;
 
+
+    public CoinMultiOperationRequest(List<CoinOperation> operations) {
+        this();
+        for (var op : operations) {
+            add(op);
+        }
+    }
 
     public CoinMultiOperationRequest() {
         this.request = null;
@@ -69,6 +76,7 @@ public class CoinMultiOperationRequest {
     public void add(CoinOperation operation) {
         this.operations.add(new ByteArray(operation.toByteArray()));
     }
+
 
 
     public int getNumOps() {

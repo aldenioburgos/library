@@ -5,7 +5,7 @@ import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.server.Replier;
 import bftsmart.tom.server.SingleExecutable;
 import bftsmart.util.ThroughputStatistics;
-import demo.coin.core.operation.CoinSingleOperationContext;
+import demo.coin.core.requestresponse.CoinSingleOperationContext;
 import parallelism.hibrid.late.ExtendedLockFreeGraph;
 import parallelism.hibrid.late.HibridLockFreeNode;
 

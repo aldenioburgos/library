@@ -100,15 +100,7 @@ class coinClientTest {
         }
     }
 
-    //
-//    @Test
-//    void createOperations() {
-//        Map<KeyPair, Map<CoinOperation, Pair<Integer, Long>>>[] partialState = new Map[2];
-//        for (int i = 1; i < 100; i++) {
-//            assertEquals(i, coinClient.createOperations(i, 2, 100, 0, users, partialState).size());
-//        }
-//    }
-//
+
     @Test
     void createOperation() {
         Map<KeyPair, Map<CoinOperation, Pair<Integer, Long>>>[] partialState = new Map[2];

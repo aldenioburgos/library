@@ -70,7 +70,6 @@ public class ThroughputStatistics {
 
             float tp = (float) (total * 1000 / (float) timeMillis);
 
-            //System.out.println("Throughput at " + print + " = " + tp + " operations/sec in sec : " + now);
             pw.println(time + " " + tp);
         }
        

@@ -22,12 +22,35 @@ public class CoinClientThread extends Thread {
     private final Set<SortedSet<Integer>>           allPartitionArrangements;
 
 
-    public CoinClientThread(int id, int numOpsPerRequest, int numPartitions) {
+    public CoinClientThread(int id, int numOpsPerRequest, int numPartitions, List<CoinOperation> allOperations) {
         this.id = id;
         this.numOpsPerRequest = numOpsPerRequest;
         this.proxy = new ParallelServiceProxy(id);
         this.operationsPerGroupId = new HashMap<>();
         this.allPartitionArrangements = CoinHibridClassToThreads.getAllArrangements(numPartitions);
+        this.allOperations = allOperations;
+        this.responses = new byte[allOperations.size()][];
+        splitOperationsPerGroupId();
+    }
+
+    @Override
+    public void run() {
+        for (var opGroup : operationsPerGroupId.entrySet()) {
+            var multiRequest = new CoinMultiOperationRequest();
+            int index        = 0;
+            for (CoinOperation operation : opGroup.getValue()) {
+                multiRequest.add(operation);
+                if (++index > numOpsPerRequest) {
+                    proxy.invokeParallel(multiRequest.serialize(), opGroup.getKey());
+                    multiRequest = new CoinMultiOperationRequest();
+                    index = 0;
+                }
+            }
+            if (index > 0) {
+                proxy.invokeParallel(multiRequest.serialize(), opGroup.getKey());
+            }
+        }
+        printResponses();
     }
 
     private void splitOperationsPerGroupId() {
@@ -42,32 +65,6 @@ public class CoinClientThread extends Thread {
 
     public byte[] setUp(List<CoinOperation> setupOperations){
         return proxy.invokeParallel(new CoinMultiOperationRequest(setupOperations).serialize(), 0);
-    }
-
-    public void setOperations(List<CoinOperation> allOperations){
-        this.allOperations = allOperations;
-        this.responses = new byte[allOperations.size()][];
-        splitOperationsPerGroupId();
-    }
-
-    @Override
-    public void run() {
-        for (var opGroup : operationsPerGroupId.entrySet()) {
-            var multiRequest = new CoinMultiOperationRequest();
-            int index        = 0;
-            for (CoinOperation operation : opGroup.getValue()) {
-                multiRequest.add(operation);
-                if (++index > numOpsPerRequest) {
-                    responses[allOperations.indexOf(operation)] = proxy.invokeParallel(multiRequest.serialize(), opGroup.getKey());
-                    multiRequest = new CoinMultiOperationRequest();
-                    index = 0;
-                }
-            }
-            if (index > 0) {
-                proxy.invokeParallel(multiRequest.serialize(), opGroup.getKey());
-            }
-        }
-        printResponses();
     }
 
     public void printResponses(){

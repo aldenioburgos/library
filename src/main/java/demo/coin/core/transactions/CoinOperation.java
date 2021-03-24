@@ -17,16 +17,17 @@ import static demo.coin.util.CryptoUtil.checkSignature;
 // total: 1+1+(91..23205)+~72 = ~165..~23279 bytes
 public abstract class CoinOperation {
 
-    public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE, REGISTER_USERS}
 
+
+    public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE, REGISTER_USERS;}
     public static final int ISSUER_SIZE = 91;
+
     public static final int HASH_SIZE   = 32;
     public static final int BYTE_SIZE   = 256;
-
     protected int             issuer;
+
     protected byte[]          signature;
     protected List<ByteArray> accounts = new ArrayList<>(BYTE_SIZE);
-
     protected CoinOperation() {
     }
 
@@ -36,6 +37,10 @@ public abstract class CoinOperation {
         if (keyPair.getPublic().getEncoded() == null || keyPair.getPublic().getEncoded().length != ISSUER_SIZE)         throw new IllegalArgumentException();
         //@formatter:on
         this.issuer = addAccount(new ByteArray(keyPair.getPublic().getEncoded()));
+    }
+
+    public  byte[] getIssuer(){
+        return accounts.get(issuer).bytes;
     }
 
 
@@ -161,6 +166,9 @@ public abstract class CoinOperation {
         }
     }
 
+    public byte[] getUser(int i) {
+        return accounts.get(i).bytes;
+    }
 
     @Override
     public boolean equals(Object o) {

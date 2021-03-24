@@ -25,6 +25,7 @@ public class RegisterUsers extends CoinOperation {
         for (var user : users) {
             addAccount(new ByteArray(user.getPublic().getEncoded()));
         }
+        sign(keyPair.getPrivate().getEncoded());
     }
 
     @Override

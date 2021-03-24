@@ -28,9 +28,10 @@ public class Balance extends CoinOperation {
 
     public Balance(KeyPair keyPair, int... currencies) {
         super(keyPair);
+        //@formatter:off
         if (Arrays.stream(currencies).anyMatch(it -> it < 0 || it > 255)) throw new IllegalArgumentException();
-        this.currencies = Arrays.copyOf(currencies, currencies.length);
-        Arrays.sort(this.currencies);
+        //@formatter:on
+        this.currencies = Arrays.stream(currencies).distinct().sorted().toArray();
         sign(keyPair.getPrivate().getEncoded());
     }
 

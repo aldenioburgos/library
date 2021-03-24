@@ -10,6 +10,8 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import static demo.coin.util.ByteUtils.readUnsignedShort;
 
@@ -22,7 +24,7 @@ public class CoinMultiOperationRequest {
     private final List<ByteArray> operations;
 
 
-    public CoinMultiOperationRequest(List<CoinOperation> operations) {
+    public CoinMultiOperationRequest(Iterable<? extends CoinOperation> operations) {
         this();
         for (var op : operations) {
             add(op);
@@ -106,7 +108,8 @@ public class CoinMultiOperationRequest {
     @Override
     public String toString() {
         return "CoinMultiOperationRequest{" +
-                "operations=" + operations +
+                "operations.size=" + operations.size() +
+                "operations=" + operations.stream().map(Objects::toString).collect(Collectors.joining("\n")) +
                 '}';
     }
 }

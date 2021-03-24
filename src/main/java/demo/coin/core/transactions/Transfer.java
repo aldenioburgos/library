@@ -130,6 +130,10 @@ public class Transfer extends CoinOperation {
         //@formatter:on
     }
 
+    public long getValue(){
+       return outputs.stream().map(Output::getValue).reduce(0l, Long::sum);
+    }
+
     protected List<? extends Output> convertToOutputs(List<? extends ContaValor> outputsToConvert) {
         List<Output> convertedOutputs = new ArrayList<>(outputsToConvert.size());
         for (var output : outputsToConvert) {
@@ -199,8 +203,8 @@ public class Transfer extends CoinOperation {
     }
 
     public static class Input implements Writable {
-        protected final byte[] transactionHash;
-        protected final int    outputIndex;
+        public final byte[] transactionHash;
+        public final int    outputIndex;
 
         public Input(byte[] transactionHash, int outputIndex) {
             this.transactionHash = transactionHash;
@@ -252,6 +256,18 @@ public class Transfer extends CoinOperation {
         }
     }
 
+    public int getCurrency() {
+        return currency;
+    }
+
+    public List<Input> getInputs() {
+        return inputs;
+    }
+
+    public List<? extends Output> getOutputs() {
+        return outputs;
+    }
+
     public static class Output implements Writable {
         public final int  receiverAccountIndex;
         public final long value;
@@ -298,5 +314,7 @@ public class Transfer extends CoinOperation {
                     '}';
         }
     }
+
+
 }
 

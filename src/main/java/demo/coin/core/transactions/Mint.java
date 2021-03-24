@@ -111,4 +111,12 @@ public class Mint extends CoinOperation {
                 ", value=" + value +
                 '}';
     }
+
+    public int getCurrency() {
+        return currency;
+    }
+
+    public long getValue() {
+        return value;
+    }
 }

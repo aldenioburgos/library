@@ -116,13 +116,19 @@ public class Exchange extends Transfer {
     public static class ContaValorMoeda extends ContaValor {
         public final Integer c;
 
+
+        public ContaValorMoeda(KeyPair conta, long valor, Integer moeda) {
+            super(conta, valor);
+            this.c = moeda;
+        }
+
         public ContaValorMoeda(ByteArray conta, long valor, Integer moeda) {
             super(conta, valor);
             this.c = moeda;
         }
     }
 
-    protected static class Output extends Transfer.Output {
+    public static class Output extends Transfer.Output {
         public final int currency;
 
         public Output(int receiverAccountIndex, long value, int currency) {

@@ -18,7 +18,7 @@ import java.util.*;
 
 public class CoinClient {
     enum PARAMS {
-        NUM_THREADS_CLIENTES, NUM_USUARIOS, NUM_TOTAL_OPERACOES, NUM_OPS_PER_REQ, NUM_PARTICOES, PERC_GLOBAL, PERC_WRITE, INIT_BALANCE, ROOT_PUBLIC_KEY, ROOT_PRIVATE_KEY
+        NUM_THREADS_CLIENTE, NUM_USUARIOS_THREAD, NUM_OPERACOES_USUARIO, NUM_TOKENS_USUARIO, NUM_OPS_PER_REQ, NUM_PARTICOES, PERC_GLOBAL, PERC_WRITE, ROOT_PUBLIC_KEY, ROOT_PRIVATE_KEY
     }
 
     int numClientes;
@@ -83,6 +83,8 @@ public class CoinClient {
             var operations = createOperations(numOperPerUsuario * numUsuariosPorCliente, numParticoes, percGlobal, percWrite, users, partialState);
             clientThreads.add(new CoinClientThread(i + 1, numOperPerReq, numParticoes, operations));
         }
+
+        Scanner userInput = new Scanner(System.in);
         // executar as threads.
         for (var t : clientThreads) {
             t.start();
@@ -283,17 +285,17 @@ public class CoinClient {
 
     public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         //@formatter:off
-        if (args.length != PARAMS.values().length) throw new IllegalArgumentException("Modo de uso:  java CoinClient NUM_THREADS_CLIENTES NUM_USUARIOS NUM_TOTAL_OPERACOES NUM_OPS_PER_REQ NUM_PARTICOES PERC_GLOBAL PERC_WRITE ROOT_PUBLIC_KEY ROOT_PRIVATE_KEY INIT_BALANCE");
+        if (args.length != PARAMS.values().length) throw new IllegalArgumentException("Modo de uso:  java CoinClient NUM_THREADS_CLIENTE, NUM_USUARIOS_THREAD, NUM_OPERACOES_USUARIO, NUM_TOKENS_USUARIO, NUM_OPS_PER_REQ, NUM_PARTICOES, PERC_GLOBAL, PERC_WRITE, ROOT_PUBLIC_KEY, ROOT_PRIVATE_KEY");
         //@formatter:on
 
-        int numClientes = Integer.parseInt(args[PARAMS.NUM_THREADS_CLIENTES.ordinal()]);
-        int numUsuarios = Integer.parseInt(args[PARAMS.NUM_USUARIOS.ordinal()]);
-        int numOperacoes = Integer.parseInt(args[PARAMS.NUM_TOTAL_OPERACOES.ordinal()]);
+        int numClientes = Integer.parseInt(args[PARAMS.NUM_THREADS_CLIENTE.ordinal()]);
+        int numUsuarios = Integer.parseInt(args[PARAMS.NUM_USUARIOS_THREAD.ordinal()]);
+        int numOperacoes = Integer.parseInt(args[PARAMS.NUM_OPERACOES_USUARIO.ordinal()]);
         int numOperPerReq = Integer.parseInt(args[PARAMS.NUM_OPS_PER_REQ.ordinal()]);
         int numParticoes = Integer.parseInt(args[PARAMS.NUM_PARTICOES.ordinal()]);
         int percGlobal = Integer.parseInt(args[PARAMS.PERC_GLOBAL.ordinal()]);
         int percWrite = Integer.parseInt(args[PARAMS.PERC_WRITE.ordinal()]);
-        long initBalance = Long.parseLong(args[PARAMS.INIT_BALANCE.ordinal()]);
+        long initBalance = Long.parseLong(args[PARAMS.NUM_TOKENS_USUARIO.ordinal()]);
         byte[] rootPubKey = ByteUtils.convertToByteArray(args[PARAMS.ROOT_PUBLIC_KEY.ordinal()]);
         byte[] rootPriKey = ByteUtils.convertToByteArray(args[PARAMS.ROOT_PRIVATE_KEY.ordinal()]);
         ParallelServiceProxy proxy = new ParallelServiceProxy(0);

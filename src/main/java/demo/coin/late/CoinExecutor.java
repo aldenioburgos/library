@@ -7,7 +7,12 @@ import demo.coin.core.transactions.CoinOperation;
 
 public class CoinExecutor implements SingleExecutable {
 
-    private CoinGlobalState globalState = new CoinGlobalState();
+    private CoinGlobalState globalState;
+
+
+    public CoinExecutor(CoinGlobalState globalState) {
+        this.globalState = globalState;
+    }
 
     @Override
     public byte[] executeOrdered(byte[] bytes, MessageContext messageContext) {

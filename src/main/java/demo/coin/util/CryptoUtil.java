@@ -80,4 +80,13 @@ public class CryptoUtil {
     }
 
 
+    public static void main(String[] args) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+        KeyPair root = generateKeyPair();
+        System.out.println("Gerando um par de chaves:");
+        System.out.println("Public key: "+ByteUtils.convertToText(root.getPublic().getEncoded()));
+        System.out.println("Private key: "+ByteUtils.convertToText(root.getPrivate().getEncoded()));
+    }
+
+
+
 }

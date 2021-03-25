@@ -37,11 +37,6 @@ public class CoinGlobalState {
     }
 
     private void initShards() {
-        // root minter
-        var rootMinter = new ByteArray(new byte[ISSUER_SIZE]);
-        Arrays.fill(rootMinter.bytes, (byte) 0);
-        minters.add(rootMinter);
-
         // os mineradores também são usuários
         users.addAll(minters);
 

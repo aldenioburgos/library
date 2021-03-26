@@ -44,4 +44,9 @@ public class CoinMultiOperationContext implements OperationContext {
     public boolean isConcurrent() {
         return cToT.isConcurrent();
     }
+
+    @Override
+    public int getClassId() {
+        return multiOperationRequest.request.groupId;
+    }
 }

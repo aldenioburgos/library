@@ -26,6 +26,7 @@ public class CoinLateWorker extends Thread {
                           Replier replier,
                           ServerViewController SVController,
                           ThroughputStatistics statistics) {
+        super("LateWorker-"+id);
         this.thread_id = id;
         this.myPartition = id % partitions;
         this.subgraphs = subgraphs;

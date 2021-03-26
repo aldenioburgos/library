@@ -32,7 +32,7 @@ public class Balance extends CoinOperation {
         if (Arrays.stream(currencies).anyMatch(it -> it < 0 || it > 255)) throw new IllegalArgumentException();
         //@formatter:on
         this.currencies = Arrays.stream(currencies).distinct().sorted().toArray();
-        sign(keyPair.getPrivate().getEncoded());
+        sign(keyPair);
     }
 
     @Override
@@ -59,11 +59,11 @@ public class Balance extends CoinOperation {
                         .reduce(0L, Long::sum);
                 balances.put(currency, balance);
             }
-            dos.writeBoolean(true);
-            dos.writeByte(balances.size());
+            dos.writeBoolean(false); // deu certo
+            dos.writeByte(balances.size()); // quantos saldos tem?
             for (int currency : currencies) {
-                dos.writeByte(currency);
-                dos.writeLong(balances.get(currency));
+                dos.writeByte(currency);  // moeda
+                dos.writeLong(balances.get(currency)); // valor
             }
             dos.flush();
             return baos.toByteArray();
@@ -114,8 +114,8 @@ public class Balance extends CoinOperation {
     @Override
     public String toString() {
         return "Balance{" +
+                "currencies=" + Arrays.toString(currencies) +
                 super.toString() +
-                ", currencies=" + Arrays.toString(currencies) +
                 '}';
     }
 }

@@ -17,6 +17,7 @@ public class CoinEarlyWorker extends Thread {
     private final ExtendedLockFreeGraph[] subgraphs;
 
     public CoinEarlyWorker(int id, Queue<OperationContext> queue, ExtendedLockFreeGraph[] subgraphs) {
+        super("EarlyWorker-"+id);
         this.thread_id = id;
         this.queue = queue;
         this.subgraphs = subgraphs;

@@ -13,10 +13,10 @@ import static java.util.Collections.emptySortedSet;
 public class CoinHibridClassToThreads {
 
     public final Queue<OperationContext>[] queues;
-    public final int[]                     tIds;
+    private final int[] tIds;
 
     private final boolean concurrent;
-    private       int     threadIndex;
+    private int threadIndex;
 
     public CoinHibridClassToThreads(int[] tIds, Queue<OperationContext>[] queues) {
         this.concurrent = (queues.length == 1);
@@ -25,20 +25,20 @@ public class CoinHibridClassToThreads {
     }
 
     public static Map<Integer, CoinHibridClassToThreads> generateMappings(int numberOfPartitions, Queue<OperationContext>[] allQueues) {
-        Map<Integer, CoinHibridClassToThreads> mappings        = new HashMap<>();
-        Set<SortedSet<Integer>>                allArrangements = getAllArrangements(numberOfPartitions);
+        Map<Integer, CoinHibridClassToThreads> mappings = new HashMap<>();
+        Set<SortedSet<Integer>> allArrangements = getAllArrangements(numberOfPartitions);
         for (var arrangement : allArrangements) {
             List<Integer> partitions = new ArrayList<>(arrangement);
-            var           classId    = partitions.toString().hashCode();
-            var           threadIds  = partitions.stream().mapToInt(it -> it).toArray();
-            var           queues     = selectQueues(allQueues, partitions);
+            var classId = partitions.toString().hashCode();
+            var threadIds = partitions.stream().mapToInt(it -> it).toArray();
+            var queues = selectQueues(allQueues, partitions);
             mappings.put(classId, new CoinHibridClassToThreads(threadIds, queues));
         }
         return mappings;
     }
 
     public static Set<SortedSet<Integer>> getAllArrangements(int numberOfPartitions) {
-        SortedSet<Integer>      setOfPartitions = generateSortedSetOfPartitions(numberOfPartitions);
+        SortedSet<Integer> setOfPartitions = generateSortedSetOfPartitions(numberOfPartitions);
         return generateArrangement(emptySortedSet(), setOfPartitions);
     }
 
@@ -87,8 +87,8 @@ public class CoinHibridClassToThreads {
     public static void main(String[] args) {
         Comparator<SortedSet<Integer>> comparator = (a, b) -> {         //comparator só para ficar bonito no output
             if (a.size() == b.size()) {
-                var arrA   = a.toArray(new Integer[]{});
-                var arrB   = b.toArray(new Integer[]{});
+                var arrA = a.toArray(new Integer[]{});
+                var arrB = b.toArray(new Integer[]{});
                 var result = 0;
                 for (int i = 0; i < a.size() && result == 0; i++) {
                     result = arrA[i].compareTo(arrB[i]);
@@ -100,7 +100,7 @@ public class CoinHibridClassToThreads {
         };
 
         SortedSet<Integer> setToArrange = new TreeSet<>(Set.of(1, 2, 3, 4));
-        var                arrangement  = generateArrangement(emptySortedSet(), setToArrange).stream().sorted(comparator).collect(Collectors.toList());
+        var arrangement = generateArrangement(emptySortedSet(), setToArrange).stream().sorted(comparator).collect(Collectors.toList());
         System.out.println(arrangement);
     }
 }

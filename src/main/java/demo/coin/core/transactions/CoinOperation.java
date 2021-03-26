@@ -2,12 +2,15 @@ package demo.coin.core.transactions;
 
 import demo.coin.core.CoinGlobalState;
 import demo.coin.util.ByteArray;
+import demo.coin.util.ByteUtils;
 import demo.coin.util.CryptoUtil;
 
 import java.io.*;
 import java.security.KeyPair;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static demo.coin.util.ByteUtils.convertToText;
 import static demo.coin.util.ByteUtils.readUnsignedByte;
 import static demo.coin.util.CryptoUtil.checkSignature;
 
@@ -18,16 +21,17 @@ import static demo.coin.util.CryptoUtil.checkSignature;
 public abstract class CoinOperation {
 
 
-
     public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE, REGISTER_USERS;}
+
     public static final int ISSUER_SIZE = 91;
 
-    public static final int HASH_SIZE   = 32;
-    public static final int BYTE_SIZE   = 256;
-    protected int             issuer;
+    public static final int HASH_SIZE = 32;
+    public static final int BYTE_SIZE = 256;
+    protected int issuer;
 
-    protected byte[]          signature;
+    protected byte[] signature;
     protected List<ByteArray> accounts = new ArrayList<>(BYTE_SIZE);
+
     protected CoinOperation() {
     }
 
@@ -39,7 +43,7 @@ public abstract class CoinOperation {
         this.issuer = addAccount(new ByteArray(keyPair.getPublic().getEncoded()));
     }
 
-    public  byte[] getIssuer(){
+    public byte[] getIssuer() {
         return accounts.get(issuer).bytes;
     }
 
@@ -73,6 +77,12 @@ public abstract class CoinOperation {
         if (accounts.stream().anyMatch(it -> it.length != ISSUER_SIZE || !globalState.isUser(it)))                         throw new IllegalArgumentException();
         if (signature == null || !checkSignature(accounts.get(issuer).bytes, CryptoUtil.hash(getDataBytes()), signature))  throw new IllegalArgumentException();
         //@formatter:on
+    }
+
+    protected void sign(KeyPair keyPair) {
+        byte[] data = getDataBytes();
+        byte[] hashOfData = CryptoUtil.hash(data);
+        this.signature = CryptoUtil.sign(keyPair.getPrivate(), hashOfData);
     }
 
     public byte[] toByteArray() {
@@ -109,12 +119,6 @@ public abstract class CoinOperation {
     }
 
 
-    protected void sign(byte[] privateKeyBytes) {
-        byte[] data       = getDataBytes();
-        byte[] hashOfData = CryptoUtil.hash(data);
-        this.signature = CryptoUtil.sign(privateKeyBytes, hashOfData);
-    }
-
 
     protected void load(byte[] bytes) {
         try (var bais = new ByteArrayInputStream(bytes);
@@ -129,8 +133,8 @@ public abstract class CoinOperation {
 
 
     protected List<ByteArray> readAccounts(DataInputStream dis) throws IOException {
-        int             numAccounts = dis.readUnsignedByte();
-        List<ByteArray> accs        = new ArrayList<>(numAccounts);
+        int numAccounts = dis.readUnsignedByte();
+        List<ByteArray> accs = new ArrayList<>(numAccounts);
         for (int i = 0; i < numAccounts; i++) {
             accs.add(new ByteArray(dis.readNBytes(ISSUER_SIZE)));
         }
@@ -144,18 +148,18 @@ public abstract class CoinOperation {
         for (var account : accounts) {
             dos.write(account.bytes);
         }
-        dos.writeByte(signature.length);
+        dos.writeInt(signature.length);
         dos.write(signature);
     }
 
     private void loadHeaderFrom(DataInputStream dis) throws IOException {
         issuer = 0;
         accounts = readAccounts(dis);
-        var sigSize = dis.readUnsignedByte();
+        var sigSize = dis.readInt();
         signature = dis.readNBytes(sigSize);
     }
 
-    private byte[] getDataBytes() {
+    protected byte[] getDataBytes() {
         try (var baos = new ByteArrayOutputStream();
              var dos = new DataOutputStream(baos)) {
             this.writeDataTo(dos);
@@ -189,8 +193,8 @@ public abstract class CoinOperation {
 
     @Override
     public String toString() {
-        return "accounts=" + accounts +
-                ", issuer=" + issuer +
-                ", signature=" + Arrays.toString(signature);
+        return ", issuer=" + issuer +
+                ", accounts=[" + accounts.stream().map(it -> it.bytes).map(ByteUtils::convertToText).collect(Collectors.joining(", ")) +
+                "], signature=" + ByteUtils.convertToText(signature);
     }
 }

@@ -2,6 +2,7 @@ package demo.coin;
 
 import bftsmart.tom.ParallelServiceProxy;
 import demo.coin.core.requestresponse.CoinMultiOperationRequest;
+import demo.coin.core.requestresponse.CoinMultiOperationResponse;
 import demo.coin.core.transactions.*;
 import demo.coin.core.transactions.Exchange.ContaValorMoeda;
 import demo.coin.core.transactions.Exchange.Output;
@@ -9,12 +10,14 @@ import demo.coin.core.transactions.Transfer.ContaValor;
 import demo.coin.util.ByteUtils;
 import demo.coin.util.CryptoUtil;
 import demo.coin.util.Pair;
+import demo.coin.util.Utils;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CoinClient {
     enum PARAMS {
@@ -65,14 +68,22 @@ public class CoinClient {
 
     public void run() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
         // cria os usuarios
+        System.out.println("Criando " + numUsuariosPorCliente * numClientes + " usuários.");
         Set<KeyPair> users = createUsers(numUsuariosPorCliente * numClientes);
-        send(List.of(new RegisterUsers(rootKeys, users)));
+        System.out.println("Registrando os usuários:");
+        Utils.groupBy(Utils.groupBy(users, 256).stream().map(it -> new RegisterUsers(rootKeys, it)).collect(Collectors.toSet()), numOperPerReq).forEach(this::send); //envia
+
         // cria o dinheiro
+        System.out.println("Criando " + numClientes * numUsuariosPorCliente * initBalance + " tokens.");
         List<Mint> mints = mintMoney(rootKeys, numParticoes, numClientes * numUsuariosPorCliente * initBalance);
-        send(mints);
+        System.out.println("Registrando os tokens:");
+        Utils.groupBy(mints, numOperPerReq).forEach(this::send); // envia
+
         // espalha o dinheiro
         List<Transfer> transfers = spreadMoney(rootKeys, users, mints);
-        send(transfers);
+        System.out.println("Transferindo os tokens para os usuários:");
+        Utils.groupBy(transfers, numOperPerReq).forEach(this::send); // envia
+
         // cria o estado parcial
         partialState = createPartialState(users, transfers, numParticoes);
         // criar as threads clientes
@@ -84,7 +95,6 @@ public class CoinClient {
             clientThreads.add(new CoinClientThread(i + 1, numOperPerReq, numParticoes, operations));
         }
 
-        Scanner userInput = new Scanner(System.in);
         // executar as threads.
         for (var t : clientThreads) {
             t.start();
@@ -96,7 +106,10 @@ public class CoinClient {
         if (proxy == null) {
             proxy = new ParallelServiceProxy(0);
         }
-        proxy.invokeParallel(new CoinMultiOperationRequest(operations).serialize(), 0);
+        var request = new CoinMultiOperationRequest(operations);
+        var response = new CoinMultiOperationResponse(proxy.invokeParallel(request.serialize(), 0));
+        System.out.println("\t"+request);
+        System.out.println("\t"+response);
     }
 
     protected Map<KeyPair, Map<CoinOperation, Pair<Integer, Long>>>[] createPartialState(Set<KeyPair> users, List<Transfer> transfers, int numParticoes) {

@@ -49,7 +49,7 @@ public class Transfer extends CoinOperation {
         this.currency = currency;
         this.inputs = convertToInputs(inputs);
         this.outputs = convertToOutputs(outputs);
-        sign(keyPair.getPrivate().getEncoded());
+        sign(keyPair);
     }
 
     @Override
@@ -187,9 +187,9 @@ public class Transfer extends CoinOperation {
     @Override
     public String toString() {
         return "Transfer{" +
-                super.toString() +
-                ", inputs=" + inputs +
+                "inputs=" + inputs +
                 ", outputs=" + outputs +
+                super.toString() +
                 '}';
     }
 

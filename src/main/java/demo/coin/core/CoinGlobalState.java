@@ -1,6 +1,7 @@
 package demo.coin.core;
 
 import demo.coin.util.ByteArray;
+import demo.coin.util.ByteUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ public class CoinGlobalState {
 
     private void validate() {
         //@formatter:off
-        if (Arrays.stream(currencies).anyMatch(it -> it >= 0 && it <= 255))          throw new IllegalArgumentException("Illegal currency detected " + Arrays.toString(currencies));
+        if (Arrays.stream(currencies).anyMatch(it -> it <= 0 && it >= 255))          throw new IllegalArgumentException("Illegal currency detected " + Arrays.toString(currencies));
         if (minters.stream().anyMatch(it -> it.bytes.length != ISSUER_SIZE))         throw new IllegalArgumentException("Illegal minter detected " + minters);
         if (users.stream().anyMatch(it -> it.bytes.length != ISSUER_SIZE))           throw new IllegalArgumentException("Illegal user detected " + users);
         //@formatter:on
@@ -123,9 +124,9 @@ public class CoinGlobalState {
     public String toString() {
         return "CoinGlobalState{" +
                 "currencies=" + Arrays.toString(currencies) +
-                ", minters=" + minters +
-                ", users=" + users +
-                ", utxos=" + Arrays.toString(utxos) +
+                ", minters=[" + minters.stream().map(it->it.bytes).map(ByteUtils::convertToText).collect(Collectors.joining(", ")) +
+                "], users=[" + users.stream().map(it->it.bytes).map(ByteUtils::convertToText).collect(Collectors.joining(", ")) +
+                "], utxos=" + Arrays.toString(utxos) +
                 '}';
     }
 }

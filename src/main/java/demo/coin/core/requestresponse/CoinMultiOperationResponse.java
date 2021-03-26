@@ -52,6 +52,7 @@ public class CoinMultiOperationResponse {
     public void add(int i, byte[] response) {
         if (i < 0 || i > this.responses.length) throw new IllegalArgumentException("i= " + i);
         if (response == null) throw new IllegalArgumentException("response = null");
+        if (responses[i] != null) throw new IllegalArgumentException();
 
         this.responses[i] = response;
     }
@@ -72,12 +73,10 @@ public class CoinMultiOperationResponse {
     }
 
     @Override
-    public String
-
-    toString() {
+    public String toString() {
         return "CoinMultiOperationResponse{" +
-                "responses=" + Arrays.toString(responses) +
-                ", complete=" + complete +
+                "size=" + responses.length +
+                "responses=" + Arrays.deepToString(responses) +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package demo.coin.core;
 
+import demo.coin.util.ByteUtils;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -40,7 +42,7 @@ public class UtxoAddress {
     @Override
     public String toString() {
         return "{" +
-                "transactionHash=" + Arrays.toString(transactionHash) +
+                "transactionHash=" + ByteUtils.convertToText(transactionHash) +
                 ", outputPosition=" + outputPosition +
                 '}';
     }

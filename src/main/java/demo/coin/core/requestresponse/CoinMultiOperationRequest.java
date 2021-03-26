@@ -109,7 +109,7 @@ public class CoinMultiOperationRequest {
     public String toString() {
         return "CoinMultiOperationRequest{" +
                 "operations.size=" + operations.size() +
-                "operations=" + operations.stream().map(Objects::toString).collect(Collectors.joining("\n")) +
+                "operations=" + operations.stream().map(Objects::toString).collect(Collectors.joining(", ")) +
                 '}';
     }
 }

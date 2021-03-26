@@ -25,13 +25,17 @@ public class CoinHibridScheduler implements Scheduler {
             queues[i] = new SPSCQueue<>(queuesCapacity);
         }
         this.classes = CoinHibridClassToThreads.generateMappings(numberOfPartitions, queues);
+        if (this.classes.containsKey(0)) {
+            throw new IllegalStateException("Existe uma classe com valor 0, vai conflitar com a classe de configuração.");
+        }
+        this.classes.put(0, new CoinHibridClassToThreads(new int[]{0}, queues)); // essa classe aqui é usada para a configuração do sistema.
     }
 
     @Override
     public void schedule(TOMMessage request) {
         CoinHibridClassToThreads cToT = classes.get(request.groupId);
         //@formatter:off
-        if (cToT == null)   throw new RuntimeException("CLASStoTHREADs MAPPING NOT FOUND");
+        if (cToT == null)  throw new RuntimeException("CLASStoTHREADs MAPPING NOT FOUND for groupId="+request.groupId);
         //@formatter:on
 
         CoinMultiOperationContext multiOperationCtx = new CoinMultiOperationContext(request, cToT);

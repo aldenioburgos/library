@@ -45,8 +45,8 @@ public class ParallelServiceReplica extends ServiceReplica {
     public ParallelServiceReplica(int id, Executable executor, Recoverable recoverer, int initialWorkers) {
         super(id, executor, recoverer);
         createScheduler(initialWorkers);
-        statistics = new ThroughputStatistics(id, initialWorkers, "resultsEarly_" + id + "_" + 1 + "_" + initialWorkers + ".txt", "");
-        initWorkers(this.scheduler.getNumWorkers(), id);
+        this.statistics = new ThroughputStatistics(id, initialWorkers, "resultsEarly_" + id + "_" + 1 + "_" + initialWorkers + ".txt", "");
+        initWorkers(initialWorkers, id);
     }
 
     public ParallelServiceReplica(int id, Executable executor, Recoverable recoverer, Scheduler s) {
@@ -187,8 +187,6 @@ public class ParallelServiceReplica extends ServiceReplica {
     /**
      * This method initializes the object
      *
-     * @param cs Server side communication System
-     * @param conf Total order messaging configuration
      */
     private void initTOMLayer() {
         if (tomStackCreated) { // if this object was already initialized, don't do it again

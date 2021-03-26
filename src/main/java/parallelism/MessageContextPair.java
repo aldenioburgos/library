@@ -12,7 +12,7 @@ import parallelism.hibrid.late.HibridLockFreeNode;
 /**
  * @author eduardo
  */
-public class MessageContextPair {
+public class MessageContextPair implements HoldsClassIdInterface {
     // preenchido pelo construtor
     public TOMMessage request;
     public int classId;
@@ -40,4 +40,7 @@ public class MessageContextPair {
         return "request [class id= " + classId + ", operation id= " + opId + " requestID: " + request + " index: " + index + "]";
     }
 
+    public int getClassId() {
+        return classId;
+    }
 }

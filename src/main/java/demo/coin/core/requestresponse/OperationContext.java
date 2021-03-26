@@ -1,6 +1,8 @@
 package demo.coin.core.requestresponse;
 
-public interface OperationContext {
+import parallelism.HoldsClassIdInterface;
+
+public interface OperationContext extends HoldsClassIdInterface {
 
     boolean isConcurrent();
 }

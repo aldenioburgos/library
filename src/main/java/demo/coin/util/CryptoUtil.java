@@ -2,11 +2,14 @@ package demo.coin.util;
 
 import demo.coin.core.transactions.CoinOperation;
 
+import java.io.*;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CryptoUtil {
 
@@ -18,10 +21,18 @@ public class CryptoUtil {
 
 
     public static KeyPair generateKeyPair() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+        return generateKeyPair(1).iterator().next();
+    }
+
+    public static Set<KeyPair> generateKeyPair(int number) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
         KeyPairGenerator g = KeyPairGenerator.getInstance(PKI_Algorithm_Name);
         ECGenParameterSpec ecSpec = new ECGenParameterSpec(EC_Gen_Parameter_Std_name);
         g.initialize(ecSpec, new SecureRandom());
-        return g.generateKeyPair();
+        Set<KeyPair> keyPairs = new HashSet<>(number);
+        while (keyPairs.size() < number) {
+            keyPairs.add(g.generateKeyPair());
+        }
+        return keyPairs;
     }
 
     public static PrivateKey loadPrivateKey(byte[] privateKeyBytes) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -36,23 +47,24 @@ public class CryptoUtil {
         return keyGen.generatePublic(pubKeySpec);
     }
 
-    public static byte[] sign(byte[] privateKeyBytes, byte[] dataToSign) {
-        if (privateKeyBytes == null) throw new IllegalArgumentException();
-        if (dataToSign == null || dataToSign.length != 32) throw new IllegalArgumentException();
+    public static byte[] sign(PrivateKey privateKey, byte[] hashOfData) {
+        //@formatter:off
+        if (privateKey == null)                                 throw new IllegalArgumentException();
+        if (hashOfData == null || hashOfData.length != 32)      throw new IllegalArgumentException();
+        //@formatter:on
         try {
             Signature signerEngine = Signature.getInstance(Signature_Algorithm_Name);
-            PrivateKey privateKey = loadPrivateKey(privateKeyBytes);
             signerEngine.initSign(privateKey);
-            byte[] hashOfDataToSign = hash(dataToSign);
-            signerEngine.update(hashOfDataToSign);
+            signerEngine.update(hashOfData);
             return signerEngine.sign();
-        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException | InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static byte[] hash(byte[] data) {
-        if (data == null) throw new IllegalArgumentException();
+        if (data == null)
+            throw new IllegalArgumentException();
         try {
             return MessageDigest.getInstance(HASH_Algorithm_Name).digest(data);
         } catch (NoSuchAlgorithmException e) {
@@ -60,10 +72,10 @@ public class CryptoUtil {
         }
     }
 
-    public static boolean checkSignature(byte[] publicKeyBytes, byte[] signedData, byte[] signature) {
+    public static boolean checkSignature(byte[] publicKeyBytes, byte[] signedHashOfData, byte[] signature) {
         //@formatter:off
         if (publicKeyBytes == null || publicKeyBytes.length != CoinOperation.ISSUER_SIZE)      throw new IllegalArgumentException();
-        if (signedData == null || signedData.length != CoinOperation.HASH_SIZE)                throw new IllegalArgumentException();
+        if (signedHashOfData == null || signedHashOfData.length != CoinOperation.HASH_SIZE)                throw new IllegalArgumentException();
         if (signature == null)                                                                 throw new IllegalArgumentException();
         //@formatter:on
 
@@ -71,8 +83,7 @@ public class CryptoUtil {
             Signature signerEngine = Signature.getInstance(Signature_Algorithm_Name);
             PublicKey publicKey = loadPublicKey(publicKeyBytes);
             signerEngine.initVerify(publicKey);
-            byte[] hashOfSignedData = hash(signedData);
-            signerEngine.update(hashOfSignedData);
+            signerEngine.update(signedHashOfData);
             return signerEngine.verify(signature);
         } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
@@ -80,13 +91,28 @@ public class CryptoUtil {
     }
 
 
-    public static void main(String[] args) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        KeyPair root = generateKeyPair();
-        System.out.println("Gerando um par de chaves:");
-        System.out.println("Public key: "+ByteUtils.convertToText(root.getPublic().getEncoded()));
-        System.out.println("Private key: "+ByteUtils.convertToText(root.getPrivate().getEncoded()));
+    // Public key: MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE4m9Lgsza+etaZasC+ZepzANXy4ieMx1bloRubAWP7f9A8KJ6SzY1nRPGXoik9iWYtpMM4sPA/ReEVFC8OmRaBw==
+    // Private key: MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBURQlyhb6n+QI2P342ZkptOnb7IdCWykOIFOiHFK40gQ==
+    public static void main(String[] args) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, IOException {
+        var number = (args.length > 0) ? Integer.parseInt(args[0]) : 1;
+        var outputPath = (args.length > 1) ? args[1] : "users.txt";
+        var bin = args.length > 2 && Boolean.parseBoolean(args[2]);
+        Set<KeyPair> keyPairs = generateKeyPair(number);
+        try (var fos = new FileOutputStream(outputPath);
+             var dos = new DataOutputStream(fos)) {
+            dos.writeInt(keyPairs.size());
+            for (var keyPair : keyPairs) {
+                var pub = keyPair.getPublic().getEncoded();
+                var pri = keyPair.getPrivate().getEncoded();
+                if (bin) {
+                    dos.writeInt(pub.length);
+                    dos.write(pub);
+                    dos.writeInt(pri.length);
+                    dos.write(pri);
+                } else {
+                    dos.writeChars(ByteUtils.convertToText(pub) + "," + ByteUtils.convertToText(pri));
+                }
+            }
+        }
     }
-
-
-
 }

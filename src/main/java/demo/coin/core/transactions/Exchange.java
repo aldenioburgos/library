@@ -2,6 +2,7 @@ package demo.coin.core.transactions;
 
 import demo.coin.core.CoinGlobalState;
 import demo.coin.util.ByteArray;
+import demo.coin.util.ByteUtils;
 import demo.coin.util.CryptoUtil;
 
 import java.io.DataInputStream;
@@ -106,7 +107,7 @@ public class Exchange extends Transfer {
         return "Exchange{" +
                 "accounts=" + accounts +
                 ", issuer=" + issuer +
-                ", signature=" + Arrays.toString(signature) +
+                ", signature=" + ByteUtils.convertToText(signature)   +
                 ", currency=" + currency +
                 ", inputs=" + inputs +
                 ", outputs=" + outputs +

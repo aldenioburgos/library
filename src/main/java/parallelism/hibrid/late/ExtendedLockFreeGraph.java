@@ -1,5 +1,6 @@
 package parallelism.hibrid.late;
 
+import parallelism.HoldsClassIdInterface;
 import parallelism.MessageContextPair;
 import parallelism.late.ConflictDefinition;
 import parallelism.late.graph.Vertex;
@@ -117,7 +118,7 @@ public class ExtendedLockFreeGraph {
             if (next.isRemoved()) {
                 it.remove();
             } else {
-                if (((MessageContextPair)newvNode.getData()).classId != ((MessageContextPair)next.getData()).classId &&
+                if (((HoldsClassIdInterface)newvNode.getData()).getClassId() != ((HoldsClassIdInterface)next.getData()).getClassId() &&
                         this.cd.isDependent(newvNode.getData(), next.getData())) {//if node conflicts
                     newvNode.insertDepOn(next, myPartition);
                     next.insert(newvNode, myPartition);                       // add edge from older to newer

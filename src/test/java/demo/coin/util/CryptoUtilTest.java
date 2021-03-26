@@ -48,14 +48,14 @@ class CryptoUtilTest {
     void signAndCheckSignature() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
         var keypair = CryptoUtil.generateKeyPair();
         var data = ("arruma a mala aearruma a mala aearruma a mala aearruma a mala aearruma a mala aearruma a mala aearruma a mala aearruma a mala ae").getBytes();
-        var priKeyBytes = keypair.getPrivate().getEncoded();
+        var priKey = keypair.getPrivate();
         var pubKeyBytes = keypair.getPublic().getEncoded();
         var hash = CryptoUtil.hash(data);
-        var signature = CryptoUtil.sign(priKeyBytes, hash);
+        var signature = CryptoUtil.sign(priKey, hash);
         assertTrue(CryptoUtil.checkSignature(pubKeyBytes, hash, signature));
 
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.hash(null));
-        assertThrows(IllegalArgumentException.class, () -> CryptoUtil.sign(priKeyBytes, null));
+        assertThrows(IllegalArgumentException.class, () -> CryptoUtil.sign(priKey, null));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.sign(null, hash));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, hash, null));
         assertThrows(IllegalArgumentException.class, () -> CryptoUtil.checkSignature(pubKeyBytes, null, signature));

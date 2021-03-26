@@ -5,7 +5,7 @@ import parallelism.hibrid.late.HibridLockFreeNode;
 
 import java.util.Arrays;
 
-public class CoinSingleOperationContext implements OperationContext{
+public class CoinSingleOperationContext implements OperationContext {
 
     // preenchido pelo construtor
     public final int index;
@@ -17,7 +17,7 @@ public class CoinSingleOperationContext implements OperationContext{
     public HibridLockFreeNode node = null;
     public int threadId;
 
-    public CoinSingleOperationContext(CoinMultiOperationContext multiOperationContext, int index, byte[] operation) {
+    public  CoinSingleOperationContext(CoinMultiOperationContext multiOperationContext, int index, byte[] operation) {
         this.index = index;
         this.operation = operation;
         this.multiOperationCtx = multiOperationContext;
@@ -28,6 +28,11 @@ public class CoinSingleOperationContext implements OperationContext{
         this.multiOperationCtx.add(index, resp);
     }
 
+
+    @Override
+    public int getClassId() {
+        return multiOperationCtx.getClassId();
+    }
 
     public byte[] getResponseBytes() {
         return multiOperationCtx.multiOperationResponse.serialize();

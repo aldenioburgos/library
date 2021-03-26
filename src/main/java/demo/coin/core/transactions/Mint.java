@@ -31,7 +31,7 @@ public class Mint extends CoinOperation {
         if (value <= 0) throw new IllegalArgumentException();
         this.currency = currency;
         this.value = value;
-        sign(keypair.getPrivate().getEncoded());
+        sign(keypair);
     }
 
     @Override
@@ -106,9 +106,9 @@ public class Mint extends CoinOperation {
     @Override
     public String toString() {
         return "Mint{" +
-                super.toString() +
-                ", currency=" + currency +
+                "currency=" + currency +
                 ", value=" + value +
+                super.toString() +
                 '}';
     }
 

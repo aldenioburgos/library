@@ -25,6 +25,7 @@ public class CoinClientThread extends Thread {
 
 
     public CoinClientThread(int id, int numOpsPerRequest, int numPartitions, List<CoinOperation> allOperations) {
+        super("CoinClientThread-"+id);
         this.id = id;
         this.numOpsPerRequest = numOpsPerRequest;
         this.proxy = new ParallelServiceProxy(id);
@@ -34,7 +35,6 @@ public class CoinClientThread extends Thread {
         this.responses = new ArrayList<>(allOperations.size());
         splitOperationsPerGroupId();
     }
-
     @Override
     public void run() {
         for (var opGroup : operationsPerGroupId.entrySet()) {
@@ -42,7 +42,7 @@ public class CoinClientThread extends Thread {
             var multiRequest = new CoinMultiOperationRequest();
             for (CoinOperation operation : opGroup.getValue()) {
                 multiRequest.add(operation);
-                if (++index > numOpsPerRequest) {
+                if (++index >= numOpsPerRequest) {
                     responses.add(proxy.invokeParallel(multiRequest.serialize(), opGroup.getKey()));
                     multiRequest = new CoinMultiOperationRequest();
                     index = 0;
@@ -72,6 +72,7 @@ public class CoinClientThread extends Thread {
 
     public void printResponses() {
         responses.stream().map(CoinMultiOperationResponse::new).forEach(it -> System.out.println("Client Thread #"+id+"# ->"+it));
+        System.out.println("Client Thread #"+id+"# - encerrou!");
     }
 }
 

@@ -1,5 +1,8 @@
 package demo.coin.core;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 public class Utxo {
@@ -48,5 +51,21 @@ public class Utxo {
                 "address=" + address +
                 ", value=" + value +
                 '}';
+    }
+
+    public static Utxo readFrom(DataInputStream dis) throws IOException {
+        var hashSize = dis.readUnsignedByte();
+        var hash = dis.readNBytes(hashSize);
+        var outputPosition = dis.readUnsignedByte();
+        var value = dis.readLong();
+        return new Utxo(hash, outputPosition, value);
+    }
+
+    public void writeTo(DataOutputStream dos) throws IOException {
+        var hash = getTransactionHash();
+        dos.write(hash.length);
+        dos.write(hash);
+        dos.write(getOutputPosition());
+        dos.writeLong(value);
     }
 }

@@ -90,12 +90,7 @@ public class CoinHibridServiceReplica extends ParallelServiceReplica {
         System.out.println("\trootPubKey =" + ByteUtils.convertToText(rootPubKey));
         System.out.println("");
 
-
-        var particoes = new int[numPartitions];
-        for (int i = 0; i < numPartitions; i++) {
-            particoes[i] = i;
-        }
-        CoinGlobalState globalState = new CoinGlobalState(Set.of(new ByteArray(rootPubKey)), Collections.emptySet(), particoes);
+        CoinGlobalState globalState = new CoinGlobalState(Set.of(new ByteArray(rootPubKey)), Collections.emptySet(), numPartitions);
         Executable executor = new CoinExecutor(globalState);
         CoinConflictDefinition cd = new CoinConflictDefinition();
 

@@ -59,7 +59,7 @@ class TransferTest {
 
     @Test
     void execute() {
-        CoinGlobalState globalState = new CoinGlobalState(Set.of(minterPubKey), Set.of(receiverPubKey), 0, 1, 2);
+        CoinGlobalState globalState = new CoinGlobalState(Set.of(minterPubKey), Set.of(receiverPubKey), 3);
         // mint
         assertArrayEquals(CoinOperation.ok(), mint.execute(globalState));
         assertEquals(Set.of(new Utxo(hash(mint.toByteArray()), 0, 10L)), globalState.getUtxos(0, minterPubKey));

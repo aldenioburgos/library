@@ -72,7 +72,7 @@ public class CoinGlobalStateTest {
     @Test
     void addListAndListUtxo() {
 
-        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), (byte) 0, (byte) 1);
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 2);
         assertEquals(0, globalState.getUtxos(0, pubkey).size());
 
         globalState.addUtxo(0, pubkey, CryptoUtil.hash(pubkey.bytes), 0, 1L);

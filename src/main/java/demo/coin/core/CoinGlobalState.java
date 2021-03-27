@@ -3,6 +3,9 @@ package demo.coin.core;
 import demo.coin.util.ByteArray;
 import demo.coin.util.ByteUtils;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -10,41 +13,92 @@ import static demo.coin.core.transactions.CoinOperation.ISSUER_SIZE;
 
 public class CoinGlobalState {
 
-    private final int[]                       currencies;  // 0 .. 255 (byte sized currency)
-    private final Set<ByteArray>              minters;
-    private final Set<ByteArray>              users;
-    private final Map<ByteArray, Set<Utxo>>[] utxos;
+    private final Set<ByteArray> minters;
+    private final Map<ByteArray, Set<Utxo>>[] shards;
 
-    public CoinGlobalState(int... currencies) {
+
+    public CoinGlobalState(Set<ByteArray> minters, Map<ByteArray, Set<Utxo>>[] shards) {
+        this.minters = minters;
+        this.shards = shards;
+    }
+
+    public CoinGlobalState() {
+        this(1);
+    }
+
+    public CoinGlobalState(int currencies) {
         this(new HashSet<>(), new HashSet<>(), currencies);
     }
 
-    public CoinGlobalState(Set<ByteArray> minters, Set<ByteArray> users, int... currencies) {
-        this.minters = Set.copyOf(minters);
-        this.users = new HashSet<>(users);
-        this.utxos = new Map[256];
-        this.currencies = Arrays.copyOf(currencies, currencies.length);
-        Arrays.sort(this.currencies);
-        validate();
-        initShards();
-    }
-
-    private void validate() {
+    public CoinGlobalState(Set<ByteArray> minters, Set<ByteArray> users, int currencies) {
         //@formatter:off
-        if (Arrays.stream(currencies).anyMatch(it -> it <= 0 && it >= 255))          throw new IllegalArgumentException("Illegal currency detected " + Arrays.toString(currencies));
-        if (minters.stream().anyMatch(it -> it.bytes.length != ISSUER_SIZE))         throw new IllegalArgumentException("Illegal minter detected " + minters);
-        if (users.stream().anyMatch(it -> it.bytes.length != ISSUER_SIZE))           throw new IllegalArgumentException("Illegal user detected " + users);
+        if (currencies <= 0)                            throw new IllegalArgumentException();
+        if (minters == null || minters.isEmpty())       throw new IllegalArgumentException();
+        if (users == null || users.isEmpty())           throw new IllegalArgumentException();
         //@formatter:on
+        this.minters = Set.copyOf(minters);
+        this.shards = new Map[currencies];
+        initShards(minters, users);
     }
 
-    private void initShards() {
+    public static CoinGlobalState readFrom(DataInputStream dis) throws IOException {
+        var mintersSize = dis.readUnsignedByte();
+        var minters = new HashSet<ByteArray>(mintersSize);
+        for (int i = 0; i < mintersSize; i++) {
+            int length = dis.readUnsignedByte();
+            var minter = dis.readNBytes(length);
+            minters.add(new ByteArray(minter));
+        }
+        //utxos
+        var shards = new Map[dis.readUnsignedByte()];
+        for (int i = 0; i < shards.length; i++) {
+            var shardSize = dis.readInt();
+            shards[i] = new HashMap<ByteArray, Set<Utxo>>(shardSize);
+            for (int j = 0; j < shardSize; j++) {
+                var pkLength = dis.readUnsignedByte();
+                var userPubKey = dis.readNBytes(pkLength);
+                var utxosLength = dis.readInt();
+                var utxos = new HashSet<Utxo>(utxosLength);
+                for (int k = 0; k < utxosLength; k++) {
+                    utxos.add(Utxo.readFrom(dis));
+                }
+                ((Map<ByteArray, Set<Utxo>>) shards[i]).put(new ByteArray(userPubKey), utxos);
+            }
+        }
+
+        return new CoinGlobalState(minters, (Map<ByteArray, Set<Utxo>>[]) shards);
+    }
+
+    public void writeTo(DataOutputStream dos) throws IOException {
+        dos.write(minters.size());
+        for (ByteArray minter : minters) {
+            dos.write(minter.length);
+            dos.write(minter.bytes);
+        }
+        // utxos
+        dos.write(shards.length);
+        for (var shard : shards) {
+            dos.writeInt(shard.entrySet().size());
+            for (var userAccount : shard.entrySet()) {
+                var userPubKey = userAccount.getKey();
+                dos.write(userPubKey.length);
+                dos.write(userPubKey.bytes);
+                var utxos = userAccount.getValue();
+                dos.writeInt(utxos.size());
+                for (var utxo : utxos) {
+                    utxo.writeTo(dos);
+                }
+            }
+        }
+    }
+
+    private void initShards(Set<ByteArray> minters, Set<ByteArray> users) {
         // os mineradores também são usuários
         users.addAll(minters);
-
-        for (int currency : currencies) {
+        for (int currency = 0; currency < shards.length; currency++) {
             Map<ByteArray, Set<Utxo>> shard = new HashMap<>();
             users.forEach(it -> shard.put(it, new HashSet<>()));
-            this.utxos[currency] = shard;
+            this.shards[currency] = shard;
         }
     }
 
@@ -55,39 +109,30 @@ public class CoinGlobalState {
         return minters.contains(minter);
     }
 
-    public void addMinter(ByteArray minter) {
-        //@formatter:off
-        if (minter == null || minter.length != ISSUER_SIZE) throw new IllegalArgumentException("Illegal minter detected " + minter);
-        //@formatter:on
-        this.minters.add(minter);
-        addUser(minter);
-    }
-
     public void addUser(ByteArray user) {
         //@formatter:off
         if (user == null || user.length != ISSUER_SIZE) throw new IllegalArgumentException("Illegal user detected " + user);
         //@formatter:on
-        this.users.add(user);
-        for (int currency : currencies) {
-            this.utxos[currency].put(user, new HashSet<>());
+        for (int currency = 0; currency < shards.length; currency++) {
+            this.shards[currency].put(user, new HashSet<>());
         }
     }
 
 
     public boolean isUser(ByteArray user) {
-        return users.contains(user);
+        return this.shards[0].containsKey(user);
     }
 
     public boolean isCurrency(int currency) {
-        return Arrays.binarySearch(currencies, currency) >= 0;
+        return currency < shards.length && currency >= 0;
     }
 
     public Set<Utxo> getUtxos(int currency, ByteArray owner) {
         //@formatter:off
-        if (currency < 0 || currency >= utxos.length || utxos[currency] == null)    throw new IllegalArgumentException();
+        if (currency < 0 || currency >= shards.length || shards[currency] == null)    throw new IllegalArgumentException();
         if (owner == null || owner.length != ISSUER_SIZE)                           throw new IllegalArgumentException();
         //@formatter:on
-        Set<Utxo> oldUtxos = utxos[currency].get(owner);
+        Set<Utxo> oldUtxos = shards[currency].get(owner);
         if (oldUtxos == null || oldUtxos.isEmpty()) {
             return new HashSet<>();
         } else {
@@ -106,27 +151,25 @@ public class CoinGlobalState {
 
     public void removeUtxos(int currency, ByteArray owner, Set<UtxoAddress> addresses) {
         //@formatter:off
-        if (currency < 0 || currency >= utxos.length || utxos[currency] == null)     throw new IllegalArgumentException("Invalid currency " + currency);
+        if (currency < 0 || currency >= shards.length || shards[currency] == null)     throw new IllegalArgumentException("Invalid currency " + currency);
         if (owner == null || owner.length != ISSUER_SIZE)                            throw new IllegalArgumentException();
         if (addresses == null)                                                       throw new IllegalArgumentException();
         //@formatter:on
 
-        Set<Utxo> oldUtxos = utxos[currency].get(owner);
-        utxos[currency].put(owner, oldUtxos.stream().filter(it -> !addresses.contains(it.address)).collect(Collectors.toSet()));
+        Set<Utxo> oldUtxos = shards[currency].get(owner);
+        shards[currency].put(owner, oldUtxos.stream().filter(it -> !addresses.contains(it.address)).collect(Collectors.toSet()));
     }
 
     public void addUtxo(int currency, ByteArray owner, byte[] transactionHash, int outputPosition, long value) {
-        Set<Utxo> oldUtxos = utxos[currency].get(owner);
+        Set<Utxo> oldUtxos = shards[currency].get(owner);
         oldUtxos.add(new Utxo(transactionHash, outputPosition, value));
     }
 
     @Override
     public String toString() {
         return "CoinGlobalState{" +
-                "currencies=" + Arrays.toString(currencies) +
-                ", minters=[" + minters.stream().map(it->it.bytes).map(ByteUtils::convertToText).collect(Collectors.joining(", ")) +
-                "], users=[" + users.stream().map(it->it.bytes).map(ByteUtils::convertToText).collect(Collectors.joining(", ")) +
-                "], utxos=" + Arrays.toString(utxos) +
+                ", minters=[" + minters.stream().map(it -> it.bytes).map(ByteUtils::convertToText).collect(Collectors.joining(", ")) +
+                "], utxos=" + Arrays.toString(shards) +
                 '}';
     }
 }

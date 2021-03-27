@@ -66,7 +66,7 @@ class ExchangeTest {
 
     @Test
     void execute() {
-        var globalState = new CoinGlobalState(Set.of(minterAccount), Set.of(receiverAccount), 0, 1, 2);
+        var globalState = new CoinGlobalState(Set.of(minterAccount), Set.of(receiverAccount), 3);
         var mint        = new Mint(minterKeys, 0, 1000L);
         var exchange    = new Exchange(minterKeys, 0, Map.of(mint, 0), List.of(new ContaValorMoeda(receiverAccount, 500L, 1), new ContaValorMoeda(receiverAccount, 500L, 0)));
         assertArrayEquals(CoinOperation.ok(), mint.execute(globalState));

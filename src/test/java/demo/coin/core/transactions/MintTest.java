@@ -56,7 +56,7 @@ class MintTest {
             assertThrows(IllegalArgumentException.class, () -> mint.validate(globalState));
         }
         { // moeda desconhecida
-            var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 0, 2, 3, 4);
+            var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 4);
             assertThrows(IllegalArgumentException.class, () -> mint.validate(globalState));
         }
     }
@@ -78,7 +78,7 @@ class MintTest {
 
     @Test
     void execute() {
-        var       globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 0, 1, 2,3);
+        var       globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 4);
         Utxo      utxo1, utxo2;
         Set<Utxo> expected;
         { // correct work

@@ -41,57 +41,6 @@ public class CoinGlobalState {
         initShards(minters, users);
     }
 
-    public static CoinGlobalState readFrom(DataInputStream dis) throws IOException {
-        var mintersSize = dis.readUnsignedByte();
-        var minters = new HashSet<ByteArray>(mintersSize);
-        for (int i = 0; i < mintersSize; i++) {
-            int length = dis.readUnsignedByte();
-            var minter = dis.readNBytes(length);
-            minters.add(new ByteArray(minter));
-        }
-        //utxos
-        var shards = new Map[dis.readUnsignedByte()];
-        for (int i = 0; i < shards.length; i++) {
-            var shardSize = dis.readInt();
-            shards[i] = new HashMap<ByteArray, Set<Utxo>>(shardSize);
-            for (int j = 0; j < shardSize; j++) {
-                var pkLength = dis.readUnsignedByte();
-                var userPubKey = dis.readNBytes(pkLength);
-                var utxosLength = dis.readInt();
-                var utxos = new HashSet<Utxo>(utxosLength);
-                for (int k = 0; k < utxosLength; k++) {
-                    utxos.add(Utxo.readFrom(dis));
-                }
-                ((Map<ByteArray, Set<Utxo>>) shards[i]).put(new ByteArray(userPubKey), utxos);
-            }
-        }
-
-        return new CoinGlobalState(minters, (Map<ByteArray, Set<Utxo>>[]) shards);
-    }
-
-    public void writeTo(DataOutputStream dos) throws IOException {
-        dos.write(minters.size());
-        for (ByteArray minter : minters) {
-            dos.write(minter.length);
-            dos.write(minter.bytes);
-        }
-        // utxos
-        dos.write(shards.length);
-        for (var shard : shards) {
-            dos.writeInt(shard.entrySet().size());
-            for (var userAccount : shard.entrySet()) {
-                var userPubKey = userAccount.getKey();
-                dos.write(userPubKey.length);
-                dos.write(userPubKey.bytes);
-                var utxos = userAccount.getValue();
-                dos.writeInt(utxos.size());
-                for (var utxo : utxos) {
-                    utxo.writeTo(dos);
-                }
-            }
-        }
-    }
-
     private void initShards(Set<ByteArray> minters, Set<ByteArray> users) {
         // os mineradores também são usuários
         users.addAll(minters);

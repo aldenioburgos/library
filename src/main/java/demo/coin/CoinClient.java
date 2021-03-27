@@ -1,153 +1,53 @@
 package demo.coin;
 
-import bftsmart.tom.ParallelServiceProxy;
-import demo.coin.core.requestresponse.CoinMultiOperationRequest;
-import demo.coin.core.requestresponse.CoinMultiOperationResponse;
+import demo.coin.core.Utxo;
 import demo.coin.core.transactions.*;
 import demo.coin.core.transactions.Exchange.ContaValorMoeda;
 import demo.coin.core.transactions.Exchange.Output;
 import demo.coin.core.transactions.Transfer.ContaValor;
-import demo.coin.util.ByteUtils;
 import demo.coin.util.CryptoUtil;
 import demo.coin.util.Pair;
-import demo.coin.util.Utils;
 
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
-import java.util.stream.Collectors;
+
+enum PARAMS {
+    NUM_THREADS_CLIENTE, NUM_OPERACOES_PER_CLIENTE, NUM_OPS_PER_REQ, NUM_PARTICOES, PERC_GLOBAL, PERC_WRITE, WARM_UP_FILE
+}
+
 
 public class CoinClient {
-    enum PARAMS {
-        NUM_THREADS_CLIENTE, NUM_USUARIOS_THREAD, NUM_OPERACOES_USUARIO, NUM_TOKENS_USUARIO, NUM_OPS_PER_REQ, NUM_PARTICOES, PERC_GLOBAL, PERC_WRITE, ROOT_PUBLIC_KEY, ROOT_PRIVATE_KEY
-    }
 
-    int numClientes;
-    int numUsuariosPorCliente;
-    int numOperPerUsuario;
-    int numOperPerReq;
-    int numParticoes;
-    int percGlobal;
-    int percWrite;
-    long initBalance;
-    KeyPair rootKeys;
-    ParallelServiceProxy proxy;
-    // criar depois
-    Map<KeyPair, Map<CoinOperation, Pair<Integer, Long>>>[] partialState;
+    public void run(int numClientes, int numOperacoesPorCliente, int numOperPerReq, int numParticoes, int percGlobal, int percWrite, WarmUp warmUp) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+        //@formatter:off
+        if (numClientes <= 0)                   throw new IllegalArgumentException();
+        if (numOperacoesPorCliente <= 0)        throw new IllegalArgumentException();
+        if (numParticoes <= 0)                  throw new IllegalArgumentException();
+        if (percGlobal < 0 || percGlobal > 100) throw new IllegalArgumentException();
+        if (percWrite < 0 || percWrite > 100)   throw new IllegalArgumentException();
+        if (numOperacoesPorCliente * percWrite / 100 > warmUp.tokens.size() * numParticoes * warmUp.users.size() / numClientes) throw new IllegalArgumentException();
+        //@formatter:on
 
-    public CoinClient() {
-        numClientes = 1;
-        numUsuariosPorCliente = 5;
-        numOperPerUsuario = 100;
-        numOperPerReq = 2;
-        numParticoes = 2;
-        percGlobal = 0;
-        percWrite = 0;
-        initBalance = 1000;
-        proxy = null;
-        partialState = null;
-    }
+        Map<KeyPair, Set<Utxo>>[] partialState = createPartialState(warmUp);
 
-    public CoinClient(int numClientes, int numUsuariosPorCliente, int numOperPorUsuario, int numOperPerReq, int numParticoes, int percGlobal,
-                      int percWrite, long initBalance, ParallelServiceProxy proxy, KeyPair rootKeys) {
-        this.numClientes = numClientes;
-        this.numUsuariosPorCliente = numUsuariosPorCliente;
-        this.numOperPerUsuario = numOperPorUsuario;
-        this.numOperPerReq = numOperPerReq;
-        this.numParticoes = numParticoes;
-        this.percGlobal = percGlobal;
-        this.percWrite = percWrite;
-        this.initBalance = initBalance;
-        this.proxy = proxy;
-        this.rootKeys = rootKeys;
-        this.partialState = null;
-    }
-
-
-    public void run() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        // cria os usuarios
-        System.out.println("Criando " + numUsuariosPorCliente * numClientes + " usuários.");
-        Set<KeyPair> users = createUsers(numUsuariosPorCliente * numClientes);
-        System.out.println("Registrando os usuários:");
-        Utils.groupBy(Utils.groupBy(users, 256).stream().map(it -> new RegisterUsers(rootKeys, it)).collect(Collectors.toSet()), numOperPerReq).forEach(this::send); //envia
-
-        // cria o dinheiro
-        System.out.println("Criando " + numClientes * numUsuariosPorCliente * initBalance + " tokens.");
-        List<Mint> mints = mintMoney(rootKeys, numParticoes, numClientes * numUsuariosPorCliente * initBalance);
-        System.out.println("Registrando os tokens:");
-        Utils.groupBy(mints, numOperPerReq).forEach(this::send); // envia
-
-        // espalha o dinheiro
-        List<Transfer> transfers = spreadMoney(rootKeys, users, mints);
-        System.out.println("Transferindo os tokens para os usuários:");
-        Utils.groupBy(transfers, numOperPerReq).forEach(this::send); // envia
-
-        // cria o estado parcial
-        partialState = createPartialState(users, transfers, numParticoes);
         // criar as threads clientes
         List<CoinClientThread> clientThreads = new ArrayList<>(numClientes);
-        // a thread 0 é a main thread!
         for (int i = 0; i < numClientes; i++) {
             // Criar as operações
-            var operations = createOperations(numOperPerUsuario * numUsuariosPorCliente, numParticoes, percGlobal, percWrite, users, partialState);
-            clientThreads.add(new CoinClientThread(i + 1, numOperPerReq, numParticoes, operations));
+            List<CoinOperation> operations = createClientOperations(partialState, numOperacoesPorCliente, numParticoes, percGlobal, percWrite);
+            clientThreads.add(new CoinClientThread(i, numOperPerReq, numParticoes, operations));
         }
-
         // executar as threads.
         for (var t : clientThreads) {
             t.start();
         }
     }
 
-
-    protected void send(Iterable<? extends CoinOperation> operations) {
-        if (proxy == null) {
-            proxy = new ParallelServiceProxy(0);
-        }
-        var request = new CoinMultiOperationRequest(operations);
-        var response = new CoinMultiOperationResponse(proxy.invokeParallel(request.serialize(), 0));
-        System.out.println("\t"+request);
-        System.out.println("\t"+response);
-    }
-
-    protected Map<KeyPair, Map<CoinOperation, Pair<Integer, Long>>>[] createPartialState(Set<KeyPair> users, List<Transfer> transfers, int numParticoes) {
-        Map<KeyPair, Map<CoinOperation, Pair<Integer, Long>>>[] partialState = new Map[numParticoes];
-        for (int i = 0; i < numParticoes; i++) {
-            partialState[i] = new HashMap<>(users.size());
-            for (var user : users) {
-                partialState[i].put(user, new HashMap<>());
-            }
-        }
-        for (var t : transfers) {
-            var outputs = t.getOutputs();
-            for (int i = 0; i < t.getOutputs().size(); i++) {
-                Transfer.Output output = outputs.get(i);
-                KeyPair receiverKeyPair = getUser(users, t.getUser(output.receiverAccountIndex));
-                partialState[t.getCurrency()].get(receiverKeyPair).put(t, new Pair<>(i, output.value));
-            }
-        }
-        return partialState;
-    }
-
-    protected KeyPair getUser(Set<KeyPair> users, byte[] user) {
-        for (var u : users) {
-            if (Arrays.equals(u.getPublic().getEncoded(), user)) {
-                return u;
-            }
-        }
-        throw new IllegalArgumentException();
-    }
-
-    protected List<CoinOperation> createOperations(int numOperacoes, int numParticoes, int percGlobal, int percWrite, Set<KeyPair> users,
-                                                   Map<KeyPair, Map<CoinOperation, Pair<Integer, Long>>>[] partialState) {
-        //@formatter:off
-            if (numOperacoes <= 0) throw new IllegalArgumentException();
-            if (numParticoes <= 0) throw new IllegalArgumentException();
-            if (percGlobal < 0 || percGlobal > 100) throw new IllegalArgumentException();
-            if (percWrite < 0 || percWrite > 100) throw new IllegalArgumentException();
-        //@formatter:on
+    private List<CoinOperation> createClientOperations(Map<KeyPair, Set<Utxo>>[] partialState, int numOperacoes, int numParticoes, int percGlobal, int percWrite) {
         Set<CoinOperation> operacoes = new HashSet<>(numOperacoes);
         while (operacoes.size() < numOperacoes) {
             try {
@@ -167,6 +67,27 @@ public class CoinClient {
         }
         return new ArrayList<>(operacoes);
     }
+
+    private Map<KeyPair, Set<Utxo>>[] createPartialState(WarmUp warmUp) {
+        Map<KeyPair, Set<Utxo>>[] partialState = new Map[warmUp.numPartitions];
+        for (int i = 0; i < warmUp.numPartitions; i++) {
+            partialState[i] = new HashMap<>(warmUp.users.size());
+            for (KeyPair user : warmUp.users) {
+                partialState[i].put(user, new HashSet<>(warmUp.tokens));
+            }
+        }
+        return partialState;
+    }
+
+    protected KeyPair getUser(Set<KeyPair> users, byte[] user) {
+        for (var u : users) {
+            if (Arrays.equals(u.getPublic().getEncoded(), user)) {
+                return u;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
 
     protected void updatePartialState(Set<KeyPair> users, Pair<? extends CoinOperation, ? extends CoinOperation> ops,
                                       Map<KeyPair, Map<CoinOperation, Pair<Integer, Long>>>[] partialState) {
@@ -294,26 +215,48 @@ public class CoinClient {
     }
 
 
-    static class UsuarioLisoException extends RuntimeException {}
+    static class UsuarioLisoException extends RuntimeException {
+    }
 
-    public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, IOException {
         //@formatter:off
-        if (args.length != PARAMS.values().length) throw new IllegalArgumentException("Modo de uso:  java CoinClient NUM_THREADS_CLIENTE, NUM_USUARIOS_THREAD, NUM_OPERACOES_USUARIO, NUM_TOKENS_USUARIO, NUM_OPS_PER_REQ, NUM_PARTICOES, PERC_GLOBAL, PERC_WRITE, ROOT_PUBLIC_KEY, ROOT_PRIVATE_KEY");
+        if (args.length != PARAMS.values().length) throw new IllegalArgumentException("Modo de uso:  java CoinClient NUM_THREADS_CLIENTE NUM_OPERACOES_PER_CLIENTE NUM_OPS_PER_REQ NUM_PARTICOES PERC_GLOBAL PERC_WRITE WARM_UP_FILE");
         //@formatter:on
-
         int numClientes = Integer.parseInt(args[PARAMS.NUM_THREADS_CLIENTE.ordinal()]);
-        int numUsuarios = Integer.parseInt(args[PARAMS.NUM_USUARIOS_THREAD.ordinal()]);
-        int numOperacoes = Integer.parseInt(args[PARAMS.NUM_OPERACOES_USUARIO.ordinal()]);
+        int numOperacoes = Integer.parseInt(args[PARAMS.NUM_OPERACOES_PER_CLIENTE.ordinal()]);
         int numOperPerReq = Integer.parseInt(args[PARAMS.NUM_OPS_PER_REQ.ordinal()]);
         int numParticoes = Integer.parseInt(args[PARAMS.NUM_PARTICOES.ordinal()]);
         int percGlobal = Integer.parseInt(args[PARAMS.PERC_GLOBAL.ordinal()]);
         int percWrite = Integer.parseInt(args[PARAMS.PERC_WRITE.ordinal()]);
-        long initBalance = Long.parseLong(args[PARAMS.NUM_TOKENS_USUARIO.ordinal()]);
-        byte[] rootPubKey = ByteUtils.convertToByteArray(args[PARAMS.ROOT_PUBLIC_KEY.ordinal()]);
-        byte[] rootPriKey = ByteUtils.convertToByteArray(args[PARAMS.ROOT_PRIVATE_KEY.ordinal()]);
-        ParallelServiceProxy proxy = new ParallelServiceProxy(0);
-        KeyPair rootKeys = new KeyPair(CryptoUtil.loadPublicKey(rootPubKey), CryptoUtil.loadPrivateKey(rootPriKey));
-        CoinClient client = new CoinClient(numClientes, numUsuarios, numOperacoes, numOperPerReq, numParticoes, percGlobal, percWrite, initBalance, proxy, rootKeys);
-        client.run();
+        String warmUpFile = args[PARAMS.WARM_UP_FILE.ordinal()];
+
+        System.out.println("Loading warm-up file...");
+        WarmUp warmUp = WarmUp.loadFrom(warmUpFile);
+        System.out.println("Warm-up file loaded!");
+
+        CoinClient client = new CoinClient();
+        client.run(numClientes, numOperacoes, numOperPerReq, numParticoes, percGlobal, percWrite, warmUp);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -51,7 +51,7 @@ class TransferTest {
         assertThrows(IllegalArgumentException.class, () -> new Transfer(null, 0, Map.of(mint, 0), List.of(new ContaValor(receiverPubKey, 10L))));
         assertThrows(IllegalArgumentException.class, () -> new Transfer(minterKeys, -1, Map.of(mint, 0), List.of(new ContaValor(receiverPubKey, 10L))));
         assertThrows(IllegalArgumentException.class, () -> new Transfer(minterKeys, 256, Map.of(mint, 0), List.of(new ContaValor(receiverPubKey, 10L))));
-        assertThrows(IllegalArgumentException.class, () -> new Transfer(minterKeys, 1, null, List.of(new ContaValor(receiverPubKey, 10L))));
+        assertThrows(IllegalArgumentException.class, () -> new Transfer(minterKeys, 1, (Map)null, List.of(new ContaValor(receiverPubKey, 10L))));
         assertThrows(IllegalArgumentException.class, () -> new Transfer(minterKeys, 1, emptyMap(), List.of(new ContaValor(receiverPubKey, 10L))));
         assertThrows(IllegalArgumentException.class, () -> new Transfer(minterKeys, 2, Map.of(mint, 0), null));
         assertThrows(IllegalArgumentException.class, () -> new Transfer(minterKeys, 3, Map.of(mint, 0), emptyList()));

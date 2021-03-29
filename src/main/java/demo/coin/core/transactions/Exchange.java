@@ -28,6 +28,10 @@ public class Exchange extends Transfer {
         super(keyPair, currency, inputs, outputs);
     }
 
+    public Exchange(KeyPair keyPair, int currency, List<Input> inputs, List<? extends ContaValor> outputs) {
+        super(keyPair, currency, inputs, outputs);
+    }
+
     @Override
     public int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement) {
         SortedSet<Integer> partitions = new TreeSet<>(Set.of(currency));

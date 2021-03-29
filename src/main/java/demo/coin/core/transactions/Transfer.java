@@ -37,17 +37,19 @@ public class Transfer extends CoinOperation {
     }
 
     public Transfer(KeyPair keyPair, int currency, Map<CoinOperation, Integer> inputs, List<? extends ContaValor> outputs) {
+        this(keyPair, currency, convertToInputs(inputs), outputs);
+    }
+
+    public Transfer(KeyPair keyPair, int currency, List<Input> inputs, List<? extends ContaValor> outputs) {
         super(keyPair);
         //@formatter:off
         if (currency < 0 || currency > 255)                                                                             throw new IllegalArgumentException();
         if (inputs == null || inputs.isEmpty())                                                                         throw new IllegalArgumentException();
-        if (inputs.keySet().stream().anyMatch(it -> it == null || it instanceof Balance))                               throw new IllegalArgumentException();
-        if (inputs.values().stream().anyMatch(it -> it == null || it < 0 || it > 255))                                  throw  new IllegalArgumentException();
         if (outputs == null || outputs.isEmpty())                                                                       throw new IllegalArgumentException();
         if (outputs.stream().anyMatch(it-> it.a == null || it.a.length != ISSUER_SIZE || it.b == null || it.b < 0))     throw new IllegalArgumentException();
         //@formatter:on
         this.currency = currency;
-        this.inputs = convertToInputs(inputs);
+        this.inputs = inputs;
         this.outputs = convertToOutputs(outputs);
         sign(keyPair);
     }
@@ -143,7 +145,13 @@ public class Transfer extends CoinOperation {
     }
 
 
-    private List<Input> convertToInputs(Map<CoinOperation, Integer> inputsToConvert) {
+    private static List<Input> convertToInputs(Map<CoinOperation, Integer> inputsToConvert) {
+        //@formatter:off
+        if (inputsToConvert == null || inputsToConvert.isEmpty())                                       throw new IllegalArgumentException();
+        if (inputsToConvert.keySet().stream().anyMatch(it -> it == null || it instanceof Balance))      throw new IllegalArgumentException();
+        if (inputsToConvert.values().stream().anyMatch(it -> it == null || it < 0 || it > 255))         throw  new IllegalArgumentException();
+        //@formatter:on
+
         List<Input> convertedInputs = new ArrayList<>(inputsToConvert.size());
         for (var input : inputsToConvert.entrySet()) {
             var transactionHash = CryptoUtil.hash(input.getKey().toByteArray());

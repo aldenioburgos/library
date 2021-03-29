@@ -31,8 +31,16 @@ public class CoinGlobalStateTest {
     }
 
     @Test
+    void constructorTest() {
+        assertDoesNotThrow(() -> new CoinGlobalState(Set.of(new ByteArray(new byte[]{0})), emptySet(), 1));
+        assertThrows(IllegalArgumentException.class, () -> new CoinGlobalState(emptySet(), emptySet(), 1));
+        assertThrows(IllegalArgumentException.class, () -> new CoinGlobalState(Set.of(new ByteArray(new byte[]{0})), null, 1));
+        assertThrows(IllegalArgumentException.class, () -> new CoinGlobalState(Set.of(new ByteArray(new byte[]{0})), emptySet(), 0));
+    }
+
+    @Test
     void isMinterNoMinter() {
-        var globalState = new CoinGlobalState();
+        var globalState = new CoinGlobalState(Set.of(new ByteArray(new byte[]{0})), emptySet(), 1);
         assertThrows(IllegalArgumentException.class, () -> globalState.isMinter(null));
         assertThrows(IllegalArgumentException.class, () -> globalState.isMinter(new ByteArray(new byte[]{})));
         assertFalse(globalState.isMinter(pubkey));
@@ -43,31 +51,26 @@ public class CoinGlobalStateTest {
 
     @Test
     void isMinterWithMinter() {
-        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  0);
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  1);
         assertFalse(globalState.isMinter(otherPubkey));
         assertTrue(globalState.isMinter(pubkey));
     }
 
     @Test
     void isUserWithUser() {
-        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  0);
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  1);
         assertTrue(globalState.isUser(pubkey));
         assertFalse(globalState.isUser(otherPubkey));
     }
 
     @Test
     void isCurrencyWithCurrency() {
-        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  0);
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(),  1);
         assertFalse(globalState.isCurrency(-1));
         assertFalse(globalState.isCurrency(1));
         assertTrue(globalState.isCurrency(0));
     }
 
-    @Test
-    void isCurrencyNoCurrency() {
-        var emptyGlobalState = new CoinGlobalState();
-        assertFalse(emptyGlobalState.isCurrency((byte) 0));
-    }
 
     @Test
     void addListAndListUtxo() {

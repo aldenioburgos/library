@@ -52,11 +52,11 @@ class MintTest {
     void isInvalid() {
         var mint = new Mint(keyPair, 1, 10L);
         { // minerador desconhecido
-            var globalState = new CoinGlobalState(emptySet(), emptySet(), 1);
+            var globalState = new CoinGlobalState(Set.of(new ByteArray(new byte[]{0})), emptySet(), 1);
             assertThrows(IllegalArgumentException.class, () -> mint.validate(globalState));
         }
         { // moeda desconhecida
-            var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 4);
+            var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 1);
             assertThrows(IllegalArgumentException.class, () -> mint.validate(globalState));
         }
     }
@@ -72,7 +72,7 @@ class MintTest {
     @Test
     void isValid() {
         var mint        = new Mint(keyPair, 255, 10L);
-        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 255);
+        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 256);
         assertDoesNotThrow(() -> mint.validate(globalState));
     }
 

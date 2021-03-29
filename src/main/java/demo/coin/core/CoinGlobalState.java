@@ -3,9 +3,6 @@ package demo.coin.core;
 import demo.coin.util.ByteArray;
 import demo.coin.util.ByteUtils;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,28 +19,22 @@ public class CoinGlobalState {
         this.shards = shards;
     }
 
-    public CoinGlobalState() {
-        this(1);
-    }
-
-    public CoinGlobalState(int currencies) {
-        this(new HashSet<>(), new HashSet<>(), currencies);
-    }
-
     public CoinGlobalState(Set<ByteArray> minters, Set<ByteArray> users, int currencies) {
         //@formatter:off
         if (currencies <= 0)                            throw new IllegalArgumentException();
         if (minters == null || minters.isEmpty())       throw new IllegalArgumentException();
-        if (users == null || users.isEmpty())           throw new IllegalArgumentException();
+        if (users == null)                              throw new IllegalArgumentException();
         //@formatter:on
         this.minters = Set.copyOf(minters);
         this.shards = new Map[currencies];
         initShards(minters, users);
     }
 
-    private void initShards(Set<ByteArray> minters, Set<ByteArray> users) {
+    private void initShards(Set<ByteArray> minters, Set<ByteArray> paramUsers) {
         // os mineradores também são usuários
+        var users = new HashSet<>(paramUsers);
         users.addAll(minters);
+
         for (int currency = 0; currency < shards.length; currency++) {
             Map<ByteArray, Set<Utxo>> shard = new HashMap<>();
             users.forEach(it -> shard.put(it, new HashSet<>()));

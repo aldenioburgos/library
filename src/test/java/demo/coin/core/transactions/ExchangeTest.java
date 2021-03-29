@@ -41,7 +41,7 @@ class ExchangeTest {
         assertThrows(IllegalArgumentException.class, () -> new Exchange(null, 0, Map.of(mint, 0), List.of(new ContaValorMoeda(receiverAccount, 10, 0))));
         assertThrows(IllegalArgumentException.class, () -> new Exchange(minterKeys, -1, Map.of(mint, 0), List.of(new ContaValorMoeda(receiverAccount, 10, 0))));
         assertThrows(IllegalArgumentException.class, () -> new Exchange(minterKeys, 256, Map.of(mint, 0), List.of(new ContaValorMoeda(receiverAccount, 10, 0))));
-        assertThrows(IllegalArgumentException.class, () -> new Exchange(minterKeys, 0, null, List.of(new ContaValorMoeda(receiverAccount, 10, 0))));
+        assertThrows(IllegalArgumentException.class, () -> new Exchange(minterKeys, 0, (Map)null, List.of(new ContaValorMoeda(receiverAccount, 10, 0))));
         assertThrows(IllegalArgumentException.class, () -> new Exchange(minterKeys, 0, Collections.emptyMap(), List.of(new ContaValorMoeda(receiverAccount, 10, 0))));
         assertThrows(IllegalArgumentException.class, () -> new Exchange(minterKeys, 256, Map.of(mint, 0), null));
         assertThrows(IllegalArgumentException.class, () -> new Exchange(minterKeys, 256, Map.of(mint, 0), Collections.emptyList()));

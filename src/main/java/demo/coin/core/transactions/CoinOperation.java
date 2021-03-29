@@ -10,7 +10,6 @@ import java.security.KeyPair;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static demo.coin.util.ByteUtils.convertToText;
 import static demo.coin.util.ByteUtils.readUnsignedByte;
 import static demo.coin.util.CryptoUtil.checkSignature;
 
@@ -21,7 +20,7 @@ import static demo.coin.util.CryptoUtil.checkSignature;
 public abstract class CoinOperation {
 
 
-    public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE, REGISTER_USERS;}
+    public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE}
 
     public static final int ISSUER_SIZE = 91;
 
@@ -55,7 +54,6 @@ public abstract class CoinOperation {
             case TRANSFER -> new Transfer(bytes);
             case EXCHANGE -> new Exchange(bytes);
             case BALANCE -> new Balance(bytes);
-            case REGISTER_USERS -> new RegisterUsers(bytes);
         };
     }
 

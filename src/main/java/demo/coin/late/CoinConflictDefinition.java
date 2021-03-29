@@ -17,9 +17,6 @@ public class CoinConflictDefinition implements ConflictDefinition {
     public boolean isDependent(Object r1, Object r2) {
         byte[] op1 = ((CoinSingleOperationContext) r1).operation;
         byte[] op2 = ((CoinSingleOperationContext) r2).operation;
-        if (OP_TYPE.REGISTER_USERS.ordinal() == op1[0] || OP_TYPE.REGISTER_USERS.ordinal() == op2[0]) {
-            return true;
-        }
         if (OP_TYPE.BALANCE.ordinal() == op1[0] && OP_TYPE.BALANCE.ordinal() == op2[0]) {
             return false;
         }

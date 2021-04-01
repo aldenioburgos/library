@@ -10,3 +10,4 @@
 /~*.xlsx
 /testes/flight.jfr
 /bin/
+/results*.txt

@@ -74,7 +74,7 @@ public class Balance extends CoinOperation {
     }
 
     @Override
-    public int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement) {
+    public int getClassId() {
         SortedSet<Integer> partitions = new TreeSet<>(Arrays.stream(this.currencies).boxed().collect(Collectors.toSet()));
         return partitions.toString().hashCode();
     }

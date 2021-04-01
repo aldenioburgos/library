@@ -75,7 +75,7 @@ public class CryptoUtil {
     public static boolean checkSignature(byte[] publicKeyBytes, byte[] signedHashOfData, byte[] signature) {
         //@formatter:off
         if (publicKeyBytes == null || publicKeyBytes.length != CoinOperation.ISSUER_SIZE)      throw new IllegalArgumentException();
-        if (signedHashOfData == null || signedHashOfData.length != CoinOperation.HASH_SIZE)                throw new IllegalArgumentException();
+        if (signedHashOfData == null || signedHashOfData.length != CoinOperation.HASH_SIZE)    throw new IllegalArgumentException();
         if (signature == null)                                                                 throw new IllegalArgumentException();
         //@formatter:on
 

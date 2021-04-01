@@ -76,7 +76,7 @@ public class Transfer extends CoinOperation {
     }
 
     @Override
-    public int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement) {
+    public int getClassId() {
         return ("["+currency+"]").hashCode();
     }
 

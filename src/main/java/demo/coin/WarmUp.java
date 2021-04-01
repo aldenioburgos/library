@@ -25,12 +25,34 @@ public class WarmUp {
     }
 
     public static WarmUp loadFrom(String filePath) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+        System.out.println("Loading warm-up file..."+filePath);
+
         try (var fis = new FileInputStream(filePath);
              var dis = new DataInputStream(fis)) {
-            int auxPartitions = dis.readInt();
+            int auxPartitions = dis.readUnsignedByte();
+            System.out.println("\t numPartitions =" + auxPartitions);
             Set<KeyPair> auxUsers = readUsers(dis);
+            System.out.println("\t numUsersPerPartition =" + auxUsers.size());
             Set<Utxo> auxTokens = readTokens(dis);
+            System.out.println("\t numTokensPerUser =" + auxTokens.size());
+            System.out.println("Warm-up file loaded with "+auxPartitions * auxUsers.size() * auxTokens.size() +" tokens available!");
             return new WarmUp(auxPartitions, auxUsers, auxTokens);
+        }
+
+    }
+
+    private static void write(int numUsuarios, int numParticoes, int numTokens, String outputFilePath) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, IOException {
+        //@formatter:off
+        if (numUsuarios < 2)                                    throw new IllegalArgumentException();
+        if (numParticoes < 1)                                   throw new IllegalArgumentException();
+        if (numTokens < 1)                                      throw new IllegalArgumentException();
+        if (outputFilePath == null || outputFilePath.isBlank()) throw new IllegalArgumentException();
+        //@formatter:on
+        try (var fos = new FileOutputStream(outputFilePath);
+             var dos = new DataOutputStream(fos)) {
+            dos.write(numParticoes);
+            writeUsers(numUsuarios, dos);
+            writeTokens(numTokens, dos);
         }
     }
 
@@ -56,15 +78,6 @@ public class WarmUp {
         return users;
     }
 
-
-    private static void write(int numUsuarios, int numParticoes, int numTokens, String outputFilePath) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, IOException {
-        try (var fos = new FileOutputStream(outputFilePath);
-             var dos = new DataOutputStream(fos)) {
-            dos.write(numParticoes);
-            writeUsers(numUsuarios, dos);
-            writeTokens(numTokens, dos);
-        }
-    }
 
     private static void writeUsers(int numUsuarios, DataOutputStream dos) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
         dos.writeInt(numUsuarios);
@@ -101,6 +114,14 @@ public class WarmUp {
         int numParticoes = Integer.parseInt(args[PARAMS.NUM_PARTICOES.ordinal()]);
         int numTokens = Integer.parseInt(args[PARAMS.NUM_TOKENS_USUARIO.ordinal()]);
         String filepath = args[PARAMS.OUTPUT_FILE_PATH.ordinal()];
+
+        System.out.println("WarmUp executado com os seguintes argumentos:");
+        System.out.println("\tnumUsuarios = " + numUsuarios);
+        System.out.println("\tnumTokens =" + numTokens);
+        System.out.println("\tnumParticoes =" + numParticoes);
+        System.out.println("\toutputFilePath =" + filepath);
+        System.out.println("");
+
         WarmUp.write(numUsuarios, numParticoes, numTokens, filepath);
     }
 }

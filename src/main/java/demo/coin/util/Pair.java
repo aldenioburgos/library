@@ -1,11 +1,11 @@
 package demo.coin.util;
 
-public class Pair<K, V> {
+public class Pair<A, B> {
 
-    public final K a;
-    public final V b;
+    public final A a;
+    public final B b;
 
-    public Pair(K a, V b) {
+    public Pair(A a, B b) {
         this.a = a;
         this.b = b;
     }

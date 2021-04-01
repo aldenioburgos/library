@@ -33,7 +33,7 @@ public class Exchange extends Transfer {
     }
 
     @Override
-    public int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement) {
+    public int getClassId() {
         SortedSet<Integer> partitions = new TreeSet<>(Set.of(currency));
         for (var output : (List<Output>) outputs) {
             partitions.add(output.currency);

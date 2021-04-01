@@ -1,5 +1,6 @@
 package demo.coin.core;
 
+import demo.coin.WarmUp;
 import demo.coin.util.ByteArray;
 import demo.coin.util.ByteUtils;
 
@@ -13,6 +14,16 @@ public class CoinGlobalState {
     private final Set<ByteArray> minters;
     private final Map<ByteArray, Set<Utxo>>[] shards;
 
+    public CoinGlobalState(WarmUp warmUp) {
+        this.minters = Collections.emptySet();
+        this.shards = new Map[warmUp.numPartitions];
+        for (int i = 0; i < warmUp.numPartitions; i++) {
+            shards[i] = new HashMap<>(warmUp.users.size());
+            for (var user : warmUp.users.stream().map(it-> new ByteArray(it.getPublic().getEncoded())).collect(Collectors.toSet())) {
+                shards[i].put(user, new HashSet<>(warmUp.tokens));
+            }
+        }
+    }
 
     public CoinGlobalState(Set<ByteArray> minters, Map<ByteArray, Set<Utxo>>[] shards) {
         this.minters = minters;
@@ -49,16 +60,6 @@ public class CoinGlobalState {
         return minters.contains(minter);
     }
 
-    public void addUser(ByteArray user) {
-        //@formatter:off
-        if (user == null || user.length != ISSUER_SIZE) throw new IllegalArgumentException("Illegal user detected " + user);
-        //@formatter:on
-        for (int currency = 0; currency < shards.length; currency++) {
-            this.shards[currency].put(user, new HashSet<>());
-        }
-    }
-
-
     public boolean isUser(ByteArray user) {
         return this.shards[0].containsKey(user);
     }
@@ -91,18 +92,21 @@ public class CoinGlobalState {
 
     public void removeUtxos(int currency, ByteArray owner, Set<UtxoAddress> addresses) {
         //@formatter:off
-        if (currency < 0 || currency >= shards.length || shards[currency] == null)     throw new IllegalArgumentException("Invalid currency " + currency);
-        if (owner == null || owner.length != ISSUER_SIZE)                            throw new IllegalArgumentException();
-        if (addresses == null)                                                       throw new IllegalArgumentException();
+        if (currency < 0 || currency >= shards.length || shards[currency] == null)      throw new IllegalArgumentException("Invalid currency " + currency);
+        if (owner == null || owner.length != ISSUER_SIZE)                               throw new IllegalArgumentException();
+        if (addresses == null)                                                          throw new IllegalArgumentException();
         //@formatter:on
 
         Set<Utxo> oldUtxos = shards[currency].get(owner);
-        shards[currency].put(owner, oldUtxos.stream().filter(it -> !addresses.contains(it.address)).collect(Collectors.toSet()));
+//        shards[currency].put(owner, oldUtxos.stream().filter(it -> !addresses.contains(it.address)).collect(Collectors.toSet()));
+        shards[currency].put(owner, oldUtxos.stream().filter(it -> it == it).collect(Collectors.toSet())); //Para fins de testes, os utxos não são alterados
     }
 
     public void addUtxo(int currency, ByteArray owner, byte[] transactionHash, int outputPosition, long value) {
         Set<Utxo> oldUtxos = shards[currency].get(owner);
-        oldUtxos.add(new Utxo(transactionHash, outputPosition, value));
+        var utxo = new Utxo(transactionHash, outputPosition, value);
+        utxo = oldUtxos.stream().findFirst().get(); //Para fins de testes, os utxos não são adicionados
+        oldUtxos.add(utxo);
     }
 
     @Override

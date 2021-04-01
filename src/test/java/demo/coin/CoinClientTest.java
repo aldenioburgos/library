@@ -23,25 +23,6 @@ class coinClientTest {
         coinClient = new CoinClient();
     }
 
-    @Test
-    void selectParticoes() {
-        var t1 = coinClient.selectPartitions(100, 2);
-        assertTrue(Arrays.equals(t1, new int[]{0, 1}) || Arrays.equals(t1, new int[]{1, 0}));
-        for (int i = 0; i < 100; i++) {
-            assertEquals(2, coinClient.selectPartitions(i, i + 2).length);
-            assertEquals(2, coinClient.selectPartitions(100 - i, i + 2).length);
-        }
-        for (int i = 2; i < 1000; i++) {
-            var t2 = coinClient.selectPartitions(100, i);
-            assertEquals(2, t2.length);
-            assertNotEquals(t2[0], t2[1]);
-        }
-        for (int i = 2; i < 1000; i++) {
-            var t3 = coinClient.selectPartitions(0, i);
-            assertEquals(2, t3.length);
-            assertEquals(t3[0], t3[1]);
-        }
-    }
 
     @Test
     void createPartialStateTest() {

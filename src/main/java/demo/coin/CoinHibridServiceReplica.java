@@ -10,15 +10,12 @@ import demo.coin.early.CoinHibridScheduler;
 import demo.coin.late.CoinConflictDefinition;
 import demo.coin.late.CoinExecutor;
 import demo.coin.late.CoinLateWorker;
-import demo.coin.util.ByteArray;
-import demo.coin.util.ByteUtils;
 import parallelism.ParallelServiceReplica;
 import parallelism.hibrid.late.ExtendedLockFreeGraph;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * @author aldenio
@@ -27,7 +24,7 @@ public class CoinHibridServiceReplica extends ParallelServiceReplica {
 
 
     enum PARAMS {
-        ID, NUM_PARTITIONS, NUM_LATE_WORKERS, ROOT_PUBLIC_KEY
+        ID, LATE_WORKERS_PER_PARTITION, WARM_UP_FILE
     }
 
     private final ExtendedLockFreeGraph[] subgraphs;
@@ -73,28 +70,23 @@ public class CoinHibridServiceReplica extends ParallelServiceReplica {
         }
     }
 
-    public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
         //@formatter:off
-        if (args.length != PARAMS.values().length) throw new IllegalArgumentException("Modo de uso:  java  CoinHibridServiceReplica ID NUM_PARTITIONS NUM_LATE_WORKERS ROOT_PUBLIC_KEY");
+        if (args.length != PARAMS.values().length) throw new IllegalArgumentException("Modo de uso:  java  CoinHibridServiceReplica ID LATE_WORKERS_PER_PARTITION WARM_UP_FILE");
         //@formatter:on
 
         int id = Integer.parseInt(args[PARAMS.ID.ordinal()]);
-        int lateWorkers = Integer.parseInt(args[PARAMS.NUM_LATE_WORKERS.ordinal()]);
-        int numPartitions = Integer.parseInt(args[PARAMS.NUM_PARTITIONS.ordinal()]);
-        byte[] rootPubKey = ByteUtils.convertToByteArray(args[PARAMS.ROOT_PUBLIC_KEY.ordinal()]);
+        int lateWorkersPerPartition = Integer.parseInt(args[PARAMS.LATE_WORKERS_PER_PARTITION.ordinal()]);
+        String warmUpFile = args[PARAMS.WARM_UP_FILE.ordinal()];
 
         System.out.println("CoinHibridServiceReplica executado com os seguintes argumentos:");
         System.out.println("\tid = " + id);
-        System.out.println("\tlateWorkers =" + lateWorkers);
-        System.out.println("\tnumPartitions =" + numPartitions);
-        System.out.println("\trootPubKey =" + ByteUtils.convertToText(rootPubKey));
-        System.out.println("");
+        System.out.println("\tlateWorkersPerPartition =" + lateWorkersPerPartition);
+        System.out.println("\twarm-up file=" + warmUpFile);
+        WarmUp warmUp = WarmUp.loadFrom(warmUpFile);
 
-        CoinGlobalState globalState = new CoinGlobalState(Set.of(new ByteArray(rootPubKey)), Collections.emptySet(), numPartitions);
-        Executable executor = new CoinExecutor(globalState);
-        CoinConflictDefinition cd = new CoinConflictDefinition();
-
-        new CoinHibridServiceReplica(id, executor, null, numPartitions, cd, lateWorkers);
+        CoinGlobalState globalState = new CoinGlobalState(warmUp);
+        new CoinHibridServiceReplica(id, new CoinExecutor(globalState), null, warmUp.numPartitions, new CoinConflictDefinition(), warmUp.numPartitions*lateWorkersPerPartition);
     }
 
     @Override

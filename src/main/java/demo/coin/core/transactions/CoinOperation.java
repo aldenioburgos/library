@@ -20,7 +20,7 @@ import static demo.coin.util.CryptoUtil.checkSignature;
 public abstract class CoinOperation {
 
 
-    public enum OP_TYPE {MINT, TRANSFER, EXCHANGE, BALANCE}
+    public enum OP_TYPE {TRANSFER, EXCHANGE, BALANCE}
 
     public static final int ISSUER_SIZE = 91;
 
@@ -50,7 +50,6 @@ public abstract class CoinOperation {
     public static CoinOperation loadFrom(byte[] bytes) {
         int type = readUnsignedByte(bytes, 0);
         return switch (OP_TYPE.values()[type]) {
-            case MINT -> new Mint(bytes);
             case TRANSFER -> new Transfer(bytes);
             case EXCHANGE -> new Exchange(bytes);
             case BALANCE -> new Balance(bytes);
@@ -67,20 +66,23 @@ public abstract class CoinOperation {
 
     public abstract byte[] execute(CoinGlobalState globalState);
 
-    public abstract int getClassId(Set<SortedSet<Integer>> allPossiblePartitionsArrangement);
+    public abstract int getClassId();
 
     public void validate(CoinGlobalState globalState) {
         //@formatter:off
-        if (accounts == null || accounts.size() <= 0)                                                                      throw new IllegalArgumentException();
-        if (accounts.stream().anyMatch(it -> it.length != ISSUER_SIZE || !globalState.isUser(it)))                         throw new IllegalArgumentException();
-        if (signature == null || !checkSignature(accounts.get(issuer).bytes, CryptoUtil.hash(getDataBytes()), signature))  throw new IllegalArgumentException();
+        if (accounts == null || accounts.size() <= 0)                                                throw new IllegalArgumentException();
+        if (accounts.stream().anyMatch(it -> it.length != ISSUER_SIZE || !globalState.isUser(it)))   throw new IllegalArgumentException();
+        if (signature == null)                                                                       throw new IllegalArgumentException();
+        checkSignature(accounts.get(issuer).bytes, CryptoUtil.hash(getDataBytes()), signature);
         //@formatter:on
     }
 
     protected void sign(KeyPair keyPair) {
+    //código comentado para acelerar o tempo de setup dos testes.
         byte[] data = getDataBytes();
         byte[] hashOfData = CryptoUtil.hash(data);
         this.signature = CryptoUtil.sign(keyPair.getPrivate(), hashOfData);
+//        this.signature = new byte[]{48, 70, 2, 33, 0, -61, 118, 18, 109, -60, 59, 65, 32, 24, -3, -65, -87, -10, 1, 47, -83, 72, -96, 45, 4, -5, 102, 121, 50, 87, 14, 102, -118, 80, 55, -125, -71, 2, 33, 0, -31, -67, 97, 0, 58, -117, 108, -118, -126, -20, -1, -123, 37, -73, 65, -94, -56, 110, 105, -12, -85, 40, 85, 42, -47, 3, -71, 75, 66, 3, -42, -47};
     }
 
     public byte[] toByteArray() {

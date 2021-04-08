@@ -55,12 +55,12 @@ public class CoinClient {
 
 
         System.out.println("CoinClient executado com os seguintes argumentos:");
-        System.out.println("\tnumThreadsClientes =" + numClientes);
-        System.out.println("\tnumOperacoesPorCliente =" + numOperacoes);
-        System.out.println("\tnumOperacoesPorRequisicao =" + numOperPerReq);
-        System.out.println("\tpercGlobal =" + percGlobal);
-        System.out.println("\tpercWrite =" + percWrite);
-        System.out.println("\twarm-up file =" + warmUpFile);
+        System.out.println("\tnumThreadsClientes = " + numClientes);
+        System.out.println("\tnumOperacoesPorCliente = " + numOperacoes);
+        System.out.println("\tnumOperacoesPorRequisicao = " + numOperPerReq);
+        System.out.println("\tpercGlobal = " + percGlobal);
+        System.out.println("\tpercWrite = " + percWrite);
+        System.out.println("\twarm-up file = " + warmUpFile);
         WarmUp warmUp = WarmUp.loadFrom(warmUpFile);
         System.out.println("CoinClient loaded to send " + numClientes * numOperacoes + " commands in, at least, " + numClientes * numOperacoes / numOperPerReq + " requests!");
 

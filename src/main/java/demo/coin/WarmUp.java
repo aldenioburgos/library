@@ -117,9 +117,9 @@ public class WarmUp {
 
         System.out.println("WarmUp executado com os seguintes argumentos:");
         System.out.println("\tnumUsuarios = " + numUsuarios);
-        System.out.println("\tnumTokens =" + numTokens);
-        System.out.println("\tnumParticoes =" + numParticoes);
-        System.out.println("\toutputFilePath =" + filepath);
+        System.out.println("\tnumTokens = " + numTokens);
+        System.out.println("\tnumParticoes = " + numParticoes);
+        System.out.println("\toutputFilePath = " + filepath);
         System.out.println("");
 
         WarmUp.write(numUsuarios, numParticoes, numTokens, filepath);

@@ -2,7 +2,6 @@
 /build/
 /.idea/
 /target/
-/config/currentView
 /out
 *.iml
 *.log
@@ -11,3 +10,4 @@
 /testes/flight.jfr
 /bin/
 /results*.txt
+/**/currentView

@@ -35,35 +35,35 @@ for t in "${threads[@]}" ; do
 #for w in "${workloads[@]}" ; do
 
 	# executa experimento early:
-	ssh  replica0 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 0 ${LATE_WORKERS_PER_PARTITION}" &
+	ssh  replica0 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 0 ${LATE_WORKERS_PER_PARTITION}" -o StrictHostKeyChecking=no &
 	sleep 3s
-	ssh  replica1 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 1 ${LATE_WORKERS_PER_PARTITION}" &
+	ssh  replica1 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 1 ${LATE_WORKERS_PER_PARTITION}" -o StrictHostKeyChecking=no &
 	sleep 3s
-	ssh  replica2 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 2 ${LATE_WORKERS_PER_PARTITION}" &
+	ssh  replica2 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 2 ${LATE_WORKERS_PER_PARTITION}" -o StrictHostKeyChecking=no &
 	sleep 3s
-	ssh  cliente0 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${PERC_GLOBAL} ${PERC_WRITE} ${WARM_UP_FILE}" &
+	ssh  cliente0 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${PERC_GLOBAL} ${PERC_WRITE} ${WARM_UP_FILE}" -o StrictHostKeyChecking=no &
 	sleep 3s
-	ssh  cliente1 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${PERC_GLOBAL} ${PERC_WRITE} ${WARM_UP_FILE}" &
+	ssh  cliente1 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${PERC_GLOBAL} ${PERC_WRITE} ${WARM_UP_FILE}" -o StrictHostKeyChecking=no &
 	sleep 3s
-	ssh  cliente2 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${PERC_GLOBAL} ${PERC_WRITE} ${WARM_UP_FILE}" &
+	ssh  cliente2 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${PERC_GLOBAL} ${PERC_WRITE} ${WARM_UP_FILE}" -o StrictHostKeyChecking=no &
 	sleep 3s
-	ssh  cliente3 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${PERC_GLOBAL} ${PERC_WRITE} ${WARM_UP_FILE}" &
+	ssh  cliente3 "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${PERC_GLOBAL} ${PERC_WRITE} ${WARM_UP_FILE}" -o StrictHostKeyChecking=no &
 
 	sleep 3m
 
-	ssh  replica2 "pkill -f 'java.*bft-smart*'"
+	ssh  replica2 "pkill -f 'java.*bft-smart*'" -o StrictHostKeyChecking=no
 	echo 'replica2 killed'
-	ssh  replica1 "pkill -f 'java.*bft-smart*'"
+	ssh  replica1 "pkill -f 'java.*bft-smart*'" -o StrictHostKeyChecking=no
 	echo 'replica1 killed'
-	ssh  replica0 "pkill -f 'java.*bft-smart*'"
+	ssh  replica0 "pkill -f 'java.*bft-smart*'" -o StrictHostKeyChecking=no
 	echo 'replica0 killed'
-	ssh  cliente0  "pkill -f 'java.*bft-smart*'"
+	ssh  cliente0  "pkill -f 'java.*bft-smart*'" -o StrictHostKeyChecking=no
 	echo 'cliente0 killed'
-	ssh  cliente1  "pkill -f 'java.*bft-smart*'"
+	ssh  cliente1  "pkill -f 'java.*bft-smart*'" -o StrictHostKeyChecking=no
 	echo 'cliente1 killed'
-	ssh  cliente2  "pkill -f 'java.*bft-smart*'"
+	ssh  cliente2  "pkill -f 'java.*bft-smart*'" -o StrictHostKeyChecking=no
 	echo 'cliente2 killed'
-	ssh  cliente3  "pkill -f 'java.*bft-smart*'"
+	ssh  cliente3  "pkill -f 'java.*bft-smart*'" -o StrictHostKeyChecking=no
 	echo 'cliente3 killed'
 
 

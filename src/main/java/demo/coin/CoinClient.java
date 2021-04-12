@@ -11,61 +11,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 enum PARAMS {
-    NUM_THREADS_CLIENTE, NUM_OPERACOES_PER_CLIENTE, NUM_OPS_PER_REQ, PERC_GLOBAL, PERC_WRITE, WARM_UP_FILE
+    ID, NUM_THREADS_CLIENTE, PERC_GLOBAL, PERC_WRITE, WARM_UP_FILE
 }
 
 
 public class CoinClient {
 
-    public void run(int numClientes, int numOperacoesPorCliente, int numOperPerReq, int percGlobal, int percWrite, WarmUp warmUp) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        //@formatter:off
-        if (numClientes <= 0)                       throw new IllegalArgumentException();
-        if (numOperPerReq <= 0)                     throw new IllegalArgumentException();
-        if (numOperacoesPorCliente <= 0)            throw new IllegalArgumentException();
-        if (percGlobal < 0 || percGlobal > 100)     throw new IllegalArgumentException();
-        if (percWrite < 0 || percWrite > 100)       throw new IllegalArgumentException();
-        if (warmUp == null)                         throw new IllegalArgumentException();
-        if (warmUp.tokens.size() < numClientes)     throw new IllegalArgumentException();
-
-        KeyPair[] users = warmUp.users.toArray(KeyPair[]::new);
-        Utxo[] tokens = warmUp.tokens.toArray(Utxo[]::new);
-        int numPartitions = warmUp.numPartitions;
-        //@formatter:on
-        List<CoinClientThread> clientThreads = new ArrayList<>(numClientes);
-        for (int i = 0; i < numClientes; i++) {
-            clientThreads.add(new CoinClientThread(i, users, tokens[i], numPartitions, numOperacoesPorCliente, numOperPerReq, percGlobal, percWrite));
-        }
-        // executar as threads.
-        for (var t : clientThreads) {
-            t.start();
-        }
-    }
-
     public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, IOException {
         //@formatter:off
-        if (args.length != PARAMS.values().length) throw new IllegalArgumentException("Modo de uso:  java CoinClient NUM_THREADS_CLIENTE NUM_OPERACOES_PER_CLIENTE NUM_OPS_PER_REQ PERC_GLOBAL PERC_WRITE WARM_UP_FILE");
+        if (args.length != PARAMS.values().length) throw new IllegalArgumentException("Modo de uso:  java CoinClient ID, NUM_THREADS_CLIENTE, PERC_GLOBAL, PERC_WRITE, WARM_UP_FILE");
         //@formatter:on
 
         int numClientes = Integer.parseInt(args[PARAMS.NUM_THREADS_CLIENTE.ordinal()]);
-        int numOperacoes = Integer.parseInt(args[PARAMS.NUM_OPERACOES_PER_CLIENTE.ordinal()]);
-        int numOperPerReq = Integer.parseInt(args[PARAMS.NUM_OPS_PER_REQ.ordinal()]);
+        int id = Integer.parseInt(args[PARAMS.ID.ordinal()]);
         int percGlobal = Integer.parseInt(args[PARAMS.PERC_GLOBAL.ordinal()]);
         int percWrite = Integer.parseInt(args[PARAMS.PERC_WRITE.ordinal()]);
         String warmUpFile = args[PARAMS.WARM_UP_FILE.ordinal()];
 
 
         System.out.println("CoinClient executado com os seguintes argumentos:");
-        System.out.println("\tnumThreadsClientes = " + numClientes);
-        System.out.println("\tnumOperacoesPorCliente = " + numOperacoes);
-        System.out.println("\tnumOperacoesPorRequisicao = " + numOperPerReq);
+        System.out.println("\tid = " + id);
+        System.out.println("\tnumClientes = " + numClientes);
         System.out.println("\tpercGlobal = " + percGlobal);
         System.out.println("\tpercWrite = " + percWrite);
         System.out.println("\twarm-up file = " + warmUpFile);
         WarmUp warmUp = WarmUp.loadFrom(warmUpFile);
-        System.out.println("CoinClient loaded to send " + numClientes * numOperacoes + " commands in, at least, " + numClientes * numOperacoes / numOperPerReq + " requests!");
 
-        CoinClient client = new CoinClient();
-        client.run(numClientes, numOperacoes, numOperPerReq, percGlobal, percWrite, warmUp);
+        CoinClient.run(id, numClientes, percGlobal, percWrite, warmUp);
+    }
+
+    public static void run(int id, int numClientes, int percGlobal, int percWrite, WarmUp warmUp) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+        //@formatter:off
+        if (id < 0)                                         throw new IllegalArgumentException("id="+id);
+        if (numClientes <= 0)                               throw new IllegalArgumentException("numClientes="+numClientes);
+        if (percGlobal < 0 || percGlobal > 100)             throw new IllegalArgumentException("percGlobal="+percGlobal);
+        if (percWrite < 0 || percWrite > 100)               throw new IllegalArgumentException("percWrite="+percWrite);
+        if (warmUp == null)                                 throw new IllegalArgumentException("warmUp=null");
+        if (warmUp.tokens.size() > 0)                       throw new IllegalArgumentException("warmUp.tokens.size="+warmUp.tokens.size());
+        if ((id+1) * numClientes > warmUp.users.size())     throw new IllegalArgumentException("insuficient users in warmup file");
+        if (warmUp.numPartitions < 1)                       throw new IllegalArgumentException("Can't instantiate experiment with less than one partition");
+        if (warmUp.numPartitions== 1 && percGlobal > 0)     throw new IllegalArgumentException("Single partition experiments does not accept global commands");
+        //@formatter:on
+
+        KeyPair[] users = warmUp.users.toArray(KeyPair[]::new);
+        Utxo[] tokens = warmUp.tokens.toArray(Utxo[]::new);
+        int numPartitions = warmUp.numPartitions;
+        List<CoinClientThread> clientThreads = new ArrayList<>(numClientes);
+        for (int i = id * numClientes; i < (id + 1) * numClientes; i++) {
+            clientThreads.add(new CoinClientThread(i, users, tokens, numPartitions, percGlobal, percWrite));
+        }
+        // executar as threads.
+        for (var t : clientThreads) {
+            t.start();
+        }
     }
 }
 

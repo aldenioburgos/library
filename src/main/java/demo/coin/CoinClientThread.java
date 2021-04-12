@@ -2,6 +2,7 @@ package demo.coin;
 
 
 import bftsmart.tom.ParallelServiceProxy;
+import bftsmart.util.MultiOperationResponse;
 import demo.coin.core.Utxo;
 import demo.coin.core.requestresponse.CoinMultiOperationRequest;
 import demo.coin.core.transactions.Balance;
@@ -10,72 +11,67 @@ import demo.coin.core.transactions.Exchange;
 import demo.coin.core.transactions.Transfer;
 
 import java.security.KeyPair;
-import java.util.*;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 public class CoinClientThread extends Thread {
 
+    private final Random random = new Random();
     private final ParallelServiceProxy proxy;
-    private final int numOperPerReq;
+    private final KeyPair[] users;
+    private final Utxo[] utxos;
     private final int percGlobal;
     private final int percWrite;
-    private final KeyPair[] users;
-    private final Utxo utxo;
     private final int numPartitions;
-    private final Random random = new Random();
-    // contador de operações remanescentes
-    private int numOperacoes;
+    private final int id;
 
-    public CoinClientThread(int id, KeyPair[] users, Utxo utxo, int numPartitions, int numOperacoes, int numOperPerReq, int percGlobal, int percWrite) {
+    public CoinClientThread(int id, KeyPair[] users, Utxo[] utxos, int numPartitions,  int percGlobal, int percWrite) {
         super("CoinClientThread-" + id);
-        this.proxy = new ParallelServiceProxy(7001+id);
+        this.id = id;
+        this.proxy = new ParallelServiceProxy(id);
         this.users = users;
-        this.utxo = utxo;
+        this.utxos = utxos;
         this.numPartitions = numPartitions;
-        this.numOperacoes = numOperacoes;
-        this.numOperPerReq = numOperPerReq;
         this.percGlobal = percGlobal;
         this.percWrite = percWrite;
     }
 
     @Override
     public void run() {
-        while (numOperacoes > 0) {
+        while (true) {
             boolean isGlobal = random.nextInt(100) < percGlobal;
-            int sourcePartition = selectOtherRandom(numPartitions, -1);
+            int sourcePartition = random.nextInt(numPartitions);
             int destinyPartition = isGlobal ? selectOtherRandom(numPartitions, sourcePartition) : sourcePartition;
-            Set<Integer> partitions = (isGlobal) ? Set.of(sourcePartition, destinyPartition) : Set.of(sourcePartition);
-            int groupId = new TreeSet<>(partitions).toString().hashCode();
-            CoinMultiOperationRequest request = crateRequest(sourcePartition, destinyPartition);
-            proxy.invokeParallel(request.serialize(), groupId);
+            int groupId = getGroupId(isGlobal, sourcePartition, destinyPartition);
+            var request = new CoinMultiOperationRequest(createOperation(sourcePartition, destinyPartition));
+            var bytes = proxy.invokeParallel(request.serialize(), groupId);
+            System.out.println(request);
+            System.out.println(new MultiOperationResponse(bytes));
         }
     }
 
-    private CoinMultiOperationRequest crateRequest(int from, int to) {
-        // criar as operações
-        List<CoinOperation> operations = new ArrayList<>(numOperPerReq);
-        for (int i = 0; i < numOperPerReq && this.numOperacoes > 0; i++) {
-            boolean isWrite = random.nextInt(100) < percWrite;
-            operations.add(createOperation(isWrite, from, to));
-            this.numOperacoes--;
-        }
-
-        return new CoinMultiOperationRequest(operations);
+    private int getGroupId(boolean isGlobal, int sourcePartition, int destinyPartition) {
+        Set<Integer> partitions = isGlobal ? Set.of(sourcePartition, destinyPartition) : Set.of(sourcePartition);
+        return new TreeSet<>(partitions).toString().hashCode();
     }
 
-    private CoinOperation createOperation(boolean isWrite, int sourceCoin, int destinyCoin) {
+    private CoinOperation createOperation(int sourceCoin, int destinyCoin) {
         CoinOperation operation;
-        int sender = selectOtherRandom(users.length, -1);
+        var utxo = utxos[random.nextInt(utxos.length)];
+        boolean isWrite = random.nextInt(100) < percWrite;
         if (isWrite) {
-            int receiver = selectOtherRandom(users.length, sender);
+            int receiver = selectOtherRandom(users.length, id);
             var inputs = List.of(new Transfer.Input(utxo.getTransactionHash(), utxo.getOutputPosition()));
             if (sourceCoin == destinyCoin) {
-                operation = new Transfer(users[sender], sourceCoin, inputs, List.of(new Transfer.ContaValor(users[receiver], utxo.getValue())));
+                operation = new Transfer(users[id], sourceCoin, inputs, List.of(new Transfer.ContaValor(users[receiver], utxo.getValue())));
             } else {
-                operation = new Exchange(users[sender], sourceCoin, inputs, List.of(new Exchange.ContaValorMoeda(users[receiver], utxo.getValue(), destinyCoin)));
+                operation = new Exchange(users[id], sourceCoin, inputs, List.of(new Exchange.ContaValorMoeda(users[receiver], utxo.getValue(), destinyCoin)));
             }
         } else {
-            operation = new Balance(users[sender], sourceCoin, destinyCoin);
+            operation = new Balance(users[id], sourceCoin, destinyCoin);
         }
         return operation;
     }

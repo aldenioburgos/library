@@ -7,10 +7,7 @@ import demo.coin.util.ByteUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static demo.coin.util.ByteUtils.readUnsignedShort;
@@ -24,7 +21,7 @@ public class CoinMultiOperationRequest {
     private final List<ByteArray> operations;
 
 
-    public CoinMultiOperationRequest(Iterable<? extends CoinOperation> operations) {
+    public CoinMultiOperationRequest(CoinOperation... operations) {
         this();
         for (var op : operations) {
             add(op);

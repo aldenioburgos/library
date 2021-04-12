@@ -30,12 +30,12 @@ public class WarmUp {
         try (var fis = new FileInputStream(filePath);
              var dis = new DataInputStream(fis)) {
             int auxPartitions = dis.readUnsignedByte();
-            System.out.println("\t numPartitions =" + auxPartitions);
             Set<KeyPair> auxUsers = readUsers(dis);
-            System.out.println("\t numUsersPerPartition =" + auxUsers.size());
             Set<Utxo> auxTokens = readTokens(dis);
+            System.out.println("Warm-up file loaded with:");
+            System.out.println("\t numPartitions =" + auxPartitions);
+            System.out.println("\t numUsersPerPartition =" + auxUsers.size());
             System.out.println("\t numTokensPerUser =" + auxTokens.size());
-            System.out.println("Warm-up file loaded with "+auxPartitions * auxUsers.size() * auxTokens.size() +" tokens available!");
             return new WarmUp(auxPartitions, auxUsers, auxTokens);
         }
 
@@ -43,10 +43,10 @@ public class WarmUp {
 
     private static void write(int numUsuarios, int numParticoes, int numTokens, String outputFilePath) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, IOException {
         //@formatter:off
-        if (numUsuarios < 2)                                    throw new IllegalArgumentException();
-        if (numParticoes < 1)                                   throw new IllegalArgumentException();
-        if (numTokens < 1)                                      throw new IllegalArgumentException();
-        if (outputFilePath == null || outputFilePath.isBlank()) throw new IllegalArgumentException();
+        if (numUsuarios < 2)                                    throw new IllegalArgumentException("Can't have less thant 2 users");
+        if (numParticoes < 1)                                   throw new IllegalArgumentException("Can't have less than 1 partition");
+        if (numTokens < 1)                                      throw new IllegalArgumentException("Can't have less than 1 token");
+        if (outputFilePath == null || outputFilePath.isBlank()) throw new IllegalArgumentException("Output file path can't be blank");
         //@formatter:on
         try (var fos = new FileOutputStream(outputFilePath);
              var dos = new DataOutputStream(fos)) {

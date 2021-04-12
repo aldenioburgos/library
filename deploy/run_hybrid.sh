@@ -1,15 +1,11 @@
 #!/bin/bash
 
-particoes=(1 2 4 6 8)
+NUM_THREADS_CLIENTE=250
+particoes=(2 4 6 8)
 threads=(2 4 6)
-workloads=('0 0' '5 10')
+workloads=('0 0' '5 10')  #percGlobal #percWrite
 Server="CoinHybridServiceReplica"
 Client="CoinClient"
-NUM_THREADS_CLIENTE=250
-NUM_OPERACOES_PER_CLIENTE=1000000
-NUM_OPS_PER_REQ=1
-PERC_GLOBAL=0
-PERC_WRITE=0
 
 
 for w in "${workloads[@]}" ; do
@@ -23,13 +19,13 @@ for w in "${workloads[@]}" ; do
       sleep 3s
       ssh  replica2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 2 ${LATE_WORKERS_PER_PARTITION} warmup_p${p}.bin" &
       sleep 30s
-      ssh  cliente0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${w} warmup_p${p}.bin" &
+      ssh  cliente0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 0 ${NUM_THREADS_CLIENTE} ${w} warmup_p${p}.bin" &
       sleep 3s
-      ssh  cliente1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${w} warmup_p${p}.bin" &
+      ssh  cliente1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 1 ${NUM_THREADS_CLIENTE} ${w} warmup_p${p}.bin" &
       sleep 3s
-      ssh  cliente2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${w} warmup_p${p}.bin" &
+      ssh  cliente2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 2 ${NUM_THREADS_CLIENTE} ${w} warmup_p${p}.bin" &
       sleep 3s
-      ssh  cliente3  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${NUM_THREADS_CLIENTE} ${NUM_OPERACOES_PER_CLIENTE} ${NUM_OPS_PER_REQ} ${w} warmup_p${p}.bin" &
+      ssh  cliente3  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 3 ${NUM_THREADS_CLIENTE} ${w} warmup_p${p}.bin" &
       sleep 4m
       ssh  cliente0  "pkill -f 'java.*bft-smart*'" &
       echo 'cliente0 killed'
@@ -52,8 +48,8 @@ for w in "${workloads[@]}" ; do
     done;
   done;
 
-  echo mkdir "hybrid_${w}"
-  mv results* "hybrid_${w}"
+  echo mkdir "hybrid_coin_${w}"
+  mv results* "hybrid_coin_${w}"
 
 done;
 

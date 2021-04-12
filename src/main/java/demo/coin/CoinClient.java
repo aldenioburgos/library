@@ -47,7 +47,7 @@ public class CoinClient {
         if (percGlobal < 0 || percGlobal > 100)             throw new IllegalArgumentException("percGlobal="+percGlobal);
         if (percWrite < 0 || percWrite > 100)               throw new IllegalArgumentException("percWrite="+percWrite);
         if (warmUp == null)                                 throw new IllegalArgumentException("warmUp=null");
-        if (warmUp.tokens.size() > 0)                       throw new IllegalArgumentException("warmUp.tokens.size="+warmUp.tokens.size());
+        if (warmUp.tokens.isEmpty())                        throw new IllegalArgumentException("warmUp.tokens.size=0");
         if ((id+1) * numClientes > warmUp.users.size())     throw new IllegalArgumentException("insuficient users in warmup file");
         if (warmUp.numPartitions < 1)                       throw new IllegalArgumentException("Can't instantiate experiment with less than one partition");
         if (warmUp.numPartitions== 1 && percGlobal > 0)     throw new IllegalArgumentException("Single partition experiments does not accept global commands");

@@ -52,7 +52,7 @@ public class CoinHybridServiceReplica extends ParallelServiceReplica {
         if (numPartitions <= 0) {
             numPartitions = 1;
         }
-        this.scheduler = new CoinHibridScheduler(numPartitions, 100000000);
+        this.scheduler = new CoinHibridScheduler(numPartitions, 100000);
     }
 
 

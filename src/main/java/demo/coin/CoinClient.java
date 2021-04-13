@@ -1,5 +1,6 @@
 package demo.coin;
 
+import bftsmart.tom.ParallelServiceProxy;
 import demo.coin.core.Utxo;
 
 import java.io.IOException;
@@ -57,8 +58,9 @@ public class CoinClient {
         Utxo[] tokens = warmUp.tokens.toArray(Utxo[]::new);
         int numPartitions = warmUp.numPartitions;
         List<CoinClientThread> clientThreads = new ArrayList<>(numClientes);
+        ParallelServiceProxy proxy = new ParallelServiceProxy(id);
         for (int i = id * numClientes; i < (id + 1) * numClientes; i++) {
-            clientThreads.add(new CoinClientThread(i, users, tokens, numPartitions, percGlobal, percWrite));
+            clientThreads.add(new CoinClientThread(i, users, tokens, numPartitions, percGlobal, percWrite, proxy));
         }
         // executar as threads.
         for (var t : clientThreads) {

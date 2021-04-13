@@ -28,10 +28,10 @@ public class CoinClientThread extends Thread {
     private final int numPartitions;
     private final int id;
 
-    public CoinClientThread(int id, KeyPair[] users, Utxo[] utxos, int numPartitions,  int percGlobal, int percWrite) {
+    public CoinClientThread(int id, KeyPair[] users, Utxo[] utxos, int numPartitions,  int percGlobal, int percWrite, ParallelServiceProxy proxy) {
         super("CoinClientThread-" + id);
         this.id = id;
-        this.proxy = new ParallelServiceProxy(id);
+        this.proxy = proxy;
         this.users = users;
         this.utxos = utxos;
         this.numPartitions = numPartitions;

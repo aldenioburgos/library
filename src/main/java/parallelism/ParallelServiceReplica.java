@@ -45,7 +45,7 @@ public class ParallelServiceReplica extends ServiceReplica {
     public ParallelServiceReplica(int id, Executable executor, Recoverable recoverer, int initialWorkers) {
         super(id, executor, recoverer);
         createScheduler(initialWorkers);
-        this.statistics = new ThroughputStatistics(id, initialWorkers, "resultsEarly_" + id + "_" + 1 + "_" + initialWorkers + ".txt", "");
+//        this.statistics = new ThroughputStatistics(id, initialWorkers, "resultsEarly_" + id + "_" + 1 + "_" + initialWorkers + ".txt", "");
         initWorkers(initialWorkers, id);
     }
 

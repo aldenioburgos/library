@@ -59,17 +59,12 @@ public class ThroughputStatistics {
     }
 
     public void computeThroughput(long timeMillis) {
-
         for (int time = 0; time <= interval; time++) {
             int total = 0;
             for (int i = 0; i < numT; i++) {
-
                 total = total + counters[i][time];
-
             }
-
             float tp = (float) (total * 1000 / (float) timeMillis);
-
             pw.println(time + " " + tp);
         }
        

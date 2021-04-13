@@ -33,7 +33,7 @@ public class HibridServiceReplica extends ParallelServiceReplica {
         super(id, executor, recoverer, numPartitions);
         System.out.println("Criou um hibrid scheduler: partitions (early) = " + numPartitions + " workers (late) = " + lateWorkers);
 
-        statistics = new ThroughputStatistics(id, lateWorkers, "resultsHibrid_" + id + "_" + numPartitions + "_" + lateWorkers + ".txt", "");
+        //statistics = new ThroughputStatistics(id, lateWorkers, "resultsHybrid_" + id + "_" + numPartitions + "_" + lateWorkers + ".txt", "");
         subgraphs = createSubGraphs(numPartitions, cd);
         initLateWorkers(lateWorkers, id, numPartitions);
     }

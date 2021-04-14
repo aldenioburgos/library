@@ -2,20 +2,15 @@ package demo.coin;
 
 
 import bftsmart.tom.ParallelServiceProxy;
-import bftsmart.util.MultiOperationResponse;
 import demo.coin.core.Utxo;
 import demo.coin.core.requestresponse.CoinMultiOperationRequest;
-import demo.coin.core.requestresponse.CoinMultiOperationResponse;
 import demo.coin.core.transactions.Balance;
 import demo.coin.core.transactions.CoinOperation;
 import demo.coin.core.transactions.Exchange;
 import demo.coin.core.transactions.Transfer;
 
 import java.security.KeyPair;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 
 public class CoinClientThread extends Thread {
@@ -30,7 +25,7 @@ public class CoinClientThread extends Thread {
     private final int id;
 
     public CoinClientThread(int id, int chave, KeyPair[] users, Utxo[] utxos, int numPartitions, int percGlobal, int percWrite) {
-        super("CoinClientThread-" + chave + id);
+        super("CoinClientThread-" + (chave + id));
         this.id = id;
         this.proxy = new ParallelServiceProxy(chave + id);
         this.users = users;
@@ -43,6 +38,7 @@ public class CoinClientThread extends Thread {
 
     @Override
     public void run() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             boolean isGlobal = random.nextInt(100) < percGlobal;
             int sourcePartition = random.nextInt(numPartitions);
@@ -51,7 +47,7 @@ public class CoinClientThread extends Thread {
             var request = new CoinMultiOperationRequest(createOperation(sourcePartition, destinyPartition));
             System.out.println(request);
             var bytes = proxy.invokeParallel(request.serialize(), groupId);
-            System.out.println(new CoinMultiOperationResponse(bytes));
+            System.out.println("Resposta recebida: "+ Arrays.toString(bytes));
         }
     }
 

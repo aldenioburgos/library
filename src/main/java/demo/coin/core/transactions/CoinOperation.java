@@ -78,11 +78,10 @@ public abstract class CoinOperation {
     }
 
     protected void sign(KeyPair keyPair) {
-    //código comentado para acelerar o tempo de setup dos testes.
+        //código comentado para acelerar o tempo de setup dos testes.
         byte[] data = getDataBytes();
         byte[] hashOfData = CryptoUtil.hash(data);
         this.signature = CryptoUtil.sign(keyPair.getPrivate(), hashOfData);
-//        this.signature = new byte[]{48, 70, 2, 33, 0, -61, 118, 18, 109, -60, 59, 65, 32, 24, -3, -65, -87, -10, 1, 47, -83, 72, -96, 45, 4, -5, 102, 121, 50, 87, 14, 102, -118, 80, 55, -125, -71, 2, 33, 0, -31, -67, 97, 0, 58, -117, 108, -118, -126, -20, -1, -123, 37, -73, 65, -94, -56, 110, 105, -12, -85, 40, 85, 42, -47, 3, -71, 75, 66, 3, -42, -47};
     }
 
     public byte[] toByteArray() {

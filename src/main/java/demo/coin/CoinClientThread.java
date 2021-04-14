@@ -5,6 +5,7 @@ import bftsmart.tom.ParallelServiceProxy;
 import bftsmart.util.MultiOperationResponse;
 import demo.coin.core.Utxo;
 import demo.coin.core.requestresponse.CoinMultiOperationRequest;
+import demo.coin.core.requestresponse.CoinMultiOperationResponse;
 import demo.coin.core.transactions.Balance;
 import demo.coin.core.transactions.CoinOperation;
 import demo.coin.core.transactions.Exchange;
@@ -48,9 +49,9 @@ public class CoinClientThread extends Thread {
             int destinyPartition = isGlobal ? selectOtherRandom(numPartitions, sourcePartition) : sourcePartition;
             int groupId = getGroupId(isGlobal, sourcePartition, destinyPartition);
             var request = new CoinMultiOperationRequest(createOperation(sourcePartition, destinyPartition));
-            var bytes = proxy.invokeParallel(request.serialize(), groupId);
             System.out.println(request);
-            System.out.println(new MultiOperationResponse(bytes));
+            var bytes = proxy.invokeParallel(request.serialize(), groupId);
+            System.out.println(new CoinMultiOperationResponse(bytes));
         }
     }
 

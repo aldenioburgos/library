@@ -7,6 +7,8 @@ ssh  cliente2  "pkill -f java" &
 echo 'cliente2 killed'
 ssh  cliente3  "pkill -f java" &
 echo 'cliente3 killed'
+ssh  replica3 "pkill -f java" &
+echo 'replica3 killed'
 ssh  replica2 "pkill -f java" &
 echo 'replica2 killed'
 ssh  replica1 "pkill -f java" &

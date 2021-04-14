@@ -1,0 +1,398 @@
+CoinHibridServiceReplica executado com os seguintes argumentos:
+	id = 2
+	lateWorkersPerPartition = 6
+	warm-up file = ./warmup/warmup_p4.bin
+Loading warm-up file..../warmup/warmup_p4.bin
+Warm-up file loaded with:
+	 numPartitions =4
+	 numUsers =1000
+	 numTokens =10
+-- Using view stored on disk
+-- Diffie-Hellman complete with 0
+java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:574)
+	at java.base/sun.nio.ch.Net.connect(Net.java:563)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:588)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:333)
+	at java.base/java.net.Socket.connect(Socket.java:648)
+	at java.base/java.net.Socket.connect(Socket.java:597)
+	at java.base/java.net.Socket.<init>(Socket.java:520)
+	at java.base/java.net.Socket.<init>(Socket.java:294)
+	at bftsmart.communication.server.ServerConnection.<init>(ServerConnection.java:98)
+	at bftsmart.communication.server.ServersCommunicationLayer.getConnection(ServersCommunicationLayer.java:140)
+	at bftsmart.communication.server.ServersCommunicationLayer.<init>(ServersCommunicationLayer.java:78)
+	at bftsmart.communication.ServerCommunicationSystem.<init>(ServerCommunicationSystem.java:63)
+	at bftsmart.tom.ServiceReplica.init(ServiceReplica.java:154)
+	at bftsmart.tom.ServiceReplica.<init>(ServiceReplica.java:140)
+	at bftsmart.tom.ServiceReplica.<init>(ServiceReplica.java:96)
+	at parallelism.ParallelServiceReplica.<init>(ParallelServiceReplica.java:46)
+	at demo.coin.CoinHybridServiceReplica.<init>(CoinHybridServiceReplica.java:33)
+	at demo.coin.CoinHybridServiceReplica.main(CoinHybridServiceReplica.java:89)
+-- ID = 2
+-- N = 3
+-- F = 1
+-- Port = 11020
+-- requestTimeout = 30000
+-- maxBatch = 400
+-- Using MACs
+-- In current view: ID:0; F:1; Processes:0(/10.1.1.2:11000),1(/10.1.1.3:11010),2(/10.1.1.4:11020),
+Criou um hibrid scheduler: partitions (early) = 4 workers (late) = 24
+n early: 4
+n late: 24
+-- Diffie-Hellman complete with 1
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=2
+Session Created, active clients=4
+Session Created, active clients=4
+Session Created, active clients=4
+Session Created, active clients=4
+Session Created, active clients=4
+Session Created, active clients=4
+Session Created, active clients=10
+Session Created, active clients=10
+Session Created, active clients=10
+Session Created, active clients=10
+Session Created, active clients=10
+Session Created, active clients=10
+Session Created, active clients=10
+(MessageHandler.processData) LC_MSG received: type LOCAL, regency -1, (replica -1)
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Throughput at  = 0.0 operations/sec in sec : 0
+Throughput at  = 0.0 operations/sec in sec : 1
+Throughput at  = 0.0 operations/sec in sec : 2
+Throughput at  = 0.0 operations/sec in sec : 3
+Throughput at  = 0.0 operations/sec in sec : 4
+Throughput at  = 0.0 operations/sec in sec : 5
+Throughput at  = 0.0 operations/sec in sec : 6
+Throughput at  = 0.0 operations/sec in sec : 7
+Throughput at  = 0.0 operations/sec in sec : 8
+Throughput at  = 0.0 operations/sec in sec : 9
+Throughput at  = 0.0 operations/sec in sec : 10
+Throughput at  = 0.0 operations/sec in sec : 11
+Throughput at  = 0.0 operations/sec in sec : 12
+Throughput at  = 0.0 operations/sec in sec : 13
+Throughput at  = 0.0 operations/sec in sec : 14
+Throughput at  = 0.0 operations/sec in sec : 15
+Throughput at  = 0.0 operations/sec in sec : 16
+Throughput at  = 0.0 operations/sec in sec : 17
+Throughput at  = 0.0 operations/sec in sec : 18
+Throughput at  = 0.0 operations/sec in sec : 19
+Throughput at  = 0.0 operations/sec in sec : 20
+Throughput at  = 0.0 operations/sec in sec : 21
+Throughput at  = 0.0 operations/sec in sec : 22
+Throughput at  = 0.0 operations/sec in sec : 23
+Throughput at  = 0.0 operations/sec in sec : 24
+Throughput at  = 0.0 operations/sec in sec : 25
+Throughput at  = 0.0 operations/sec in sec : 26
+Throughput at  = 0.0 operations/sec in sec : 27
+Throughput at  = 0.0 operations/sec in sec : 28
+Throughput at  = 0.0 operations/sec in sec : 29
+Throughput at  = 0.0 operations/sec in sec : 30
+Throughput at  = 0.0 operations/sec in sec : 31
+Throughput at  = 0.0 operations/sec in sec : 32
+Throughput at  = 0.0 operations/sec in sec : 33
+Throughput at  = 0.0 operations/sec in sec : 34
+Throughput at  = 0.0 operations/sec in sec : 35
+Throughput at  = 0.0 operations/sec in sec : 36
+Throughput at  = 0.0 operations/sec in sec : 37
+Throughput at  = 0.0 operations/sec in sec : 38
+Throughput at  = 0.0 operations/sec in sec : 39
+Throughput at  = 0.0 operations/sec in sec : 40
+Throughput at  = 0.0 operations/sec in sec : 41
+Throughput at  = 0.0 operations/sec in sec : 42
+Throughput at  = 0.0 operations/sec in sec : 43
+Throughput at  = 0.0 operations/sec in sec : 44
+Throughput at  = 0.0 operations/sec in sec : 45
+Throughput at  = 0.0 operations/sec in sec : 46

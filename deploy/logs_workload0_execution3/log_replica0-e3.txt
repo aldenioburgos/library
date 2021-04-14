@@ -1,0 +1,3449 @@
+CoinHibridServiceReplica executado com os seguintes argumentos:
+	id = 0
+	lateWorkersPerPartition = 2
+	warm-up file = ./warmup/warmup_p4.bin
+Loading warm-up file..../warmup/warmup_p4.bin
+Warm-up file loaded with:
+	 numPartitions =4
+	 numUsers =1000
+	 numTokens =10
+-- Using view stored on disk
+-- ID = 0
+-- N = 3
+-- F = 1
+-- Port = 11000
+-- requestTimeout = 30000
+-- maxBatch = 400
+-- Using MACs
+-- In current view: ID:0; F:1; Processes:0(/10.1.1.2:11000),1(/10.1.1.3:11010),2(/10.1.1.4:11020),
+Criou um hibrid scheduler: partitions (early) = 4 workers (late) = 8
+n early: 4
+n late: 8
+-- Diffie-Hellman complete with 1
+-- Diffie-Hellman complete with 2
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Throughput at  = 0.0 operations/sec in sec : 0
+Throughput at  = 0.0 operations/sec in sec : 1
+Throughput at  = 0.0 operations/sec in sec : 2
+Throughput at  = 0.0 operations/sec in sec : 3
+Throughput at  = 0.0 operations/sec in sec : 4
+Throughput at  = 0.0 operations/sec in sec : 5
+Throughput at  = 0.0 operations/sec in sec : 6
+Throughput at  = 0.0 operations/sec in sec : 7
+Throughput at  = 0.0 operations/sec in sec : 8
+Throughput at  = 0.0 operations/sec in sec : 9
+Throughput at  = 0.0 operations/sec in sec : 10
+Throughput at  = 0.0 operations/sec in sec : 11
+Throughput at  = 0.0 operations/sec in sec : 12
+Throughput at  = 0.0 operations/sec in sec : 13
+Throughput at  = 0.0 operations/sec in sec : 14
+Throughput at  = 0.0 operations/sec in sec : 15
+Throughput at  = 0.0 operations/sec in sec : 16
+Throughput at  = 0.0 operations/sec in sec : 17
+Throughput at  = 0.0 operations/sec in sec : 18
+Throughput at  = 0.0 operations/sec in sec : 19
+Throughput at  = 0.0 operations/sec in sec : 20
+Throughput at  = 0.0 operations/sec in sec : 21
+Chegou um request!
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Throughput at  = 1.0 operations/sec in sec : 22
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Throughput at  = 0.0 operations/sec in sec : 23
+Throughput at  = 0.0 operations/sec in sec : 24
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Throughput at  = 0.0 operations/sec in sec : 25
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Throughput at  = 0.0 operations/sec in sec : 26
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Throughput at  = 0.0 operations/sec in sec : 27
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Session Created, active clients=250
+Throughput at  = 0.0 operations/sec in sec : 28
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Throughput at  = 45.0 operations/sec in sec : 29
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Throughput at  = 205.0 operations/sec in sec : 30
+Throughput at  = 0.0 operations/sec in sec : 31
+Throughput at  = 0.0 operations/sec in sec : 32
+Throughput at  = 0.0 operations/sec in sec : 33
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Throughput at  = 0.0 operations/sec in sec : 34
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Throughput at  = 0.0 operations/sec in sec : 35
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Throughput at  = 0.0 operations/sec in sec : 36
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Throughput at  = 0.0 operations/sec in sec : 37
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Session Created, active clients=500
+Throughput at  = 0.0 operations/sec in sec : 38
+Throughput at  = 0.0 operations/sec in sec : 39
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Throughput at  = 185.0 operations/sec in sec : 40
+Throughput at  = 0.0 operations/sec in sec : 41
+Throughput at  = 0.0 operations/sec in sec : 42
+Throughput at  = 0.0 operations/sec in sec : 43
+Throughput at  = 0.0 operations/sec in sec : 44
+Throughput at  = 0.0 operations/sec in sec : 45
+Throughput at  = 0.0 operations/sec in sec : 46
+Throughput at  = 0.0 operations/sec in sec : 47
+Throughput at  = 0.0 operations/sec in sec : 48
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Throughput at  = 720.0 operations/sec in sec : 49
+Throughput at  = 0.0 operations/sec in sec : 50
+Throughput at  = 0.0 operations/sec in sec : 51
+Throughput at  = 0.0 operations/sec in sec : 52
+Throughput at  = 0.0 operations/sec in sec : 53
+Throughput at  = 0.0 operations/sec in sec : 54
+Throughput at  = 0.0 operations/sec in sec : 55
+Throughput at  = 0.0 operations/sec in sec : 56
+Throughput at  = 0.0 operations/sec in sec : 57
+Throughput at  = 0.0 operations/sec in sec : 58
+Throughput at  = 0.0 operations/sec in sec : 59
+Throughput at  = 0.0 operations/sec in sec : 60
+Throughput at  = 0.0 operations/sec in sec : 61
+Throughput at  = 0.0 operations/sec in sec : 62
+Throughput at  = 0.0 operations/sec in sec : 63
+Throughput at  = 0.0 operations/sec in sec : 64
+Throughput at  = 0.0 operations/sec in sec : 65
+Throughput at  = 0.0 operations/sec in sec : 66
+Throughput at  = 0.0 operations/sec in sec : 67
+Throughput at  = 0.0 operations/sec in sec : 68
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 7838 before establishing Netty connection. Re-trying until connection is established
+Received request from 7955 before establishing Netty connection. Re-trying until connection is established
+Received request from 7789 before establishing Netty connection. Re-trying until connection is established
+Received request from 7948 before establishing Netty connection. Re-trying until connection is established
+Received request from 7974 before establishing Netty connection. Re-trying until connection is established
+Received request from 7901 before establishing Netty connection. Re-trying until connection is established
+Received request from 7834 before establishing Netty connection. Re-trying until connection is established
+Received request from 7939 before establishing Netty connection. Re-trying until connection is established
+Received request from 7897 before establishing Netty connection. Re-trying until connection is established
+Received request from 7825 before establishing Netty connection. Re-trying until connection is established
+Throughput at  = 10.0 operations/sec in sec : 69
+Throughput at  = 0.0 operations/sec in sec : 70
+Throughput at  = 0.0 operations/sec in sec : 71
+Throughput at  = 0.0 operations/sec in sec : 72
+Throughput at  = 0.0 operations/sec in sec : 73
+Throughput at  = 0.0 operations/sec in sec : 74
+Throughput at  = 0.0 operations/sec in sec : 75
+Throughput at  = 0.0 operations/sec in sec : 76
+Throughput at  = 0.0 operations/sec in sec : 77
+Throughput at  = 0.0 operations/sec in sec : 78
+Throughput at  = 0.0 operations/sec in sec : 79
+Throughput at  = 0.0 operations/sec in sec : 80
+Throughput at  = 0.0 operations/sec in sec : 81
+Throughput at  = 0.0 operations/sec in sec : 82
+Throughput at  = 0.0 operations/sec in sec : 83
+Throughput at  = 0.0 operations/sec in sec : 84
+Throughput at  = 0.0 operations/sec in sec : 85
+Throughput at  = 0.0 operations/sec in sec : 86
+Throughput at  = 0.0 operations/sec in sec : 87
+Throughput at  = 0.0 operations/sec in sec : 88
+Throughput at  = 0.0 operations/sec in sec : 89
+Throughput at  = 0.0 operations/sec in sec : 90
+Throughput at  = 0.0 operations/sec in sec : 91
+Throughput at  = 0.0 operations/sec in sec : 92
+Throughput at  = 0.0 operations/sec in sec : 93
+Throughput at  = 0.0 operations/sec in sec : 94
+Throughput at  = 0.0 operations/sec in sec : 95
+Throughput at  = 0.0 operations/sec in sec : 96
+Throughput at  = 0.0 operations/sec in sec : 97
+Throughput at  = 0.0 operations/sec in sec : 98
+Throughput at  = 0.0 operations/sec in sec : 99
+Throughput at  = 0.0 operations/sec in sec : 100
+Throughput at  = 0.0 operations/sec in sec : 101
+Throughput at  = 0.0 operations/sec in sec : 102
+Throughput at  = 0.0 operations/sec in sec : 103
+Throughput at  = 0.0 operations/sec in sec : 104
+Throughput at  = 0.0 operations/sec in sec : 105
+Throughput at  = 0.0 operations/sec in sec : 106
+Throughput at  = 0.0 operations/sec in sec : 107
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Throughput at  = 0.0 operations/sec in sec : 108
+Connection with 7838 established!
+Connection with 7955 established!
+Connection with 7948 established!
+Connection with 7939 established!
+Connection with 7974 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Throughput at  = 27.0 operations/sec in sec : 109
+Connection with 7901 established!
+Connection with 7897 established!
+Throughput at  = 0.0 operations/sec in sec : 110
+Throughput at  = 0.0 operations/sec in sec : 111
+Throughput at  = 0.0 operations/sec in sec : 112
+Throughput at  = 0.0 operations/sec in sec : 113
+Throughput at  = 0.0 operations/sec in sec : 114
+Throughput at  = 0.0 operations/sec in sec : 115
+Throughput at  = 0.0 operations/sec in sec : 116
+Throughput at  = 0.0 operations/sec in sec : 117
+Throughput at  = 0.0 operations/sec in sec : 118
+Throughput at  = 0.0 operations/sec in sec : 119
+Throughput at  = 0.0 operations/sec in sec : 120
+Throughput: 9.859504132231406
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!

@@ -1,0 +1,38 @@
+CoinHibridServiceReplica executado com os seguintes argumentos:
+	id = 2
+	lateWorkersPerPartition = 6
+	warm-up file = ./warmup/warmup_p2.bin
+Loading warm-up file..../warmup/warmup_p2.bin
+Warm-up file loaded with:
+	 numPartitions =2
+	 numUsers =1000
+	 numTokens =10
+-- Using view stored on disk
+-- Diffie-Hellman complete with 0
+-- Diffie-Hellman complete with 1
+Apr 14, 2021 11:34:37 AM bftsmart.tom.ServiceReplica init
+SEVERE: null
+java.net.BindException: Address already in use
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:550)
+	at java.base/sun.nio.ch.Net.bind(Net.java:539)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:643)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:396)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:282)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:173)
+	at bftsmart.communication.server.ServersCommunicationLayer.<init>(ServersCommunicationLayer.java:83)
+	at bftsmart.communication.ServerCommunicationSystem.<init>(ServerCommunicationSystem.java:63)
+	at bftsmart.tom.ServiceReplica.init(ServiceReplica.java:154)
+	at bftsmart.tom.ServiceReplica.<init>(ServiceReplica.java:140)
+	at bftsmart.tom.ServiceReplica.<init>(ServiceReplica.java:96)
+	at parallelism.ParallelServiceReplica.<init>(ParallelServiceReplica.java:46)
+	at demo.coin.CoinHybridServiceReplica.<init>(CoinHybridServiceReplica.java:33)
+	at demo.coin.CoinHybridServiceReplica.main(CoinHybridServiceReplica.java:89)
+
+Exception in thread "main" java.lang.RuntimeException: Unable to build a communication system.
+	at bftsmart.tom.ServiceReplica.init(ServiceReplica.java:157)
+	at bftsmart.tom.ServiceReplica.<init>(ServiceReplica.java:140)
+	at bftsmart.tom.ServiceReplica.<init>(ServiceReplica.java:96)
+	at parallelism.ParallelServiceReplica.<init>(ParallelServiceReplica.java:46)
+	at demo.coin.CoinHybridServiceReplica.<init>(CoinHybridServiceReplica.java:33)
+	at demo.coin.CoinHybridServiceReplica.main(CoinHybridServiceReplica.java:89)

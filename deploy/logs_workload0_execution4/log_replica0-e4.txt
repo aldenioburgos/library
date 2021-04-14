@@ -1,0 +1,23 @@
+CoinHibridServiceReplica executado com os seguintes argumentos:
+	id = 0
+	lateWorkersPerPartition = 4
+	warm-up file = ./warmup/warmup_p4.bin
+Loading warm-up file..../warmup/warmup_p4.bin
+Warm-up file loaded with:
+	 numPartitions =4
+	 numUsers =1000
+	 numTokens =10
+-- Using view stored on disk
+-- ID = 0
+-- N = 3
+-- F = 1
+-- Port = 11000
+-- requestTimeout = 30000
+-- maxBatch = 400
+-- Using MACs
+-- In current view: ID:0; F:1; Processes:0(/10.1.1.2:11000),1(/10.1.1.3:11010),2(/10.1.1.4:11020),
+Criou um hibrid scheduler: partitions (early) = 4 workers (late) = 16
+n early: 4
+n late: 16
+-- Diffie-Hellman complete with 1
+-- Diffie-Hellman complete with 2

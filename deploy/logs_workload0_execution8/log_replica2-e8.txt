@@ -1,0 +1,3157 @@
+CoinHibridServiceReplica executado com os seguintes argumentos:
+	id = 2
+	lateWorkersPerPartition = 6
+	warm-up file = ./warmup/warmup_p6.bin
+Loading warm-up file..../warmup/warmup_p6.bin
+Warm-up file loaded with:
+	 numPartitions =6
+	 numUsers =1000
+	 numTokens =10
+-- Using view stored on disk
+-- Diffie-Hellman complete with 0
+-- Diffie-Hellman complete with 1
+-- ID = 2
+-- N = 3
+-- F = 1
+-- Port = 11020
+-- requestTimeout = 30000
+-- maxBatch = 400
+-- Using MACs
+-- In current view: ID:0; F:1; Processes:0(/10.1.1.2:11000),1(/10.1.1.3:11010),2(/10.1.1.4:11020),
+Criou um hibrid scheduler: partitions (early) = 6 workers (late) = 36
+n early: 6
+n late: 36
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Session Created, active clients=0
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6674 before establishing Netty connection. Re-trying until connection is established
+Received request from 6676 before establishing Netty connection. Re-trying until connection is established
+Received request from 6658 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6532 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6661 before establishing Netty connection. Re-trying until connection is established
+Received request from 6665 before establishing Netty connection. Re-trying until connection is established
+Received request from 6670 before establishing Netty connection. Re-trying until connection is established
+Received request from 6677 before establishing Netty connection. Re-trying until connection is established
+Received request from 6749 before establishing Netty connection. Re-trying until connection is established
+Received request from 6718 before establishing Netty connection. Re-trying until connection is established
+Received request from 6602 before establishing Netty connection. Re-trying until connection is established
+Received request from 6581 before establishing Netty connection. Re-trying until connection is established
+Received request from 6736 before establishing Netty connection. Re-trying until connection is established
+Received request from 6744 before establishing Netty connection. Re-trying until connection is established
+Received request from 6620 before establishing Netty connection. Re-trying until connection is established
+Received request from 6687 before establishing Netty connection. Re-trying until connection is established
+Received request from 6709 before establishing Netty connection. Re-trying until connection is established
+Received request from 6716 before establishing Netty connection. Re-trying until connection is established
+Received request from 6731 before establishing Netty connection. Re-trying until connection is established
+Received request from 6743 before establishing Netty connection. Re-trying until connection is established
+Received request from 6746 before establishing Netty connection. Re-trying until connection is established
+Received request from 6693 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6702 before establishing Netty connection. Re-trying until connection is established
+Received request from 6710 before establishing Netty connection. Re-trying until connection is established
+Received request from 6591 before establishing Netty connection. Re-trying until connection is established
+Received request from 6728 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6569 before establishing Netty connection. Re-trying until connection is established
+Received request from 6733 before establishing Netty connection. Re-trying until connection is established
+Received request from 6678 before establishing Netty connection. Re-trying until connection is established
+Received request from 6679 before establishing Netty connection. Re-trying until connection is established
+Received request from 6700 before establishing Netty connection. Re-trying until connection is established
+Received request from 6739 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6741 before establishing Netty connection. Re-trying until connection is established
+Received request from 6529 before establishing Netty connection. Re-trying until connection is established
+Received request from 6748 before establishing Netty connection. Re-trying until connection is established
+Received request from 6625 before establishing Netty connection. Re-trying until connection is established
+Received request from 6637 before establishing Netty connection. Re-trying until connection is established
+Received request from 6616 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6631 before establishing Netty connection. Re-trying until connection is established
+Received request from 6646 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6578 before establishing Netty connection. Re-trying until connection is established
+Received request from 6550 before establishing Netty connection. Re-trying until connection is established
+Received request from 6545 before establishing Netty connection. Re-trying until connection is established
+Received request from 6589 before establishing Netty connection. Re-trying until connection is established
+Received request from 6572 before establishing Netty connection. Re-trying until connection is established
+Received request from 6688 before establishing Netty connection. Re-trying until connection is established
+Received request from 6539 before establishing Netty connection. Re-trying until connection is established
+Received request from 6543 before establishing Netty connection. Re-trying until connection is established
+Received request from 6683 before establishing Netty connection. Re-trying until connection is established
+Received request from 6627 before establishing Netty connection. Re-trying until connection is established
+Received request from 6526 before establishing Netty connection. Re-trying until connection is established
+Received request from 6629 before establishing Netty connection. Re-trying until connection is established
+Received request from 6645 before establishing Netty connection. Re-trying until connection is established
+Received request from 6555 before establishing Netty connection. Re-trying until connection is established
+Received request from 6644 before establishing Netty connection. Re-trying until connection is established
+Received request from 6524 before establishing Netty connection. Re-trying until connection is established
+Received request from 6628 before establishing Netty connection. Re-trying until connection is established
+Received request from 6567 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6661 established!
+Chegou um request!
+Chegou um request!
+Connection with 6709 established!
+Connection with 6731 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6671 before establishing Netty connection. Re-trying until connection is established
+Received request from 6726 before establishing Netty connection. Re-trying until connection is established
+Received request from 6715 before establishing Netty connection. Re-trying until connection is established
+Received request from 6599 before establishing Netty connection. Re-trying until connection is established
+Received request from 6541 before establishing Netty connection. Re-trying until connection is established
+Received request from 6548 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6580 before establishing Netty connection. Re-trying until connection is established
+Received request from 6564 before establishing Netty connection. Re-trying until connection is established
+Received request from 6585 before establishing Netty connection. Re-trying until connection is established
+Received request from 6686 before establishing Netty connection. Re-trying until connection is established
+Received request from 6698 before establishing Netty connection. Re-trying until connection is established
+Received request from 6558 before establishing Netty connection. Re-trying until connection is established
+Received request from 6542 before establishing Netty connection. Re-trying until connection is established
+Received request from 6681 before establishing Netty connection. Re-trying until connection is established
+Received request from 6600 before establishing Netty connection. Re-trying until connection is established
+Received request from 6587 before establishing Netty connection. Re-trying until connection is established
+Received request from 6738 before establishing Netty connection. Re-trying until connection is established
+Received request from 6696 before establishing Netty connection. Re-trying until connection is established
+Received request from 6652 before establishing Netty connection. Re-trying until connection is established
+Received request from 6649 before establishing Netty connection. Re-trying until connection is established
+Received request from 6735 before establishing Netty connection. Re-trying until connection is established
+Received request from 6689 before establishing Netty connection. Re-trying until connection is established
+Received request from 6540 before establishing Netty connection. Re-trying until connection is established
+Received request from 6619 before establishing Netty connection. Re-trying until connection is established
+Received request from 6640 before establishing Netty connection. Re-trying until connection is established
+Received request from 6551 before establishing Netty connection. Re-trying until connection is established
+Received request from 6535 before establishing Netty connection. Re-trying until connection is established
+Received request from 6641 before establishing Netty connection. Re-trying until connection is established
+Received request from 6596 before establishing Netty connection. Re-trying until connection is established
+Received request from 6588 before establishing Netty connection. Re-trying until connection is established
+Received request from 6562 before establishing Netty connection. Re-trying until connection is established
+Received request from 6568 before establishing Netty connection. Re-trying until connection is established
+Received request from 6636 before establishing Netty connection. Re-trying until connection is established
+Received request from 6571 before establishing Netty connection. Re-trying until connection is established
+Received request from 6598 before establishing Netty connection. Re-trying until connection is established
+Received request from 6527 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6616 established!
+Connection with 6628 established!
+Connection with 6602 established!
+Connection with 6746 established!
+Connection with 6710 established!
+Connection with 6744 established!
+Connection with 6658 established!
+Connection with 6532 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6620 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6673 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6594 before establishing Netty connection. Re-trying until connection is established
+Received request from 6626 before establishing Netty connection. Re-trying until connection is established
+Received request from 6734 before establishing Netty connection. Re-trying until connection is established
+Received request from 6707 before establishing Netty connection. Re-trying until connection is established
+Received request from 6721 before establishing Netty connection. Re-trying until connection is established
+Received request from 6632 before establishing Netty connection. Re-trying until connection is established
+Received request from 6654 before establishing Netty connection. Re-trying until connection is established
+Received request from 6605 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6609 before establishing Netty connection. Re-trying until connection is established
+Received request from 6579 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6663 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6701 before establishing Netty connection. Re-trying until connection is established
+Received request from 6665 before establishing Netty connection. Re-trying until connection is established
+Received request from 6736 before establishing Netty connection. Re-trying until connection is established
+Received request from 6680 before establishing Netty connection. Re-trying until connection is established
+Received request from 6666 before establishing Netty connection. Re-trying until connection is established
+Received request from 6684 before establishing Netty connection. Re-trying until connection is established
+Received request from 6706 before establishing Netty connection. Re-trying until connection is established
+Received request from 6708 before establishing Netty connection. Re-trying until connection is established
+Received request from 6703 before establishing Netty connection. Re-trying until connection is established
+Received request from 6637 before establishing Netty connection. Re-trying until connection is established
+Received request from 6644 before establishing Netty connection. Re-trying until connection is established
+Received request from 6741 before establishing Netty connection. Re-trying until connection is established
+Received request from 6739 before establishing Netty connection. Re-trying until connection is established
+Received request from 6652 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6581 before establishing Netty connection. Re-trying until connection is established
+Received request from 6581 before establishing Netty connection. Re-trying until connection is established
+Received request from 6671 before establishing Netty connection. Re-trying until connection is established
+Received request from 6639 before establishing Netty connection. Re-trying until connection is established
+Received request from 6583 before establishing Netty connection. Re-trying until connection is established
+Received request from 6643 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Received request from 6664 before establishing Netty connection. Re-trying until connection is established
+Received request from 6540 before establishing Netty connection. Re-trying until connection is established
+Received request from 6689 before establishing Netty connection. Re-trying until connection is established
+Received request from 6694 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6569 established!
+Connection with 6733 established!
+Connection with 6679 established!
+Connection with 6748 established!
+Connection with 6646 established!
+Connection with 6627 established!
+Connection with 6677 established!
+Connection with 6670 established!
+Connection with 6718 established!
+Connection with 6716 established!
+Connection with 6728 established!
+Connection with 6674 established!
+Connection with 6591 established!
+Connection with 6625 established!
+Connection with 6676 established!
+Connection with 6526 established!
+Connection with 6693 established!
+Connection with 6700 established!
+Connection with 6749 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6596 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6695 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6537 before establishing Netty connection. Re-trying until connection is established
+Received request from 6675 before establishing Netty connection. Re-trying until connection is established
+Received request from 6699 before establishing Netty connection. Re-trying until connection is established
+Received request from 6696 before establishing Netty connection. Re-trying until connection is established
+Received request from 6559 before establishing Netty connection. Re-trying until connection is established
+Received request from 6691 before establishing Netty connection. Re-trying until connection is established
+Received request from 6673 before establishing Netty connection. Re-trying until connection is established
+Received request from 6699 before establishing Netty connection. Re-trying until connection is established
+Received request from 6738 before establishing Netty connection. Re-trying until connection is established
+Received request from 6726 before establishing Netty connection. Re-trying until connection is established
+Received request from 6694 before establishing Netty connection. Re-trying until connection is established
+Received request from 6683 before establishing Netty connection. Re-trying until connection is established
+Received request from 6663 before establishing Netty connection. Re-trying until connection is established
+Received request from 6644 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6701 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6579 before establishing Netty connection. Re-trying until connection is established
+Received request from 6706 before establishing Netty connection. Re-trying until connection is established
+Received request from 6735 before establishing Netty connection. Re-trying until connection is established
+Received request from 6609 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6645 before establishing Netty connection. Re-trying until connection is established
+Received request from 6585 before establishing Netty connection. Re-trying until connection is established
+Received request from 6588 before establishing Netty connection. Re-trying until connection is established
+Received request from 6587 before establishing Netty connection. Re-trying until connection is established
+Received request from 6545 before establishing Netty connection. Re-trying until connection is established
+Received request from 6547 before establishing Netty connection. Re-trying until connection is established
+Received request from 6632 before establishing Netty connection. Re-trying until connection is established
+Received request from 6641 before establishing Netty connection. Re-trying until connection is established
+Received request from 6547 before establishing Netty connection. Re-trying until connection is established
+Received request from 6561 before establishing Netty connection. Re-trying until connection is established
+Received request from 6702 before establishing Netty connection. Re-trying until connection is established
+Received request from 6703 before establishing Netty connection. Re-trying until connection is established
+Received request from 6568 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6572 before establishing Netty connection. Re-trying until connection is established
+Received request from 6734 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6665 established!
+Connection with 6736 established!
+Chegou um request!
+Connection with 6637 established!
+Connection with 6741 established!
+Connection with 6581 established!
+Connection with 6581 established!
+Connection with 6739 established!
+Connection with 6739 established!
+Connection with 6741 established!
+Connection with 6637 established!
+Connection with 6687 established!
+Connection with 6665 established!
+Connection with 6736 established!
+Connection with 6743 established!
+Connection with 6631 established!
+Connection with 6581 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6686 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6675 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6551 before establishing Netty connection. Re-trying until connection is established
+Received request from 6524 before establishing Netty connection. Re-trying until connection is established
+Received request from 6626 before establishing Netty connection. Re-trying until connection is established
+Received request from 6571 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6537 before establishing Netty connection. Re-trying until connection is established
+Received request from 6542 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6589 before establishing Netty connection. Re-trying until connection is established
+Received request from 6562 before establishing Netty connection. Re-trying until connection is established
+Received request from 6666 before establishing Netty connection. Re-trying until connection is established
+Received request from 6561 before establishing Netty connection. Re-trying until connection is established
+Received request from 6583 before establishing Netty connection. Re-trying until connection is established
+Received request from 6599 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6578 before establishing Netty connection. Re-trying until connection is established
+Received request from 6535 before establishing Netty connection. Re-trying until connection is established
+Received request from 6680 before establishing Netty connection. Re-trying until connection is established
+Received request from 6695 before establishing Netty connection. Re-trying until connection is established
+Received request from 6708 before establishing Netty connection. Re-trying until connection is established
+Received request from 6715 before establishing Netty connection. Re-trying until connection is established
+Received request from 6527 before establishing Netty connection. Re-trying until connection is established
+Received request from 6543 before establishing Netty connection. Re-trying until connection is established
+Received request from 6555 before establishing Netty connection. Re-trying until connection is established
+Received request from 6654 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6721 before establishing Netty connection. Re-trying until connection is established
+Received request from 6664 before establishing Netty connection. Re-trying until connection is established
+Received request from 6564 before establishing Netty connection. Re-trying until connection is established
+Received request from 6580 before establishing Netty connection. Re-trying until connection is established
+Received request from 6688 before establishing Netty connection. Re-trying until connection is established
+Received request from 6681 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6684 before establishing Netty connection. Re-trying until connection is established
+Received request from 6721 before establishing Netty connection. Re-trying until connection is established
+Received request from 6550 before establishing Netty connection. Re-trying until connection is established
+Received request from 6571 before establishing Netty connection. Re-trying until connection is established
+Received request from 6640 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6620 established!
+Connection with 6620 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6580 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6683 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6619 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6558 before establishing Netty connection. Re-trying until connection is established
+Received request from 6649 before establishing Netty connection. Re-trying until connection is established
+Received request from 6707 before establishing Netty connection. Re-trying until connection is established
+Received request from 6691 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6541 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6664 before establishing Netty connection. Re-trying until connection is established
+Received request from 6695 before establishing Netty connection. Re-trying until connection is established
+Received request from 6564 before establishing Netty connection. Re-trying until connection is established
+Received request from 6689 before establishing Netty connection. Re-trying until connection is established
+Received request from 6698 before establishing Netty connection. Re-trying until connection is established
+Received request from 6548 before establishing Netty connection. Re-trying until connection is established
+Received request from 6594 before establishing Netty connection. Re-trying until connection is established
+Received request from 6594 before establishing Netty connection. Re-trying until connection is established
+Received request from 6605 before establishing Netty connection. Re-trying until connection is established
+Received request from 6643 before establishing Netty connection. Re-trying until connection is established
+Received request from 6678 before establishing Netty connection. Re-trying until connection is established
+Received request from 6600 before establishing Netty connection. Re-trying until connection is established
+Received request from 6559 before establishing Netty connection. Re-trying until connection is established
+Received request from 6561 before establishing Netty connection. Re-trying until connection is established
+Received request from 6673 before establishing Netty connection. Re-trying until connection is established
+Received request from 6715 before establishing Netty connection. Re-trying until connection is established
+Received request from 6527 before establishing Netty connection. Re-trying until connection is established
+Received request from 6691 before establishing Netty connection. Re-trying until connection is established
+Received request from 6609 before establishing Netty connection. Re-trying until connection is established
+Received request from 6706 before establishing Netty connection. Re-trying until connection is established
+Received request from 6639 before establishing Netty connection. Re-trying until connection is established
+Received request from 6598 before establishing Netty connection. Re-trying until connection is established
+Received request from 6636 before establishing Netty connection. Re-trying until connection is established
+Received request from 6702 before establishing Netty connection. Re-trying until connection is established
+Received request from 6734 before establishing Netty connection. Re-trying until connection is established
+Received request from 6708 before establishing Netty connection. Re-trying until connection is established
+Received request from 6654 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6543 established!
+Connection with 6645 established!
+Connection with 6599 established!
+Connection with 6539 established!
+Connection with 6629 established!
+Connection with 6567 established!
+Connection with 6529 established!
+Connection with 6645 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6543 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6599 established!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6699 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6641 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Received request from 6588 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6589 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6579 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6596 before establishing Netty connection. Re-trying until connection is established
+Received request from 6707 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6643 before establishing Netty connection. Re-trying until connection is established
+Received request from 6694 before establishing Netty connection. Re-trying until connection is established
+Received request from 6678 before establishing Netty connection. Re-trying until connection is established
+Received request from 6568 before establishing Netty connection. Re-trying until connection is established
+Received request from 6663 before establishing Netty connection. Re-trying until connection is established
+Received request from 6675 before establishing Netty connection. Re-trying until connection is established
+Received request from 6664 before establishing Netty connection. Re-trying until connection is established
+Received request from 6551 before establishing Netty connection. Re-trying until connection is established
+Received request from 6605 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Received request from 6550 before establishing Netty connection. Re-trying until connection is established
+Received request from 6636 before establishing Netty connection. Re-trying until connection is established
+Received request from 6545 before establishing Netty connection. Re-trying until connection is established
+Received request from 6703 before establishing Netty connection. Re-trying until connection is established
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Chegou um request!
+Connection with 6702 established!
+Connection with 6688 established!
+Connection with 6644 established!
+Connection with 6644 established!
+Connection with 6688 established!
+Connection with 6644 established!
+Connection with 6702 established!
+Connection with 6702 established!
+Received request from 6698 before establishing Netty connection. Re-trying until connection is established
+Received request from 6639 before establishing Netty connection. Re-trying until connection is established
+Received request from 6547 before establishing Netty connection. Re-trying until connection is established
+Received request from 6708 before establishing Netty connection. Re-trying until connection is established
+Received request from 6680 before establishing Netty connection. Re-trying until connection is established
+Received request from 6684 before establishing Netty connection. Re-trying until connection is established
+Received request from 6535 before establishing Netty connection. Re-trying until connection is established
+Received request from 6542 before establishing Netty connection. Re-trying until connection is established
+Received request from 6632 before establishing Netty connection. Re-trying until connection is established
+Received request from 6537 before establishing Netty connection. Re-trying until connection is established
+Received request from 6686 before establishing Netty connection. Re-trying until connection is established
+Received request from 6652 before establishing Netty connection. Re-trying until connection is established
+Received request from 6681 before establishing Netty connection. Re-trying until connection is established
+Received request from 6696 before establishing Netty connection. Re-trying until connection is established
+Received request from 6698 before establishing Netty connection. Re-trying until connection is established
+Received request from 6572 before establishing Netty connection. Re-trying until connection is established
+Received request from 6640 before establishing Netty connection. Re-trying until connection is established
+Received request from 6680 before establishing Netty connection. Re-trying until connection is established
+Received request from 6619 before establishing Netty connection. Re-trying until connection is established
+Received request from 6578 before establishing Netty connection. Re-trying until connection is established
+Received request from 6626 before establishing Netty connection. Re-trying until connection is established
+Received request from 6649 before establishing Netty connection. Re-trying until connection is established
+Received request from 6580 before establishing Netty connection. Re-trying until connection is established
+Received request from 6726 before establishing Netty connection. Re-trying until connection is established
+Received request from 6671 before establishing Netty connection. Re-trying until connection is established
+Received request from 6735 before establishing Netty connection. Re-trying until connection is established
+Received request from 6706 before establishing Netty connection. Re-trying until connection is established
+Received request from 6707 before establishing Netty connection. Re-trying until connection is established
+Received request from 6588 before establishing Netty connection. Re-trying until connection is established
+Received request from 6571 before establishing Netty connection. Re-trying until connection is established
+Received request from 6562 before establishing Netty connection. Re-trying until connection is established
+Received request from 6666 before establishing Netty connection. Re-trying until connection is established
+Received request from 6715 before establishing Netty connection. Re-trying until connection is established
+Received request from 6583 before establishing Netty connection. Re-trying until connection is established
+Received request from 6694 before establishing Netty connection. Re-trying until connection is established
+Connection with 6545 established!
+Connection with 6683 established!
+Connection with 6541 established!
+Connection with 6555 established!
+Connection with 6683 established!
+Connection with 6585 established!
+Connection with 6587 established!
+Connection with 6541 established!
+Connection with 6585 established!
+Connection with 6587 established!
+Connection with 6545 established!
+Connection with 6683 established!
+Connection with 6555 established!
+Connection with 6545 established!
+Received request from 6686 before establishing Netty connection. Re-trying until connection is established
+Received request from 6663 before establishing Netty connection. Re-trying until connection is established
+Received request from 6550 before establishing Netty connection. Re-trying until connection is established
+Received request from 6558 before establishing Netty connection. Re-trying until connection is established
+Received request from 6652 before establishing Netty connection. Re-trying until connection is established
+Received request from 6559 before establishing Netty connection. Re-trying until connection is established
+Received request from 6721 before establishing Netty connection. Re-trying until connection is established
+Received request from 6735 before establishing Netty connection. Re-trying until connection is established
+Received request from 6671 before establishing Netty connection. Re-trying until connection is established
+Received request from 6738 before establishing Netty connection. Re-trying until connection is established
+Received request from 6572 before establishing Netty connection. Re-trying until connection is established
+Received request from 6600 before establishing Netty connection. Re-trying until connection is established
+Received request from 6564 before establishing Netty connection. Re-trying until connection is established
+Received request from 6636 before establishing Netty connection. Re-trying until connection is established
+Received request from 6596 before establishing Netty connection. Re-trying until connection is established
+Received request from 6583 before establishing Netty connection. Re-trying until connection is established
+Received request from 6678 before establishing Netty connection. Re-trying until connection is established
+Received request from 6699 before establishing Netty connection. Re-trying until connection is established
+Received request from 6589 before establishing Netty connection. Re-trying until connection is established
+Received request from 6703 before establishing Netty connection. Re-trying until connection is established
+Received request from 6537 before establishing Netty connection. Re-trying until connection is established
+Received request from 6605 before establishing Netty connection. Re-trying until connection is established
+Received request from 6675 before establishing Netty connection. Re-trying until connection is established
+Received request from 6640 before establishing Netty connection. Re-trying until connection is established
+Received request from 6571 before establishing Netty connection. Re-trying until connection is established
+Received request from 6598 before establishing Netty connection. Re-trying until connection is established
+Received request from 6542 before establishing Netty connection. Re-trying until connection is established
+Received request from 6681 before establishing Netty connection. Re-trying until connection is established
+Received request from 6540 before establishing Netty connection. Re-trying until connection is established
+Received request from 6527 before establishing Netty connection. Re-trying until connection is established
+Received request from 6594 before establishing Netty connection. Re-trying until connection is established
+Connection with 6578 established!
+Connection with 6548 established!
+Connection with 6524 established!
+Connection with 6578 established!
+Connection with 6524 established!
+Connection with 6548 established!
+Connection with 6578 established!
+Received request from 6678 before establishing Netty connection. Re-trying until connection is established
+Received request from 6721 before establishing Netty connection. Re-trying until connection is established
+Received request from 6594 before establishing Netty connection. Re-trying until connection is established
+Received request from 6562 before establishing Netty connection. Re-trying until connection is established
+Received request from 6691 before establishing Netty connection. Re-trying until connection is established
+Received request from 6551 before establishing Netty connection. Re-trying until connection is established
+Received request from 6561 before establishing Netty connection. Re-trying until connection is established
+Received request from 6579 before establishing Netty connection. Re-trying until connection is established
+Received request from 6696 before establishing Netty connection. Re-trying until connection is established
+Received request from 6738 before establishing Netty connection. Re-trying until connection is established
+Received request from 6643 before establishing Netty connection. Re-trying until connection is established
+Received request from 6666 before establishing Netty connection. Re-trying until connection is established
+Received request from 6558 before establishing Netty connection. Re-trying until connection is established
+Received request from 6579 before establishing Netty connection. Re-trying until connection is established
+Received request from 6734 before establishing Netty connection. Re-trying until connection is established
+Received request from 6626 before establishing Netty connection. Re-trying until connection is established
+Received request from 6654 before establishing Netty connection. Re-trying until connection is established
+Received request from 6715 before establishing Netty connection. Re-trying until connection is established
+Received request from 6706 before establishing Netty connection. Re-trying until connection is established
+Received request from 6671 before establishing Netty connection. Re-trying until connection is established
+Received request from 6695 before establishing Netty connection. Re-trying until connection is established
+Received request from 6547 before establishing Netty connection. Re-trying until connection is established
+Received request from 6689 before establishing Netty connection. Re-trying until connection is established
+Received request from 6609 before establishing Netty connection. Re-trying until connection is established
+Received request from 6561 before establishing Netty connection. Re-trying until connection is established
+Received request from 6639 before establishing Netty connection. Re-trying until connection is established
+Received request from 6589 before establishing Netty connection. Re-trying until connection is established
+Received request from 6673 before establishing Netty connection. Re-trying until connection is established
+Received request from 6572 before establishing Netty connection. Re-trying until connection is established
+Received request from 6626 before establishing Netty connection. Re-trying until connection is established
+Received request from 6694 before establishing Netty connection. Re-trying until connection is established
+Received request from 6654 before establishing Netty connection. Re-trying until connection is established
+Received request from 6580 before establishing Netty connection. Re-trying until connection is established
+Received request from 6708 before establishing Netty connection. Re-trying until connection is established
+Received request from 6641 before establishing Netty connection. Re-trying until connection is established
+Received request from 6686 before establishing Netty connection. Re-trying until connection is established
+Connection with 6681 established!
+Connection with 6527 established!
+Connection with 6681 established!
+Connection with 6649 established!
+Connection with 6649 established!
+Connection with 6527 established!
+Connection with 6527 established!
+Connection with 6681 established!
+Connection with 6681 established!
+Connection with 6649 established!
+Connection with 6527 established!
+Received request from 6694 before establishing Netty connection. Re-trying until connection is established
+Received request from 6684 before establishing Netty connection. Re-trying until connection is established
+Received request from 6703 before establishing Netty connection. Re-trying until connection is established
+Received request from 6689 before establishing Netty connection. Re-trying until connection is established
+Received request from 6568 before establishing Netty connection. Re-trying until connection is established
+Received request from 6600 before establishing Netty connection. Re-trying until connection is established
+Received request from 6734 before establishing Netty connection. Re-trying until connection is established
+Received request from 6609 before establishing Netty connection. Re-trying until connection is established
+Received request from 6609 before establishing Netty connection. Re-trying until connection is established
+Received request from 6643 before establishing Netty connection. Re-trying until connection is established
+Received request from 6550 before establishing Netty connection. Re-trying until connection is established
+Received request from 6699 before establishing Netty connection. Re-trying until connection is established
+Received request from 6583 before establishing Netty connection. Re-trying until connection is established
+Received request from 6535 before establishing Netty connection. Re-trying until connection is established
+Received request from 6632 before establishing Netty connection. Re-trying until connection is established
+Received request from 6684 before establishing Netty connection. Re-trying until connection is established
+Received request from 6619 before establishing Netty connection. Re-trying until connection is established
+Received request from 6701 before establishing Netty connection. Re-trying until connection is established
+Received request from 6696 before establishing Netty connection. Re-trying until connection is established
+Received request from 6708 before establishing Netty connection. Re-trying until connection is established
+Received request from 6564 before establishing Netty connection. Re-trying until connection is established
+Received request from 6654 before establishing Netty connection. Re-trying until connection is established
+Received request from 6680 before establishing Netty connection. Re-trying until connection is established
+Received request from 6588 before establishing Netty connection. Re-trying until connection is established
+Received request from 6559 before establishing Netty connection. Re-trying until connection is established
+Received request from 6596 before establishing Netty connection. Re-trying until connection is established
+Received request from 6636 before establishing Netty connection. Re-trying until connection is established
+Received request from 6568 before establishing Netty connection. Re-trying until connection is established
+Received request from 6707 before establishing Netty connection. Re-trying until connection is established
+Received request from 6698 before establishing Netty connection. Re-trying until connection is established
+Received request from 6639 before establishing Netty connection. Re-trying until connection is established
+Received request from 6542 before establishing Netty connection. Re-trying until connection is established
+Received request from 6726 before establishing Netty connection. Re-trying until connection is established
+Connection with 6678 established!
+Connection with 6678 established!
+Connection with 6678 established!
+Connection with 6678 established!
+Connection with 6678 established!
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6715
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6588
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6609
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6691
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6707
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6680
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6643
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6694
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6605
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6626
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6619
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6561
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6588
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6643
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6663
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6695
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6694
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6663
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6734
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6559
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6609
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6652
+Received request from 6535 before establishing Netty connection. Re-trying until connection is established
+Received request from 6701 before establishing Netty connection. Re-trying until connection is established
+Received request from 6671 before establishing Netty connection. Re-trying until connection is established
+Received request from 6666 before establishing Netty connection. Re-trying until connection is established
+Received request from 6547 before establishing Netty connection. Re-trying until connection is established
+Received request from 6691 before establishing Netty connection. Re-trying until connection is established
+Received request from 6583 before establishing Netty connection. Re-trying until connection is established
+Received request from 6562 before establishing Netty connection. Re-trying until connection is established
+Received request from 6673 before establishing Netty connection. Re-trying until connection is established
+Received request from 6605 before establishing Netty connection. Re-trying until connection is established
+Received request from 6675 before establishing Netty connection. Re-trying until connection is established
+Received request from 6641 before establishing Netty connection. Re-trying until connection is established
+Received request from 6537 before establishing Netty connection. Re-trying until connection is established
+Received request from 6680 before establishing Netty connection. Re-trying until connection is established
+Received request from 6632 before establishing Netty connection. Re-trying until connection is established
+Received request from 6707 before establishing Netty connection. Re-trying until connection is established
+Received request from 6664 before establishing Netty connection. Re-trying until connection is established
+Received request from 6619 before establishing Netty connection. Re-trying until connection is established
+Received request from 6684 before establishing Netty connection. Re-trying until connection is established
+Received request from 6706 before establishing Netty connection. Re-trying until connection is established
+Received request from 6588 before establishing Netty connection. Re-trying until connection is established
+Received request from 6579 before establishing Netty connection. Re-trying until connection is established
+Received request from 6626 before establishing Netty connection. Re-trying until connection is established
+Received request from 6547 before establishing Netty connection. Re-trying until connection is established
+Received request from 6559 before establishing Netty connection. Re-trying until connection is established
+Received request from 6735 before establishing Netty connection. Re-trying until connection is established
+Received request from 6619 before establishing Netty connection. Re-trying until connection is established
+Received request from 6551 before establishing Netty connection. Re-trying until connection is established
+Received request from 6598 before establishing Netty connection. Re-trying until connection is established
+Received request from 6673 before establishing Netty connection. Re-trying until connection is established
+Received request from 6726 before establishing Netty connection. Re-trying until connection is established
+Received request from 6675 before establishing Netty connection. Re-trying until connection is established
+Received request from 6715 before establishing Netty connection. Re-trying until connection is established
+Received request from 6652 before establishing Netty connection. Re-trying until connection is established
+Connection with 6600 established!
+Throughput at  = 0.0 operations/sec in sec : 0
+Throughput at  = 0.0 operations/sec in sec : 1
+Throughput at  = 0.0 operations/sec in sec : 2
+Throughput at  = 0.0 operations/sec in sec : 3
+Throughput at  = 0.0 operations/sec in sec : 4
+Throughput at  = 0.0 operations/sec in sec : 5
+Throughput at  = 0.0 operations/sec in sec : 6
+Throughput at  = 0.0 operations/sec in sec : 7
+Throughput at  = 0.0 operations/sec in sec : 8
+Throughput at  = 0.0 operations/sec in sec : 9
+Throughput at  = 0.0 operations/sec in sec : 10
+Throughput at  = 0.0 operations/sec in sec : 11
+Throughput at  = 0.0 operations/sec in sec : 12
+Throughput at  = 0.0 operations/sec in sec : 13
+Throughput at  = 0.0 operations/sec in sec : 14
+Throughput at  = 0.0 operations/sec in sec : 15
+Connection with 6641 established!
+Connection with 6639 established!
+Connection with 6641 established!
+Connection with 6639 established!
+Connection with 6641 established!
+Connection with 6639 established!
+Connection with 6641 established!
+Connection with 6639 established!
+Connection with 6639 established!
+Connection with 6641 established!
+Received request from 6703 before establishing Netty connection. Re-trying until connection is established
+Received request from 6734 before establishing Netty connection. Re-trying until connection is established
+Received request from 6640 before establishing Netty connection. Re-trying until connection is established
+Received request from 6596 before establishing Netty connection. Re-trying until connection is established
+Received request from 6664 before establishing Netty connection. Re-trying until connection is established
+Received request from 6561 before establishing Netty connection. Re-trying until connection is established
+Received request from 6666 before establishing Netty connection. Re-trying until connection is established
+Received request from 6699 before establishing Netty connection. Re-trying until connection is established
+Received request from 6540 before establishing Netty connection. Re-trying until connection is established
+Received request from 6695 before establishing Netty connection. Re-trying until connection is established
+Received request from 6598 before establishing Netty connection. Re-trying until connection is established
+Received request from 6537 before establishing Netty connection. Re-trying until connection is established
+Received request from 6571 before establishing Netty connection. Re-trying until connection is established
+Received request from 6640 before establishing Netty connection. Re-trying until connection is established
+Received request from 6535 before establishing Netty connection. Re-trying until connection is established
+Received request from 6551 before establishing Netty connection. Re-trying until connection is established
+Received request from 6594 before establishing Netty connection. Re-trying until connection is established
+Received request from 6572 before establishing Netty connection. Re-trying until connection is established
+Received request from 6663 before establishing Netty connection. Re-trying until connection is established
+Received request from 6701 before establishing Netty connection. Re-trying until connection is established
+Received request from 6542 before establishing Netty connection. Re-trying until connection is established
+Received request from 6738 before establishing Netty connection. Re-trying until connection is established
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6675
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6708
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6708
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6691
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6652
+Connection with 6600 established!
+Connection with 6580 established!
+Connection with 6589 established!
+Connection with 6550 established!
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6703
+Connection with 6636 established!
+Connection with 6600 established!
+Connection with 6558 established!
+Connection with 6698 established!
+Connection with 6686 established!
+Connection with 6580 established!
+Connection with 6550 established!
+Connection with 6580 established!
+Connection with 6589 established!
+Connection with 6686 established!
+Connection with 6636 established!
+Connection with 6698 established!
+Connection with 6558 established!
+Connection with 6580 established!
+Connection with 6636 established!
+Connection with 6550 established!
+Connection with 6589 established!
+Connection with 6698 established!
+Connection with 6686 established!
+Connection with 6698 established!
+Connection with 6589 established!
+Connection with 6636 established!
+Connection with 6600 established!
+Connection with 6558 established!
+Connection with 6550 established!
+Connection with 6686 established!
+Connection with 6686 established!
+Connection with 6580 established!
+Connection with 6589 established!
+Connection with 6558 established!
+Connection with 6636 established!
+Connection with 6698 established!
+Connection with 6550 established!
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6734
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6551
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6726
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6594
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6579
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6561
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6706
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6699
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6537
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6547
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6632
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6689
+Received request from 6568 before establishing Netty connection. Re-trying until connection is established
+Received request from 6559 before establishing Netty connection. Re-trying until connection is established
+Received request from 6540 before establishing Netty connection. Re-trying until connection is established
+Received request from 6701 before establishing Netty connection. Re-trying until connection is established
+Received request from 6695 before establishing Netty connection. Re-trying until connection is established
+Received request from 6691 before establishing Netty connection. Re-trying until connection is established
+Received request from 6632 before establishing Netty connection. Re-trying until connection is established
+Received request from 6605 before establishing Netty connection. Re-trying until connection is established
+Received request from 6689 before establishing Netty connection. Re-trying until connection is established
+Received request from 6696 before establishing Netty connection. Re-trying until connection is established
+Received request from 6721 before establishing Netty connection. Re-trying until connection is established
+Received request from 6735 before establishing Netty connection. Re-trying until connection is established
+Received request from 6663 before establishing Netty connection. Re-trying until connection is established
+Throughput at  = 126.0 operations/sec in sec : 16
+Connection with 6564 established!
+Connection with 6654 established!
+Connection with 6654 established!
+Connection with 6564 established!
+Connection with 6654 established!
+Connection with 6564 established!
+Connection with 6654 established!
+Connection with 6564 established!
+Connection with 6654 established!
+Connection with 6654 established!
+Connection with 6564 established!
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6695
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6673
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6675
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6568
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6596
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6715
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6652
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6664
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6671
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6583
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6715
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6571
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6684
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6721
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6721
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6664
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6547
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6579
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6542
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6596
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6699
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6537
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6735
+Received request from 6540 before establishing Netty connection. Re-trying until connection is established
+Received request from 6643 before establishing Netty connection. Re-trying until connection is established
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6626
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6571
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6694
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6706
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6583
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6547
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6684
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6673
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6579
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6680
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6703
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6666
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6738
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6535
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6666
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6684
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6689
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6696
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6691
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6726
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6689
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6594
+Received request from 6652 before establishing Netty connection. Re-trying until connection is established
+Received request from 6726 before establishing Netty connection. Re-trying until connection is established
+Received request from 6738 before establishing Netty connection. Re-trying until connection is established
+Throughput at  = 280.0 operations/sec in sec : 17
+Connection with 6632 established!
+Connection with 6605 established!
+Connection with 6562 established!
+Connection with 6605 established!
+Connection with 6632 established!
+Connection with 6572 established!
+Connection with 6572 established!
+Connection with 6605 established!
+Connection with 6598 established!
+Connection with 6542 established!
+Connection with 6572 established!
+Connection with 6562 established!
+Connection with 6596 established!
+Connection with 6605 established!
+Connection with 6605 established!
+Connection with 6598 established!
+Connection with 6542 established!
+Connection with 6632 established!
+Connection with 6572 established!
+Connection with 6632 established!
+Connection with 6542 established!
+Connection with 6596 established!
+Connection with 6598 established!
+Connection with 6562 established!
+Connection with 6596 established!
+Connection with 6596 established!
+Connection with 6598 established!
+Connection with 6572 established!
+Connection with 6542 established!
+Connection with 6632 established!
+Connection with 6572 established!
+Connection with 6562 established!
+Connection with 6596 established!
+Connection with 6605 established!
+Connection with 6542 established!
+Connection with 6598 established!
+Connection with 6632 established!
+Connection with 6596 established!
+Connection with 6542 established!
+Connection with 6562 established!
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6640
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6707
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6735
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6664
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6568
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6721
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6706
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6696
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6583
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6559
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6609
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6671
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6680
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6675
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 6, ID; 6540
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6671
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 7, ID; 6640
+!!!!!!!!NettyClientServerSession NULL !!!!!! sequence: 8, ID; 6708
+Throughput at  = 89.0 operations/sec in sec : 18
+Connection with 6652 established!
+Connection with 6568 established!
+Connection with 6588 established!
+Connection with 6626 established!
+Connection with 6652 established!
+Connection with 6568 established!
+Connection with 6588 established!
+Connection with 6568 established!
+Connection with 6594 established!
+Connection with 6626 established!
+Connection with 6652 established!
+Connection with 6571 established!
+Connection with 6652 established!
+Connection with 6626 established!
+Connection with 6588 established!
+Connection with 6594 established!
+Connection with 6626 established!
+Connection with 6571 established!
+Connection with 6568 established!
+Connection with 6594 established!
+Connection with 6652 established!
+Connection with 6652 established!
+Connection with 6568 established!
+Connection with 6588 established!
+Connection with 6594 established!
+Connection with 6571 established!
+Connection with 6588 established!
+Connection with 6571 established!
+Connection with 6594 established!
+Connection with 6568 established!
+Connection with 6626 established!
+Connection with 6594 established!
+Connection with 6588 established!
+Connection with 6571 established!
+Connection with 6571 established!
+Connection with 6626 established!

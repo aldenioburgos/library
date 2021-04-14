@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NUM_THREADS_CLIENTE=250
+NUM_THREADS_CLIENTE=1
 particoes=(2 4 6 8)
 threads=(2 4 6)
 workloads=('0 0' '5 10')  #percGlobal #percWrite
@@ -25,7 +25,7 @@ for w in "${workloads[@]}" ; do
       echo created replica2
       sleep 30s
       echo starting clients
-      ssh  cliente0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 0 4001 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}_e${contadorDeExecucao}/log_cliente0-execucao${contadorDeExecucao}.txt" &
+      ssh  cliente0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 0 7001 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}_e${contadorDeExecucao}/log_cliente0-execucao${contadorDeExecucao}.txt" &
       sleep 3s
       echo created cliente0
 #      ssh  cliente1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 1 5001 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}_e${contadorDeExecucao}/log_cliente1-execucao${contadorDeExecucao}.txt" &

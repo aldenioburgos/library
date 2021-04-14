@@ -12,27 +12,26 @@ contadorDeExecucao=0
 for w in "${workloads[@]}" ; do
   for p in "${particoes[@]}" ; do
     for LATE_WORKERS_PER_PARTITION in "${threads[@]}" ; do
-      mkdir /local/w${contadorDeWorkload}_e${contadorDeExecucao}
       # servidores
-      ssh  replica0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 0 ${LATE_WORKERS_PER_PARTITION} /local/warmup/warmup_p${p}.bin >& /local/w${contadorDeWorkload}_e${contadorDeExecucao}/log_replica0-e${contadorDeExecucao}.txt" &
+      ssh  replica0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 0 ${LATE_WORKERS_PER_PARTITION} /local/warmup/warmup_p${p}.bin >& /local/logs/log_r0-e${contadorDeExecucao}.txt" &
       echo created replica0
-      ssh  replica1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 1 ${LATE_WORKERS_PER_PARTITION} /local/warmup/warmup_p${p}.bin >& /local/w${contadorDeWorkload}_e${contadorDeExecucao}/log_replica1-e${contadorDeExecucao}.txt" &
+      ssh  replica1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 1 ${LATE_WORKERS_PER_PARTITION} /local/warmup/warmup_p${p}.bin >& /local/logs/log_r1-e${contadorDeExecucao}.txt" &
       echo created replica1
-      ssh  replica2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 2 ${LATE_WORKERS_PER_PARTITION} /local/warmup/warmup_p${p}.bin >& /local/w${contadorDeWorkload}_e${contadorDeExecucao}/log_replica2-e${contadorDeExecucao}.txt" &
+      ssh  replica2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 2 ${LATE_WORKERS_PER_PARTITION} /local/warmup/warmup_p${p}.bin >& /local/logs/log_r2-e${contadorDeExecucao}.txt" &
       echo created replica2
-      ssh  replica3  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 3 ${LATE_WORKERS_PER_PARTITION} /local/warmup/warmup_p${p}.bin >& /local/w${contadorDeWorkload}_e${contadorDeExecucao}/log_replica3-e${contadorDeExecucao}.txt" &
+      ssh  replica3  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 3 ${LATE_WORKERS_PER_PARTITION} /local/warmup/warmup_p${p}.bin >& /local/logs/log_r3-e${contadorDeExecucao}.txt" &
       echo created replica3
       # espera as replicas sincronizarem
       sleep 30s
       # clientes
       echo starting clients
-      ssh  cliente0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 0 4001 ${NUM_THREADS_CLIENTE} ${w} /local/warmup/warmup_p${p}.bin >& /local/w${contadorDeWorkload}_e${contadorDeExecucao}/log_cliente0-e${contadorDeExecucao}.txt" &
+      ssh  cliente0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 0 4001 ${NUM_THREADS_CLIENTE} ${w} /local/warmup/warmup_p${p}.bin >& /local/logs/log_c0-e${contadorDeExecucao}.txt" &
       echo created cliente0
-      ssh  cliente1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 1 5001 ${NUM_THREADS_CLIENTE} ${w} /local/warmup/warmup_p${p}.bin >& /local/w${contadorDeWorkload}_e${contadorDeExecucao}/log_cliente1-e${contadorDeExecucao}.txt" &
+      ssh  cliente1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 1 5001 ${NUM_THREADS_CLIENTE} ${w} /local/warmup/warmup_p${p}.bin >& /local/logs/log_c1-e${contadorDeExecucao}.txt" &
       echo created cliente1
-      ssh  cliente2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 2 6001 ${NUM_THREADS_CLIENTE} ${w} /local/warmup/warmup_p${p}.bin >& /local/w${contadorDeWorkload}_e${contadorDeExecucao}/log_cliente2-e${contadorDeExecucao}.txt" &
+      ssh  cliente2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 2 6001 ${NUM_THREADS_CLIENTE} ${w} /local/warmup/warmup_p${p}.bin >& /local/logs/log_c2-e${contadorDeExecucao}.txt" &
       echo created cliente2
-      ssh  cliente3  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 3 7001 ${NUM_THREADS_CLIENTE} ${w} /local/warmup/warmup_p${p}.bin >& /local/w${contadorDeWorkload}_e${contadorDeExecucao}/log_cliente3-e${contadorDeExecucao}.txt" &
+      ssh  cliente3  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 3 7001 ${NUM_THREADS_CLIENTE} ${w} /local/warmup/warmup_p${p}.bin >& /local/logs/log_c3-e${contadorDeExecucao}.txt" &
       echo created cliente3
       # tempo de execução
       sleep 1m

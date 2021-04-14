@@ -60,8 +60,10 @@ public class CoinClient {
         Utxo[] tokens = warmUp.tokens.toArray(Utxo[]::new);
         int numPartitions = warmUp.numPartitions;
         List<CoinClientThread> clientThreads = new ArrayList<>(numClientes);
-        for (int i = id * numClientes; i < (id + 1) * numClientes; i++) {
-            clientThreads.add(new CoinClientThread(i, chave, users, tokens, numPartitions, percGlobal, percWrite));
+        for (int i= 0; i < numClientes; i++) {
+            var threadId = chave + i;
+            var userId = (id * numClientes) + i;
+            clientThreads.add(new CoinClientThread(userId, threadId, users, tokens, numPartitions, percGlobal, percWrite));
         }
         // executar as threads.
         for (var t : clientThreads) {

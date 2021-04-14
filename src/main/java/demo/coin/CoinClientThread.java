@@ -22,17 +22,19 @@ public class CoinClientThread extends Thread {
     private final int percGlobal;
     private final int percWrite;
     private final int numPartitions;
-    private final int id;
+    private final int userId;
+    private final KeyPair myUser;
 
-    public CoinClientThread(int id, int chave, KeyPair[] users, Utxo[] utxos, int numPartitions, int percGlobal, int percWrite) {
-        super("CoinClientThread-" + (chave + id));
-        this.id = id;
-        this.proxy = new ParallelServiceProxy(chave + id);
+    public CoinClientThread(int userId, int threadId, KeyPair[] users, Utxo[] utxos, int numPartitions, int percGlobal, int percWrite) {
+        super("CoinClientThread-" + threadId + "-User-" + userId);
+        this.proxy = new ParallelServiceProxy(threadId);
+        this.userId = userId;
         this.users = users;
         this.utxos = utxos;
         this.numPartitions = numPartitions;
         this.percGlobal = percGlobal;
         this.percWrite = percWrite;
+        this.myUser = users[userId];
     }
 
 
@@ -47,7 +49,7 @@ public class CoinClientThread extends Thread {
             var request = new CoinMultiOperationRequest(createOperation(sourcePartition, destinyPartition));
             System.out.println(request);
             var bytes = proxy.invokeParallel(request.serialize(), groupId);
-            System.out.println("Resposta recebida: "+ Arrays.toString(bytes));
+            System.out.println("Resposta recebida: " + Arrays.toString(bytes));
         }
     }
 
@@ -61,15 +63,16 @@ public class CoinClientThread extends Thread {
         var utxo = utxos[random.nextInt(utxos.length)];
         boolean isWrite = random.nextInt(100) < percWrite;
         if (isWrite) {
-            int receiver = selectOtherRandom(users.length, id);
+            int receiverId = selectOtherRandom(users.length, userId);
+            var receiver = users[receiverId];
             var inputs = List.of(new Transfer.Input(utxo.getTransactionHash(), utxo.getOutputPosition()));
             if (sourceCoin == destinyCoin) {
-                operation = new Transfer(users[id], sourceCoin, inputs, List.of(new Transfer.ContaValor(users[receiver], utxo.getValue())));
+                operation = new Transfer(myUser, sourceCoin, inputs, List.of(new Transfer.ContaValor(receiver, utxo.getValue())));
             } else {
-                operation = new Exchange(users[id], sourceCoin, inputs, List.of(new Exchange.ContaValorMoeda(users[receiver], utxo.getValue(), destinyCoin)));
+                operation = new Exchange(myUser, sourceCoin, inputs, List.of(new Exchange.ContaValorMoeda(receiver, utxo.getValue(), destinyCoin)));
             }
         } else {
-            operation = new Balance(users[id], sourceCoin, destinyCoin);
+            operation = new Balance(myUser, sourceCoin, destinyCoin);
         }
         return operation;
     }

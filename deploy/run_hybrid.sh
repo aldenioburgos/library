@@ -51,7 +51,7 @@ for w in "${workloads[@]}" ; do
 #      echo 'replica0 killed'
       echo
       sleep 3s
-      echo 'finished hibrid'
+      echo 'finished hibrid execution '${contadorDeExecucao}
 
     done;
   done;

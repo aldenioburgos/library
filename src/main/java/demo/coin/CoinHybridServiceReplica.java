@@ -66,7 +66,7 @@ public class CoinHybridServiceReplica extends ParallelServiceReplica {
     protected void initLateWorkers(int n, int partitions, ThroughputStatistics statistics) {
         System.out.println("n late: " + n);
         for (int i = 0; i < n; i++) {
-            new CoinLateWorker(i, partitions, subgraphs, (SingleExecutable) executor, replier, SVController, statistics).start();
+            new CoinLateWorker(id, i, partitions, subgraphs, (SingleExecutable) executor, replier, SVController, statistics).start();
         }
     }
 

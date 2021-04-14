@@ -71,18 +71,4 @@ public class CoinGlobalStateTest {
         assertTrue(globalState.isCurrency(0));
     }
 
-
-    @Test
-    void addListAndListUtxo() {
-
-        var globalState = new CoinGlobalState(Set.of(pubkey), emptySet(), 2);
-        assertEquals(0, globalState.getUtxos(0, pubkey).size());
-
-        globalState.addUtxo(0, pubkey, CryptoUtil.hash(pubkey.bytes), 0, 1L);
-        assertEquals(0, globalState.getUtxos(1, pubkey).size());
-        assertEquals(1, globalState.getUtxos(0, pubkey).size());
-
-        globalState.removeUtxos(1, pubkey, Set.of(new UtxoAddress(CryptoUtil.hash(pubkey.bytes), 0)));
-        assertEquals(0, globalState.getUtxos(1, pubkey).size());
-    }
 }

@@ -11,7 +11,8 @@ import parallelism.hibrid.late.HibridLockFreeNode;
 
 public class CoinLateWorker extends Thread {
 
-    private final int thread_id;
+    private final int replicaId;
+    private final int threadId;
     private final int myPartition;
     private ExtendedLockFreeGraph[] subgraphs;
     private SingleExecutable executor;
@@ -19,16 +20,18 @@ public class CoinLateWorker extends Thread {
     private ServerViewController SVController;
     private ThroughputStatistics statistics;
 
-    public CoinLateWorker(int id,
+    public CoinLateWorker(int replicaId,
+                          int threadId,
                           int partitions,
                           ExtendedLockFreeGraph[] subgraphs,
                           SingleExecutable executor,
                           Replier replier,
                           ServerViewController SVController,
                           ThroughputStatistics statistics) {
-        super("LateWorker-"+id);
-        this.thread_id = id;
-        this.myPartition = id % partitions;
+        super("LateWorker-" + threadId);
+        this.replicaId = replicaId;
+        this.threadId = threadId;
+        this.myPartition = threadId % partitions;
         this.subgraphs = subgraphs;
         this.executor = executor;
         this.replier = replier;
@@ -45,10 +48,10 @@ public class CoinLateWorker extends Thread {
                 msg.setResponse(executor.executeOrdered(msg.operation, null));
 
                 if (msg.multiOperationCtx.isComplete()) {
-                    msg.setReply(new TOMMessage(thread_id, msg.getSession(), msg.getSequence(), msg.getResponseBytes(), SVController.getCurrentViewId()));
+                    msg.setReply(new TOMMessage(replicaId, msg.getSession(), msg.getSequence(), msg.getResponseBytes(), SVController.getCurrentViewId()));
                     replier.manageReply(msg.getTOMRequest(), null);
                 }
-                statistics.computeStatistics(thread_id, 1);
+                statistics.computeStatistics(threadId, 1);
                 //remove
                 subgraphs[this.myPartition].remove(node);
             } catch (InterruptedException ex) {

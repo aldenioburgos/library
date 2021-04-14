@@ -18,8 +18,7 @@ public class CoinMultiOperationResponse {
              var dis = new DataInputStream(bais)) {
             this.responses = new byte[dis.readUnsignedShort()][];
             for (int i = 0; i < this.responses.length; i++) {
-                this.responses[i] = new byte[dis.readUnsignedShort()];
-                dis.readFully(this.responses[i]);
+                this.responses[i] = dis.readNBytes(dis.readUnsignedShort());
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);

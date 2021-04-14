@@ -1,12 +1,15 @@
 package demo.coin.core.transactions;
 
 import demo.coin.util.ByteArray;
+import demo.coin.util.CryptoUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
 
 import static demo.coin.util.CryptoUtil.generateKeyPair;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,6 +32,7 @@ class TransferTest {
 
     @Test
     void loadDataFromAndWriteDataTo() {
+        transfer = new Transfer(minterKeys, 0, List.of(new Transfer.Input(CryptoUtil.hash("teste".getBytes()), 0)), List.of(new Transfer.ContaValor(receiverPubKey, 1L)));
         var t2 = new Transfer(transfer.toByteArray());
         assertEquals(transfer, t2);
     }

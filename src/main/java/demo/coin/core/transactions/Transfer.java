@@ -68,11 +68,11 @@ public class Transfer extends CoinOperation {
                 Output output = outputs.get(i);
                 globalState.addUtxo(this.currency, accounts.get(output.receiverAccountIndex), transactionHash, i, output.value);
             }
+            return ok();
         } catch (Throwable e) {
             e.printStackTrace();
             return fail();
         }
-        return ok();
     }
 
     @Override

@@ -34,8 +34,8 @@ public class WarmUp {
             Set<Utxo> auxTokens = readTokens(dis);
             System.out.println("Warm-up file loaded with:");
             System.out.println("\t numPartitions =" + auxPartitions);
-            System.out.println("\t numUsersPerPartition =" + auxUsers.size());
-            System.out.println("\t numTokensPerUser =" + auxTokens.size());
+            System.out.println("\t numUsers =" + auxUsers.size());
+            System.out.println("\t numTokens =" + auxTokens.size());
             return new WarmUp(auxPartitions, auxUsers, auxTokens);
         }
 

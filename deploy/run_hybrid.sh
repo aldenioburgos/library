@@ -6,27 +6,29 @@ threads=(2 4 6)
 workloads=('0 0' '5 10')  #percGlobal #percWrite
 Server="CoinHybridServiceReplica"
 Client="CoinClient"
-i=0
+contadorDeWorkload=0
+contadorDeExecucao=0
 
 for w in "${workloads[@]}" ; do
   for p in "${particoes[@]}" ; do
     for LATE_WORKERS_PER_PARTITION in "${threads[@]}" ; do
-      mkdir ./logs_${i}
+      mkdir ./logs_w${contadorDeWorkload}
       # executa experimento hybrid:
-      ssh  replica0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 0 ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& ./logs_${i}/log_replica0.txt" &
+      ssh  replica0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 0 ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}/log_replica0-execucao${contadorDeExecucao}.txt" &
       sleep 3s
-      ssh  replica1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 1 ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& ./logs_${i}/log_replica1.txt" &
+      ssh  replica1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 1 ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}/log_replica1-execucao${contadorDeExecucao}.txt" &
       sleep 3s
-      ssh  replica2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 2 ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& ./logs_${i}/log_replica2.txt" &
-      sleep 30s
-      ssh  cliente0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 0 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_${i}/log_cliente0.txt" &
+      ssh  replica2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 2 ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}/log_replica2-execucao${contadorDeExecucao}.txt" &
       sleep 3s
-      ssh  cliente1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 1 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_${i}/log_cliente1.txt" &
-      sleep 3s
-      ssh  cliente2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 2 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_${i}/log_cliente2.txt" &
-      sleep 3s
-      ssh  cliente3  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 3 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_${i}/log_cliente3.txt" &
-      sleep 4m
+      ssh  cliente0  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 0 4001 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}/log_cliente0-execucao${contadorDeExecucao}.txt" &
+#      sleep 3s
+#      ssh  cliente1  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 1 5001 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}/log_cliente1-execucao${contadorDeExecucao}.txt" &
+#      sleep 3s
+#      ssh  cliente2  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 2 6001 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}/log_cliente2-execucao${contadorDeExecucao}.txt" &
+#      sleep 3s
+#      ssh  cliente3  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 3 7001 ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& ./logs_w${contadorDeWorkload}/log_cliente3-execucao${contadorDeExecucao}.txt" &
+#      sleep 4m
+      contadorDeExecucao=$((contadorDeExecucao + 1))
       ssh  cliente0  "pkill -f java" &
       echo 'cliente0 killed'
       ssh  cliente1  "pkill -f java" &
@@ -48,9 +50,9 @@ for w in "${workloads[@]}" ; do
     done;
   done;
 
-  mkdir "hybrid_coin_${i}"
-  mv results* "hybrid_coin_${i}"
-  i=$((i + 1))
+  mkdir "hybrid_coin_${contadorDeWorkload}"
+  mv results* "hybrid_coin_${contadorDeWorkload}"
+  contadorDeWorkload=$((contadorDeWorkload + 1))
 
 done;
 

@@ -4,7 +4,6 @@ alias l ll
 alias g "git status"
 alias ga "git add"
 alias gc "git commit -a"
-alias gp "git push https://aldenioburgos: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@github.com/aldenioburgos/library.git"
 alias run "./run_hybrid.sh >& log & ; tail -f log"
 alias top "top -ualdenio"
 alias stop "pkill run_hybrid"

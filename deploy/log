@@ -1,3 +1,4 @@
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -9,21 +10,18 @@ created cliente2
 created cliente3
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 0
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -33,25 +31,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 1
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -61,26 +54,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 2
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -90,26 +77,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 3
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -119,25 +100,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 4
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -147,25 +123,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 5
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -175,25 +146,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 6
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -203,25 +169,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 7
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -231,25 +192,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 8
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -259,24 +215,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 9
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -286,26 +238,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 10
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -315,56 +261,66 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 11
+
+criando a pasta de execução /users/aldenio/hybridpsmr/deploy/execution_w0_21-04-16-13:04:01
+zipando os logs para
+mkdir: missing operand
+Try 'mkdir --help' for more information.
+zipando os resultados para execution_w0_21-04-16-13:04:01
+starting replicas
 created replica0
 created replica1
 created replica2
 created replica3
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
 starting clients
 created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 12
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -374,26 +330,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 13
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -403,27 +353,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 14
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -433,25 +376,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 15
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -461,24 +399,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 16
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -488,24 +422,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 17
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -515,25 +445,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 18
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -543,23 +468,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-exec request failed on channel 0
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 19
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -569,53 +491,43 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 20
+
+starting replicas
 created replica0
 created replica1
 created replica2
 created replica3
-client_loop: send disconnect: Broken pipe
 starting clients
 created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 21
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -625,26 +537,20 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
 1 minute
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 22
+
+starting replicas
 created replica0
 created replica1
 created replica2
@@ -654,26 +560,40 @@ created cliente0
 created cliente1
 created cliente2
 created cliente3
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
 1 minute
-Killed
 2 minutes
-3 minutes
-encerrou
+3 minutes encerrou
 cliente0 killed
 cliente1 killed
 cliente2 killed
 cliente3 killed
-replica2 killed
-replica1 killed
 replica0 killed
-
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-client_loop: send disconnect: Broken pipe
-exec request failed on channel 0
+replica1 killed
+replica2 killed
+replica3 killed
 finished hibrid execution 23
+
+criando a pasta de execução /users/aldenio/hybridpsmr/deploy/execution_w1_21-04-16-13:55:16
+zipando os logs para
+mkdir: missing operand
+Try 'mkdir --help' for more information.
+zipando os resultados para execution_w1_21-04-16-13:55:16
 finished all
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from member names
+tar: Removing leading `/' from hard link targets
+tar: Removing leading `/' from hard link targets

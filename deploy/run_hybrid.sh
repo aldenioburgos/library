@@ -3,7 +3,8 @@
 NUM_THREADS_CLIENTE=1000
 particoes=(2 4 6 8)
 threads=(2 4 6)
-workloads=('0 0' '5 10')  #percGlobal #percWrite
+#workloads=('0 0' '5 10')  #percGlobal #percWrite
+workloads=('5 10')  #percGlobal #percWrite
 Server="CoinHybridServiceReplica"
 Client="CoinClient"
 contadorDeWorkload=0
@@ -65,7 +66,7 @@ for w in "${workloads[@]}" ; do
   done;
 
   mkdir "results_hybrid_coin_${contadorDeWorkload}"
-  mv results* "results_hybrid_coin_${contadorDeWorkload}"
+  mv resultsC* "results_hybrid_coin_${contadorDeWorkload}"
   contadorDeWorkload=$((contadorDeWorkload + 1))
 
 done;

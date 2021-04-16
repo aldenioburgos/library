@@ -1,0 +1,323 @@
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 0
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 1
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+exec request failed on channel 0
+finished hibrid execution 2
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+exec request failed on channel 0
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 3
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 4
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 5
+created replica0
+created replica1
+created replica2
+created replica3
+client_loop: send disconnect: Broken pipe
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+exec request failed on channel 0
+finished hibrid execution 6
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+exec request failed on channel 0
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 7
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 8
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 9
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+finished hibrid execution 10
+created replica0
+created replica1
+created replica2
+created replica3
+starting clients
+created cliente0
+created cliente1
+created cliente2
+created cliente3
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+client_loop: send disconnect: Broken pipe
+1 minute
+2 minutes
+3 minutes
+encerrou
+cliente0 killed
+cliente1 killed
+cliente2 killed
+cliente3 killed
+replica2 killed
+replica1 killed
+replica0 killed
+
+client_loop: send disconnect: Broken pipe
+exec request failed on channel 0
+finished hibrid execution 11
+finished all
+client_loop: send disconnect: Broken pipe

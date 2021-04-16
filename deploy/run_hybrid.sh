@@ -48,19 +48,23 @@ for w in "${workloads[@]}" ; do
       echo
     done;
   done;
-  agora=`date +"%y-%m-%d-%T"`
-  resultsDir=results_hybrid_coin_${contadorDeWorkload}_${agora}
-  echo movendo os resultados para ${resultsDir}
-  mkdir ${resultsDir}
-  mv resultsCoin* ${resultsDir}
 
-  logsDir=logs_${agora}
-  echo movendo os logs para ${logsDir}
+  # criando pasta de execução
+  agora=`date +"%y-%m-%d-%T"`
+  execDir=execution_w${contadorDeWorkload}_${agora}
+  echo criando a pasta de execução ~/hybridpsmr/deploy/${execDir}
+  mkdir ~/hybridpsmr/deploy/${execDir}
+
+  echo zipando os logs para ${logsDir}
   mkdir ${logsDir}
   for i in {0..3} ; do
-      ssh  cliente${i}  "tar -czf ~/hybridpsmr/deploy/${logsDir}/log_c${i}.tar.gz /local/logs/*" &
-      ssh  replica${i}  "tar -czf ~/hybridpsmr/deploy/${logsDir}/log_r${i}.tar.gz /local/logs/*" &
+      ssh  cliente${i}  "tar -czf ~/hybridpsmr/deploy/${execDir}/log_c${i}.tar.gz /local/logs/*" &
+      ssh  replica${i}  "tar -czf ~/hybridpsmr/deploy/${execDir}/log_r${i}.tar.gz /local/logs/*" &
   done
+
+  echo zipando os resultados para ${execDir}
+  tar -czf ~/hybridpsmr/deploy/${execDir}/results.tar.gz  ~/hybridpsmr/deploy/resultsCoin* &
+  # entrando no proximo workload
   contadorDeWorkload=$((contadorDeWorkload + 1))
 done;
 echo 'finished all'

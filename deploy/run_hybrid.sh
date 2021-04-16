@@ -55,8 +55,7 @@ for w in "${workloads[@]}" ; do
   echo criando a pasta de execução ~/hybridpsmr/deploy/${execDir}
   mkdir ~/hybridpsmr/deploy/${execDir}
 
-  echo zipando os logs para ${logsDir}
-  mkdir ${logsDir}
+  echo zipando os logs para ${execDir}
   for i in {0..3} ; do
       ssh  cliente${i}  "tar -czf ~/hybridpsmr/deploy/${execDir}/log_c${i}.tar.gz /local/logs/*" &
       ssh  replica${i}  "tar -czf ~/hybridpsmr/deploy/${execDir}/log_r${i}.tar.gz /local/logs/*" &
@@ -64,6 +63,7 @@ for w in "${workloads[@]}" ; do
 
   echo zipando os resultados para ${execDir}
   tar -czf ~/hybridpsmr/deploy/${execDir}/results.tar.gz  ~/hybridpsmr/deploy/resultsCoin* &
+  sleep 3s
   # entrando no proximo workload
   contadorDeWorkload=$((contadorDeWorkload + 1))
 done;

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NUM_THREADS_CLIENTE=1000
+NUM_THREADS_CLIENTE=600
 particoes=(2 4 6 8)
 threads=(2 4 6)
 workloads=('0 0' '5 10')  #percGlobal #percWrite
@@ -14,13 +14,13 @@ for w in "${workloads[@]}" ; do
       # servidores
       echo starting replicas
       for i in {0..3} ; do
-        ssh  replica${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} 0 ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& /local/logs/log_r${i}-e${contadorDeExecucao}.txt" &
+        ssh  replica${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Server} ${i} ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& /local/logs/log_r${i}-e${contadorDeExecucao}.txt" &
         echo created replica${i}
       done
       sleep 30s
       echo starting clients
       for i in {0..3} ; do
-        ssh  cliente${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} 0 $((4001 + (i*1000))) ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& /local/logs/log_c${i}-e${contadorDeExecucao}.txt" &
+        ssh  cliente${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.${Client} ${i} $((4001 + (i*1000))) ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& /local/logs/log_c${i}-e${contadorDeExecucao}.txt" &
         echo created cliente${i}
         sleep 3s
       done
@@ -50,15 +50,15 @@ for w in "${workloads[@]}" ; do
   done;
 
   # criando pasta de execução
-  agora=`date +"%y-%m-%d-%T"`
+  agora=`date +"%y-%m-%d-%H-%M-%S"`
   execDir=execution_w${contadorDeWorkload}_${agora}
   echo criando a pasta de execução ~/hybridpsmr/deploy/${execDir}
   mkdir ~/hybridpsmr/deploy/${execDir}
 
   echo zipando os logs para ${execDir}
   for i in {0..3} ; do
-      ssh  cliente${i}  "tar -czf ~/hybridpsmr/deploy/${execDir}/log_c${i}.tar.gz /local/logs/*" &
-      ssh  replica${i}  "tar -czf ~/hybridpsmr/deploy/${execDir}/log_r${i}.tar.gz /local/logs/*" &
+      ssh  cliente${i}  "cd /local/logs ; tar -czf ~/hybridpsmr/deploy/${execDir}/log_c${i}.tar.gz ./*; cd ~/hybridpsmr/deploy" &
+      ssh  replica${i}  "cd /local/logs ; tar -czf ~/hybridpsmr/deploy/${execDir}/log_r${i}.tar.gz ./*; cd ~/hybridpsmr/deploy" &
   done
 
   echo zipando os resultados para ${execDir}

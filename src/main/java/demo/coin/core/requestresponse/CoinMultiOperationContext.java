@@ -36,9 +36,6 @@ public class CoinMultiOperationContext implements OperationContext {
         return multiOperationRequest.getOp(i);
     }
 
-    public CoinHibridClassToThreads getClassToThreadMap() {
-        return cToT;
-    }
 
     @Override
     public boolean isConcurrent() {

@@ -34,13 +34,13 @@ for w in "${workloads[@]}" ; do
       # mata tudo para começar denovo
       for i in {0..3} ; do
         ssh  cliente${i}  "pkill -f java" &
-        echo cliente${i} killed
         sleep 3s
+        echo cliente${i} killed
       done
       for i in {0..3} ; do
         ssh  replica${i}  "pkill -f java" &
-        echo replica${i} killed
         sleep 3s
+        echo replica${i} killed
       done
       sleep 10s
       echo finished hibrid execution ${contadorDeExecucao}

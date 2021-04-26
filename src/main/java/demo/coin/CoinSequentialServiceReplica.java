@@ -1,19 +1,13 @@
 package demo.coin;
 
-import bftsmart.reconfiguration.ServerViewController;
 import bftsmart.tom.server.Executable;
 import bftsmart.tom.server.Recoverable;
-import bftsmart.tom.server.Replier;
 import bftsmart.tom.server.SingleExecutable;
 import bftsmart.util.ThroughputStatistics;
 import demo.coin.core.CoinGlobalState;
-import demo.coin.early.CoinEarlyWorker;
-import demo.coin.early.CoinHibridScheduler;
 import demo.coin.late.CoinConflictDefinition;
 import demo.coin.late.CoinExecutor;
-import demo.coin.late.CoinLateWorker;
 import parallelism.ParallelServiceReplica;
-import parallelism.hibrid.late.ExtendedLockFreeGraph;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;

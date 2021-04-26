@@ -1,13 +1,33 @@
 #!/bin/bash
 
-sudo ln -s /users/aldenio/jdk-15.0.2/bin/jar /usr/bin/jar;
-sudo ln -s /users/aldenio/jdk-15.0.2/bin/java /usr/bin/java;
-sudo ln -s /users/aldenio/jdk-15.0.2/bin/javac /usr/bin/javac; java -version
+sudo rm /usr/bin/jar;
+sudo rm /usr/bin/javac;
+sudo rm /usr/bin/java;
+if [[ ! -d /local/jdk-15.0.2 ]]
+then
+  cp -r ~/jdk-15.0.2 /local
+fi
+sudo ln -s /local/jdk-15.0.2/bin/jar /usr/bin/jar;
+sudo ln -s /local/jdk-15.0.2/bin/java /usr/bin/java;
+sudo ln -s /local/jdk-15.0.2/bin/javac /usr/bin/javac;
+java -version
+
+commands=`cat <<EOF
+sudo rm /usr/bin/jar;
+sudo rm /usr/bin/javac;
+sudo rm /usr/bin/java;
+[ ! -d /local/jdk-15.0.2 ] &&  cp -r ~/jdk-15.0.2 /local
+sudo ln -s /local/jdk-15.0.2/bin/jar /usr/bin/jar;
+sudo ln -s /local/jdk-15.0.2/bin/java /usr/bin/java;
+sudo ln -s /local/jdk-15.0.2/bin/javac /usr/bin/javac;
+java -version
+EOF
+`
+
 
 nodes=(replica0 replica1 replica2 replica3 cliente0 cliente1 cliente2 cliente3)
 for n in "${nodes[@]}" ; do
-  ssh  ${n}  "sudo ln -s /users/aldenio/jdk-15.0.2/bin/jar /usr/bin/jar; sudo ln -s /users/aldenio/jdk-15.0.2/bin/java /usr/bin/java; sudo ln -s /users/aldenio/jdk-15.0.2/bin/javac /usr/bin/javac; java -version"
+  echo  ${n}
+  ssh  ${n}  "${commands}"
 done;
 echo 'finished setup'
-
-

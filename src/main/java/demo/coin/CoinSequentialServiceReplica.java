@@ -20,7 +20,7 @@ public class CoinSequentialServiceReplica extends ParallelServiceReplica {
 
 
     enum PARAMS {
-        ID, LATE_WORKERS_PER_PARTITION, WARM_UP_FILE
+        ID,  WARM_UP_FILE
     }
 
     public CoinSequentialServiceReplica(int id, Executable executor, Recoverable recoverer, int numPartitions) {

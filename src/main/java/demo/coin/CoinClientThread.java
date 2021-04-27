@@ -3,7 +3,6 @@ package demo.coin;
 
 import bftsmart.tom.ParallelServiceProxy;
 import demo.coin.core.Utxo;
-import demo.coin.core.requestresponse.CoinMultiOperationRequest;
 import demo.coin.core.transactions.Balance;
 import demo.coin.core.transactions.CoinOperation;
 import demo.coin.core.transactions.Exchange;
@@ -17,6 +16,7 @@ public class CoinClientThread extends Thread {
 
     private final Random random = new Random();
     private final ParallelServiceProxy proxy;
+    private int threadId;
     private final KeyPair[] users;
     private final Utxo[] utxos;
     private final int percGlobal;
@@ -29,6 +29,7 @@ public class CoinClientThread extends Thread {
         super("CoinClientThread-" + threadId + "-User-" + userId);
         this.proxy = new ParallelServiceProxy(threadId);
         this.userId = userId;
+        this.threadId = threadId;
         this.users = users;
         this.utxos = utxos;
         this.numPartitions = numPartitions;
@@ -40,16 +41,18 @@ public class CoinClientThread extends Thread {
 
     @Override
     public void run() {
+        var reqNum = 0;
         //noinspection InfiniteLoopStatement
         while (true) {
             boolean isGlobal = random.nextInt(100) < percGlobal;
             int sourcePartition = random.nextInt(numPartitions);
             int destinyPartition = isGlobal ? selectOtherRandom(numPartitions, sourcePartition) : sourcePartition;
             int groupId = getGroupId(isGlobal, sourcePartition, destinyPartition);
-            var request = new CoinMultiOperationRequest(createOperation(sourcePartition, destinyPartition));
-            System.out.println(request);
-            var bytes = proxy.invokeParallel(request.serialize(), groupId);
-            System.out.println("Resposta recebida: " + Arrays.toString(bytes));
+            var request = createOperation(sourcePartition, destinyPartition);
+            System.out.println("CoinClientThread-" + threadId + "-User-" + userId+" enviou a request["+ reqNum +"]->"+request);
+            var bytes = proxy.invokeParallel(request.toByteArray(), groupId);
+            System.out.println("CoinClientThread-" + threadId + "-User-" + userId+" recebeu a resposta["+ reqNum +"]->"+Arrays.toString(bytes));
+            reqNum++;
         }
     }
 

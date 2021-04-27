@@ -5,7 +5,7 @@ import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.server.Replier;
 import bftsmart.tom.server.SingleExecutable;
 import bftsmart.util.ThroughputStatistics;
-import demo.coin.core.requestresponse.CoinSingleOperationContext;
+import demo.coin.core.requestresponse.CoinOperationContext;
 import parallelism.hibrid.late.ExtendedLockFreeGraph;
 import parallelism.hibrid.late.HibridLockFreeNode;
 
@@ -44,13 +44,10 @@ public class CoinLateWorker extends Thread {
             try {
                 HibridLockFreeNode node = subgraphs[this.myPartition].get();
 
-                CoinSingleOperationContext msg = (CoinSingleOperationContext) node.getData();
-                msg.setResponse(executor.executeOrdered(msg.operation, null));
-
-                if (msg.multiOperationCtx.isComplete()) {
-                    msg.setReply(new TOMMessage(replicaId, msg.getSession(), msg.getSequence(), msg.getResponseBytes(), SVController.getCurrentViewId()));
-                    replier.manageReply(msg.getTOMRequest(), null);
-                }
+                CoinOperationContext msg = (CoinOperationContext) node.getData();
+                msg.resp = executor.executeOrdered(msg.operation, null);
+                msg.setReply(new TOMMessage(replicaId, msg.getSession(), msg.getSequence(), msg.getResponseBytes(), SVController.getCurrentViewId()));
+                replier.manageReply(msg.getTOMRequest(), null);
                 statistics.computeStatistics(threadId, 1);
                 //remove
                 subgraphs[this.myPartition].remove(node);

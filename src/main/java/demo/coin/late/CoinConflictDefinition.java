@@ -1,6 +1,6 @@
 package demo.coin.late;
 
-import demo.coin.core.requestresponse.CoinSingleOperationContext;
+import demo.coin.core.requestresponse.CoinOperationContext;
 import demo.coin.core.transactions.CoinOperation;
 import demo.coin.core.transactions.CoinOperation.OP_TYPE;
 import parallelism.late.ConflictDefinition;
@@ -15,8 +15,8 @@ public class CoinConflictDefinition implements ConflictDefinition {
 
 
     public boolean isDependent(Object r1, Object r2) {
-        byte[] op1 = ((CoinSingleOperationContext) r1).operation;
-        byte[] op2 = ((CoinSingleOperationContext) r2).operation;
+        byte[] op1 = ((CoinOperationContext) r1).operation;
+        byte[] op2 = ((CoinOperationContext) r2).operation;
         if (OP_TYPE.BALANCE.ordinal() == op1[0] && OP_TYPE.BALANCE.ordinal() == op2[0]) {
             return false;
         }

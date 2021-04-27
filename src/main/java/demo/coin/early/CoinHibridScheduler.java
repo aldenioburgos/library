@@ -1,8 +1,7 @@
 package demo.coin.early;
 
 import bftsmart.tom.core.messages.TOMMessage;
-import demo.coin.core.requestresponse.CoinMultiOperationContext;
-import demo.coin.core.requestresponse.CoinSingleOperationContext;
+import demo.coin.core.requestresponse.CoinOperationContext;
 import demo.coin.core.requestresponse.OperationContext;
 import parallelism.MessageContextPair;
 import parallelism.ParallelMapping;
@@ -33,33 +32,29 @@ public class CoinHibridScheduler implements Scheduler {
 
     @Override
     public void schedule(TOMMessage request) {
+        System.out.println("Message "+request.getId()+" at:"+System.currentTimeMillis());
         CoinHibridClassToThreads cToT = classes.get(request.groupId);
         //@formatter:off
         if (cToT == null)  throw new RuntimeException("CLASStoTHREADs MAPPING NOT FOUND for groupId="+request.groupId);
         //@formatter:on
 
-        CoinMultiOperationContext multiOperationCtx = new CoinMultiOperationContext(request, cToT);
+        CoinOperationContext operationContext = new CoinOperationContext(request, cToT);
         if (cToT.isConcurrent()) {
             boolean inserted = false;
             while (!inserted) {
-                inserted = cToT.queues[0].offer(multiOperationCtx);
+                inserted = cToT.queues[0].offer(operationContext);
             }
         } else {
             int queuesLength = cToT.queues.length;
-            for (int i = 0; i < multiOperationCtx.getNumOps(); i++) {
-                byte[] operation = multiOperationCtx.getOp(i);
-                var singleOperationCtx = new CoinSingleOperationContext(multiOperationCtx, i, operation);
-                singleOperationCtx.threadId = cToT.nextThreadIndex();
-                singleOperationCtx.node = new HibridLockFreeNode(singleOperationCtx, Vertex.MESSAGE, null, queuesLength, queuesLength);
+            operationContext.threadId = cToT.nextThreadIndex();
+            operationContext.node = new HibridLockFreeNode(operationContext, Vertex.MESSAGE, null, queuesLength, queuesLength);
 
-                for (Queue<OperationContext> queue : cToT.queues) {
-                    boolean inserted = false;
-                    while (!inserted) {
-                        inserted = queue.offer(singleOperationCtx);
-                    }
+            for (Queue<OperationContext> queue : cToT.queues) {
+                boolean inserted = false;
+                while (!inserted) {
+                    inserted = queue.offer(operationContext);
                 }
             }
-
         }
     }
 

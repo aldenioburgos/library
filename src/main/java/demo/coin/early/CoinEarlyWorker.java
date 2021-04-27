@@ -1,8 +1,7 @@
 package demo.coin.early;
 
 
-import demo.coin.core.requestresponse.CoinMultiOperationContext;
-import demo.coin.core.requestresponse.CoinSingleOperationContext;
+import demo.coin.core.requestresponse.CoinOperationContext;
 import demo.coin.core.requestresponse.OperationContext;
 import parallelism.hibrid.late.ExtendedLockFreeGraph;
 import parallelism.hibrid.late.HibridLockFreeNode;
@@ -30,21 +29,16 @@ public class CoinEarlyWorker extends Thread {
             if (request == null) {
                 continue;
             }
+            CoinOperationContext operationContext = (CoinOperationContext) request;
             if (request.isConcurrent()) {
-                CoinMultiOperationContext reqs = (CoinMultiOperationContext) request;
-
-                for (int i = 0; i < reqs.getNumOps(); i++) {
-                    var singleOperationCtx = new CoinSingleOperationContext(reqs,  i, reqs.getOp(i));
-                    var node = new HibridLockFreeNode(singleOperationCtx, Vertex.MESSAGE, subgraphs[thread_id], subgraphs.length, 0);
-                    subgraphs[thread_id].insert(node, false, false);
-                }
+                operationContext.node = new HibridLockFreeNode(operationContext, Vertex.MESSAGE, subgraphs[thread_id], subgraphs.length, 0);
+                subgraphs[thread_id].insert(operationContext.node, false, false);
             } else {
-                CoinSingleOperationContext req = (CoinSingleOperationContext) request;
-                if (req.threadId == thread_id) {
-                    req.node.graph = subgraphs[thread_id];
-                    subgraphs[thread_id].insert(req.node, false, true);
+                if (operationContext.threadId == thread_id) {
+                    operationContext.node.graph = subgraphs[thread_id];
+                    subgraphs[thread_id].insert(operationContext.node, false, true);
                 } else {
-                    subgraphs[thread_id].insert(req.node, true, true);
+                    subgraphs[thread_id].insert(operationContext.node, true, true);
                 }
             }
         }

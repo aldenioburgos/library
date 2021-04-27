@@ -5,8 +5,7 @@ import bftsmart.tom.core.messages.TOMMessage;
 import bftsmart.tom.server.Replier;
 import bftsmart.tom.server.SingleExecutable;
 import bftsmart.util.ThroughputStatistics;
-import demo.coin.core.requestresponse.CoinMultiOperationContext;
-import demo.coin.core.requestresponse.CoinSingleOperationContext;
+import demo.coin.core.requestresponse.CoinOperationContext;
 import parallelism.MessageContextPair;
 import parallelism.ParallelMapping;
 import parallelism.scheduler.Scheduler;
@@ -28,22 +27,16 @@ public class CoinSequentialScheduler implements Scheduler {
 
     @Override
     public void schedule(TOMMessage request) {
+        System.out.println("Message "+request.getId()+" at:"+System.currentTimeMillis());
         // recebe um batch de operações no request
-        CoinMultiOperationContext multiOperationCtx = new CoinMultiOperationContext(request, null);
-        for (int i = 0; i < multiOperationCtx.getNumOps(); i++) {
-            // para cada operação, cria o contexto
-            byte[] operation = multiOperationCtx.getOp(i);
-            var msg = new CoinSingleOperationContext(multiOperationCtx, i, operation);
-            // executa
-            msg.setResponse(executor.executeOrdered(msg.operation, null));
-            // se terminou o batch responde
-            if (msg.multiOperationCtx.isComplete()) {
-                msg.setReply(new TOMMessage(replicaId, msg.getSession(), msg.getSequence(), msg.getResponseBytes(), SVController.getCurrentViewId()));
-                replier.manageReply(msg.getTOMRequest(), null);
-            }
-            // computa a estatística
-            statistics.computeStatistics(1, 1);
-        }
+        CoinOperationContext operationContext = new CoinOperationContext(request, null);
+        // executa
+        operationContext.resp = executor.executeOrdered(operationContext.operation, null);
+        // se terminou o batch responde
+        operationContext.setReply(new TOMMessage(replicaId, operationContext.getSession(), operationContext.getSequence(), operationContext.getResponseBytes(), SVController.getCurrentViewId()));
+        replier.manageReply(operationContext.getTOMRequest(), null);
+        // computa a estatística
+        statistics.computeStatistics(1, 1);
     }
 
     @Override

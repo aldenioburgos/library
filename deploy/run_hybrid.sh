@@ -1,6 +1,40 @@
 #!/bin/bash
 source ./kill_hybrid.sh
 
+
+sleep_3min() {
+  # tempo de execução
+  sleep 1m
+  echo 1 minute
+  sleep 1m
+  echo 2 minutes
+  sleep 1m
+  echo 3 minutes encerrou
+}
+
+
+zip_logs() {
+  local wdir="$1"
+  # tratando os logs
+  echo zipando os logs para ${wdir}
+  for i in {0..3} ; do
+      ssh  cliente${i}  "cd /local/logs ; tar -czf ${wdir}/log_c${i}.tar.gz ./*; rm * ; exit" &
+      ssh  replica${i}  "cd /local/logs ; tar -czf ${wdir}/log_r${i}.tar.gz ./*; rm * ; exit" &
+  done
+}
+
+zip_results() {
+  local wdir="$1"
+  # tratando os resultados
+  echo zipando os resultados para ${wdir}
+  cd  ~/hybridpsmr/deploy || exit
+  tar -czf ${wdir}/results.tar.gz  ./resultsCoin*
+  rm ./resultsCoin*
+}
+
+
+
+
 agora=`date +"%y-%m-%d-%H-%M-%S"`
 execDir=~/execution_${agora}
 echo criando a pasta de execução "${execDir}"
@@ -31,7 +65,7 @@ for w in "${workloads[@]}" ; do
       # aguarda a execução por 3 minutos
       sleep_3min
       # mata tudo para começar denovo
-      kill_hibrid
+      kill_hybrid
 
       echo finished hibrid execution ${contadorDeExecucao}
       contadorDeExecucao=$((contadorDeExecucao + 1))
@@ -45,20 +79,20 @@ for w in "${workloads[@]}" ; do
     echo Realizando o teste do mesmo workload para o SMR SEQUENCIAL
     echo starting replicas
     for i in {0..3} ; do
-      ssh  replica${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinSequentialServiceReplica ${i} 1 ./warmup/warmup_p1.bin >& /local/logs/log-seq_r${i}-p1-t1-e${contadorDeExecucao}.txt" &
+      ssh  replica${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinSequentialServiceReplica ${i} ./warmup/warmup_p1.bin >& /local/logs/log_r${i}-seq-p1-t1-e${contadorDeExecucao}.txt" &
       echo created replica${i}
     done
     sleep 30s
     echo starting clients
     for i in {0..3} ; do
-      ssh  cliente${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinClient ${i} $((4001 + (i*1000))) ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p1.bin >& /local/logs/log-seq_c${i}-p1-t1-e${contadorDeExecucao}.txt" &
+      ssh  cliente${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinClient ${i} $((4001 + (i*1000))) ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p1.bin >& /local/logs/log_c${i}-seq-p1-t1-e${contadorDeExecucao}.txt" &
       echo created cliente${i}
       sleep 3s
     done
     # aguarda a execução por 3 minutos
     sleep_3min
     # mata tudo para começar denovo
-    kill_hibrid
+    kill_hybrid
   fi
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -78,34 +112,4 @@ done;
 echo 'finished all'
 
 
-
-sleep_3min() {
-  # tempo de execução
-  sleep 1m
-  echo 1 minute
-  sleep 1m
-  echo 2 minutes
-  sleep 1m
-  echo 3 minutes encerrou
-}
-
-
-zip_logs() {
-  local wdir="$1"
-  # tratando os logs
-  echo zipando os logs para ${wdir}
-  for i in {0..3} ; do
-      ssh  cliente${i}  "cd /local/logs ; tar -czf ${wdir}/log_c${i}.tar.gz ./*; rm *" &
-      ssh  replica${i}  "cd /local/logs ; tar -czf ${wdir}/log_r${i}.tar.gz ./*; rm *" &
-  done
-}
-
-zip_results() {
-  local wdir="$1"
-  # tratando os resultados
-  echo zipando os resultados para ${wdir}
-  cd  ~/hybridpsmr/deploy || exit
-  tar -czf ${wdir}/results.tar.gz  ./resultsCoin*
-  rm ./resultsCoin*
-}
 

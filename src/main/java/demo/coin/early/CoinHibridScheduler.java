@@ -32,7 +32,6 @@ public class CoinHibridScheduler implements Scheduler {
 
     @Override
     public void schedule(TOMMessage request) {
-        System.out.println("Message "+request.getId()+" at:"+System.currentTimeMillis());
         CoinHibridClassToThreads cToT = classes.get(request.groupId);
         //@formatter:off
         if (cToT == null)  throw new RuntimeException("CLASStoTHREADs MAPPING NOT FOUND for groupId="+request.groupId);

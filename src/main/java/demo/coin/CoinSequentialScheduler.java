@@ -27,7 +27,6 @@ public class CoinSequentialScheduler implements Scheduler {
 
     @Override
     public void schedule(TOMMessage request) {
-        System.out.println("Message "+request.getId()+" at:"+System.currentTimeMillis());
         // recebe um batch de operações no request
         CoinOperationContext operationContext = new CoinOperationContext(request, null);
         // executa

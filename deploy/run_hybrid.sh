@@ -43,7 +43,7 @@ mkdir ${execDir}
 NUM_THREADS_CLIENTE=600
 contadorDeWorkload=0
 contadorDeExecucao=0
-workloads=('0 0' '0 5' '0 10' '5 10')  #percGlobal #percWrite
+workloads=('0 0' '0 5' '0 10' '5 10')  #'percGlobal percWrite'
 for w in "${workloads[@]}" ; do
   particoes=(2 4 6 8)
   for p in "${particoes[@]}" ; do

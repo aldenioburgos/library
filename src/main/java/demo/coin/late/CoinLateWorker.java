@@ -43,12 +43,11 @@ public class CoinLateWorker extends Thread {
         while (true) {
             try {
                 HibridLockFreeNode node = subgraphs[this.myPartition].get();
-
                 CoinOperationContext msg = (CoinOperationContext) node.getData();
                 msg.resp = executor.executeOrdered(msg.operation, null);
                 msg.setReply(new TOMMessage(replicaId, msg.getSession(), msg.getSequence(), msg.getResponseBytes(), SVController.getCurrentViewId()));
                 replier.manageReply(msg.getTOMRequest(), null);
-                statistics.computeStatistics(threadId, 1);
+                statistics.computeStatistics(threadId, 1, msg.request.getId());
                 //remove
                 subgraphs[this.myPartition].remove(node);
             } catch (InterruptedException ex) {

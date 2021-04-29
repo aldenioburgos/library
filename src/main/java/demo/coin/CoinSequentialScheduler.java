@@ -35,7 +35,7 @@ public class CoinSequentialScheduler implements Scheduler {
         operationContext.setReply(new TOMMessage(replicaId, operationContext.getSession(), operationContext.getSequence(), operationContext.getResponseBytes(), SVController.getCurrentViewId()));
         replier.manageReply(operationContext.getTOMRequest(), null);
         // computa a estatística
-        statistics.computeStatistics(0, 1);
+        statistics.computeStatistics(0, 1, operationContext.request.getId());
     }
 
     @Override

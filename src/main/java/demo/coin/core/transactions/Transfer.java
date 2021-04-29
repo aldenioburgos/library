@@ -84,7 +84,7 @@ public class Transfer extends CoinOperation {
     public void validate(CoinGlobalState globalState) {
         super.validate(globalState);
         //@formatter:off
-        if (currency < 0 || currency > 255 || !globalState.isCurrency(currency))    throw new IllegalArgumentException();
+        if (currency < 0 || currency > 255 || !globalState.isCurrency(currency)) throw new IllegalArgumentException();
         //@formatter:on
 
         validateInputs(globalState);
@@ -95,7 +95,7 @@ public class Transfer extends CoinOperation {
 
         // todas as entradas foram encontradas?
         //@formatter:off
-        if (coins.size() != inputs.size())                                          throw new IllegalArgumentException();
+        if (coins.size() != inputs.size()) throw new IllegalArgumentException();
         //@formatter:on
 
         // a soma das entradas é igual a soma das saídas?
@@ -107,7 +107,7 @@ public class Transfer extends CoinOperation {
                 .map(Output::getValue)
                 .reduce(0L, Long::sum);
         //@formatter:off
-        if (inputsTotalValue != outputsTotalValue)                                  throw new IllegalArgumentException();
+        if (inputsTotalValue != outputsTotalValue) throw new IllegalArgumentException();
         //@formatter:on
 
     }

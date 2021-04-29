@@ -6,11 +6,10 @@
 package bftsmart.util;
 
 
+import demo.coin.util.Pair;
+
 import java.io.*;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 /**
@@ -18,6 +17,8 @@ import java.util.TimerTask;
  */
 public class ThroughputStatistics {
 
+
+    private final List<Pair<Long, Integer>>[] executions;
     private int[][] counters;
     private int period = 1000; //millis
 
@@ -32,8 +33,15 @@ public class ThroughputStatistics {
     private int id;
 
     private String path = "";
+    boolean stoped = true;
+    int fakenow = 0;
+
 
     public ThroughputStatistics(int id, int numThreads, String filePath, String print) {
+        this.executions = new ArrayList[numThreads];
+        for (int i = 0; i < executions.length; i++) {
+            this.executions[i] = new ArrayList<>(300000);
+        }
         this.print = print;
         this.id = id;
         numT = numThreads;
@@ -45,10 +53,40 @@ public class ThroughputStatistics {
             }
         }
         try {
-            pw = new PrintWriter(new FileWriter(new File(filePath)));
+            pw = new PrintWriter(new FileWriter(filePath));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
+        }
+    }
+
+
+    public void start() {
+        if (!started) {
+            started = true;
+            now = 0;
+            (new Timer()).scheduleAtFixedRate(new TimerTask() {
+                public void run() {
+                    fakenow++;
+                    if (fakenow == 30) {
+                        stoped = false;
+                        for (int i = 0; i < numT; i++) {
+                            counters[i][0] = 0;
+                        }
+                    } else if (!stoped) {
+
+                        if (now <= interval) {
+                            printTP(period);
+                            now++;
+                        }
+
+                        if (now == interval + 1) {
+                            stoped = true;
+                            computeThroughput(period);
+                        }
+                    }
+                }
+            }, period, period);
         }
     }
 
@@ -64,6 +102,9 @@ public class ThroughputStatistics {
         pw.flush();
         double tpAv = loadTP(this.path);
         pw.println("Average " + tpAv);
+        for (int i = 0; i < this.executions.length; i++) {
+            pw.println("Thread["+i+"]->"+this.executions[i]);
+        }
         pw.flush();
     }
 
@@ -122,43 +163,21 @@ public class ThroughputStatistics {
         System.out.println("Throughput at " + print + " = " + tp + " operations/sec in sec : " + now);
     }
 
-    boolean stoped = true;
-    int fakenow = 0;
-
-    public void start() {
-        if (!started) {
-            started = true;
-            now = 0;
-            (new Timer()).scheduleAtFixedRate(new TimerTask() {
-                public void run() {
-                    fakenow++;
-                    if (fakenow == 30) {
-                        stoped = false;
-                        for (int i = 0; i < numT; i++) {
-                            counters[i][0] = 0;
-                        }
-                    } else if (!stoped) {
-
-                        if (now <= interval) {
-                            printTP(period);
-                            now++;
-                        }
-
-                        if (now == interval + 1) {
-                            stoped = true;
-                            computeThroughput(period);
-                        }
-                    }
-                }
-            }, period, period);
-        }
-    }
-
-
     public void computeStatistics(int threadId, int amount) {
         if (!stoped) {
             try {
                 counters[threadId][now] = counters[threadId][now] + amount;
+            } catch (ArrayIndexOutOfBoundsException ignore) {
+                //ignore.printStackTrace();
+            }
+        }
+    }
+
+    public void computeStatistics(int threadId, int amount, Integer requestId) {
+        if (!stoped) {
+            try {
+                counters[threadId][now] = counters[threadId][now] + amount;
+                executions[threadId].add(new Pair(System.currentTimeMillis(), requestId));
             } catch (ArrayIndexOutOfBoundsException ignore) {
                 //ignore.printStackTrace();
             }

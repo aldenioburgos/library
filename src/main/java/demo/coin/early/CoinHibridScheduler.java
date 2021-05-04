@@ -1,6 +1,7 @@
 package demo.coin.early;
 
 import bftsmart.tom.core.messages.TOMMessage;
+import bftsmart.util.ThroughputStatistics;
 import demo.coin.core.requestresponse.CoinOperationContext;
 import demo.coin.core.requestresponse.OperationContext;
 import parallelism.MessageContextPair;
@@ -17,9 +18,11 @@ public class CoinHibridScheduler implements Scheduler {
 
     private Map<Integer, CoinHibridClassToThreads> classes;
     public final Queue<OperationContext>[] queues;
+    private ThroughputStatistics statistics;
 
-    public CoinHibridScheduler(int numberOfPartitions, int queuesCapacity) {
+    public CoinHibridScheduler(int numberOfPartitions, int queuesCapacity, ThroughputStatistics statistics) {
         this.queues = new Queue[numberOfPartitions];
+        this.statistics = statistics;
         for (int i = 0; i < queues.length; i++) {
             queues[i] = new SPSCQueue<>(queuesCapacity);
         }
@@ -32,6 +35,7 @@ public class CoinHibridScheduler implements Scheduler {
 
     @Override
     public void schedule(TOMMessage request) {
+        statistics.computeArrivals(request.getId());
         CoinHibridClassToThreads cToT = classes.get(request.groupId);
         //@formatter:off
         if (cToT == null)  throw new RuntimeException("CLASStoTHREADs MAPPING NOT FOUND for groupId="+request.groupId);

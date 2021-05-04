@@ -22,7 +22,6 @@ import java.security.spec.InvalidKeySpecException;
  */
 public class CoinHybridServiceReplica extends ParallelServiceReplica {
 
-
     enum PARAMS {
         ID, LATE_WORKERS_PER_PARTITION, WARM_UP_FILE
     }
@@ -31,13 +30,17 @@ public class CoinHybridServiceReplica extends ParallelServiceReplica {
 
     public CoinHybridServiceReplica(int id, Executable executor, Recoverable recoverer, int numPartitions, CoinConflictDefinition cd, int lateWorkers) {
         super(id, executor, recoverer, numPartitions);
+        if (numPartitions <= 0) {
+            numPartitions = 1;
+        }
         System.out.println("Criou um hibrid scheduler: partitions (early) = " + numPartitions + " workers (late) = " + lateWorkers);
-
         statistics = new ThroughputStatistics(id, lateWorkers, "resultsCoinReplica_" + id + "_" + numPartitions + "_" + lateWorkers + ".txt", "");
+        scheduler = new CoinHibridScheduler(numPartitions, 100000, statistics);
         subgraphs = createSubGraphs(numPartitions, cd);
         initEarlyWorkers(numPartitions);
         initLateWorkers(lateWorkers, numPartitions, statistics);
     }
+
 
     private ExtendedLockFreeGraph[] createSubGraphs(int numPartitions, CoinConflictDefinition cd) {
         var graphs = new ExtendedLockFreeGraph[numPartitions];
@@ -45,14 +48,6 @@ public class CoinHybridServiceReplica extends ParallelServiceReplica {
             graphs[i] = new ExtendedLockFreeGraph(cd, i, 150 / numPartitions);
         }
         return graphs;
-    }
-
-    @Override
-    protected void createScheduler(int numPartitions) {
-        if (numPartitions <= 0) {
-            numPartitions = 1;
-        }
-        this.scheduler = new CoinHibridScheduler(numPartitions, 100000);
     }
 
 
@@ -91,6 +86,11 @@ public class CoinHybridServiceReplica extends ParallelServiceReplica {
 
     @Override
     protected void initWorkers(int n, int id) {
+        // não faz nada!
+    }
+
+    @Override
+    protected void createScheduler(int numPartitions) {
         // não faz nada!
     }
 }

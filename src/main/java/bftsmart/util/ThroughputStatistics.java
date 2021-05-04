@@ -9,6 +9,11 @@ package bftsmart.util;
 import demo.coin.util.Pair;
 
 import java.io.*;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -17,12 +22,13 @@ import java.util.*;
  */
 public class ThroughputStatistics {
 
-
-    private final List<Pair<Long, Integer>>[] executions;
+    private final int period = 1000; //millis
+    private final int interval = 120;
+    private List<Pair<Long, Integer>>[] executions;
+    private List<Pair<Long, Integer>> arrivals;
     private int[][] counters;
-    private int period = 1000; //millis
-
-    private int interval = 120;
+    private long startedAt = 0;
+    private long stoppedAt = 0;
 
     private boolean started = false;
     private int now = 0;
@@ -33,30 +39,72 @@ public class ThroughputStatistics {
     private int id;
 
     private String path = "";
-    boolean stoped = true;
+    boolean isStopped = true;
     int fakenow = 0;
-
+    private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
 
     public ThroughputStatistics(int id, int numThreads, String filePath, String print) {
-        this.executions = new ArrayList[numThreads];
-        for (int i = 0; i < executions.length; i++) {
-            this.executions[i] = new ArrayList<>(300000);
-        }
         this.print = print;
         this.id = id;
-        numT = numThreads;
+        this.numT = numThreads;
         this.path = filePath;
-        counters = new int[numThreads][interval + 1];
+        this.arrivals = new ArrayList<>(300000);
+        initExecutions(numThreads);
+        initCounters(numThreads);
+        initPrintWriter(filePath);
+    }
+
+    private void initPrintWriter(String filePath) {
+        try {
+            this.pw = new PrintWriter(new FileWriter(filePath));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    private void initCounters(int numThreads) {
+        this.counters = new int[numThreads][interval + 1];
         for (int i = 0; i < numThreads; i++) {
             for (int j = 0; j < interval + 1; j++) {
                 counters[i][j] = 0;
             }
         }
-        try {
-            pw = new PrintWriter(new FileWriter(filePath));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
+    }
+
+    private void initExecutions(int numThreads) {
+        this.executions = new ArrayList[numThreads];
+        for (int i = 0; i < executions.length; i++) {
+            this.executions[i] = new ArrayList<>(300000);
+        }
+    }
+
+    public void computeStatistics(int threadId, int amount) {
+        if (!isStopped) {
+            try {
+                counters[threadId][now] = counters[threadId][now] + amount;
+            } catch (ArrayIndexOutOfBoundsException ignore) {
+                //ignore.printStackTrace();
+            }
+        }
+    }
+
+    public void computeStatistics(int threadId, int amount, Integer requestId) {
+        if (!isStopped) {
+            try {
+                counters[threadId][now] = counters[threadId][now] + amount;
+                executions[threadId].add(new Pair(System.currentTimeMillis(), requestId));
+            } catch (ArrayIndexOutOfBoundsException ignore) {
+            }
+        }
+    }
+
+    public void computeArrivals(Integer requestId) {
+        if (!isStopped) {
+            try {
+                arrivals.add(new Pair<>(System.currentTimeMillis(), requestId));
+            } catch (ArrayIndexOutOfBoundsException ignore) {
+            }
         }
     }
 
@@ -69,11 +117,12 @@ public class ThroughputStatistics {
                 public void run() {
                     fakenow++;
                     if (fakenow == 30) {
-                        stoped = false;
+                        isStopped = false;
+                        startedAt = System.currentTimeMillis();
                         for (int i = 0; i < numT; i++) {
                             counters[i][0] = 0;
                         }
-                    } else if (!stoped) {
+                    } else if (!isStopped) {
 
                         if (now <= interval) {
                             printTP(period);
@@ -81,8 +130,10 @@ public class ThroughputStatistics {
                         }
 
                         if (now == interval + 1) {
-                            stoped = true;
+                            isStopped = true;
+                            stoppedAt = System.currentTimeMillis();
                             computeThroughput(period);
+                            System.exit(0);
                         }
                     }
                 }
@@ -102,10 +153,63 @@ public class ThroughputStatistics {
         pw.flush();
         double tpAv = loadTP(this.path);
         pw.println("Average " + tpAv);
-        for (int i = 0; i < this.executions.length; i++) {
-            pw.println("Thread["+i+"]->"+this.executions[i]);
-        }
+        printStartStop();
+        printRequestJourney();
+        printStartStop();
+        printWorkerJourney();
         pw.flush();
+    }
+
+    private void printWorkerJourney() {
+        pw.println("Worker Journey:"+path);
+        pw.println("Worker ID\tProcessing Time\tElapsed Time");
+        for (int i = 0; i < executions.length; i++) {
+            var lastProcessingTime = executions[i].get(0).a;
+            for (var execution : executions[i]) {
+                pw.print(i);
+                pw.print('\t');
+                pw.print(format.format(new Date(execution.a)));
+                pw.print('\t');
+                pw.println(execution.a - lastProcessingTime);
+                lastProcessingTime = execution.a;
+            }
+        }
+    }
+
+    private void printRequestJourney() {
+        pw.println("Request Journey");
+        pw.println("Message ID\tArrival Time\tWorker ID\tProcessing Time\tDelay");
+        for (var arrival : arrivals) {
+            var quemEquandoExecutou = getExecutionPairForId(arrival.b);
+            pw.print(arrival.b);
+            pw.print('\t');
+            pw.print(format.format(new Date(arrival.a)));
+            pw.print('\t');
+            pw.print(quemEquandoExecutou.a);
+            pw.print('\t');
+            pw.print(format.format(new Date(quemEquandoExecutou.b)));
+            pw.print('\t');
+            pw.println(quemEquandoExecutou.b - arrival.a);
+        }
+    }
+
+    private Pair<Integer, Long> getExecutionPairForId(Integer requestId) {
+        for (int i = 0; i < executions.length; i++) {
+            for (var execution : executions[i]) {
+                if (execution.b.equals(requestId)) {
+                    return new Pair<>(i, execution.a);
+                }
+            }
+        }
+        return new Pair<>(-1, -1L);
+    }
+
+    private void printStartStop() {
+        var begin = new Date(startedAt);
+        var end = new Date(stoppedAt);
+        pw.print("Started at:" +  format.format(begin));
+        pw.print(" and Stopped at:" + format.format((end)));
+        pw.println(" -> total: " + ((stoppedAt - startedAt) / 1000) + "secs and " + ((stoppedAt - startedAt) % 1000) + "millis.");
     }
 
     private double loadTP(String path) {
@@ -128,7 +232,6 @@ public class ThroughputStatistics {
                                 l.add(d);
                             }
                             nextSec = i;
-                        } else {
                         }
                         if (i == nextSec) {
                             l.add(d);
@@ -146,7 +249,6 @@ public class ThroughputStatistics {
                 sum = sum + l.get(i);
             }
             double ret = sum / l.size();
-            System.out.println("Throughput: " + ret);
             return ret;
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -154,33 +256,12 @@ public class ThroughputStatistics {
         }
     }
 
-    public void printTP(long timeMillis) {
+    private void printTP(long timeMillis) {
         int total = 0;
         for (int i = 0; i < numT; i++) {
             total = total + counters[i][now];
         }
         float tp = (float) (total * 1000 / (float) timeMillis);
         System.out.println("Throughput at " + print + " = " + tp + " operations/sec in sec : " + now);
-    }
-
-    public void computeStatistics(int threadId, int amount) {
-        if (!stoped) {
-            try {
-                counters[threadId][now] = counters[threadId][now] + amount;
-            } catch (ArrayIndexOutOfBoundsException ignore) {
-                //ignore.printStackTrace();
-            }
-        }
-    }
-
-    public void computeStatistics(int threadId, int amount, Integer requestId) {
-        if (!stoped) {
-            try {
-                counters[threadId][now] = counters[threadId][now] + amount;
-                executions[threadId].add(new Pair(System.currentTimeMillis(), requestId));
-            } catch (ArrayIndexOutOfBoundsException ignore) {
-                //ignore.printStackTrace();
-            }
-        }
     }
 }

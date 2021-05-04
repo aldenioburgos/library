@@ -5,7 +5,6 @@ import bftsmart.tom.server.Recoverable;
 import bftsmart.tom.server.SingleExecutable;
 import bftsmart.util.ThroughputStatistics;
 import demo.coin.core.CoinGlobalState;
-import demo.coin.late.CoinConflictDefinition;
 import demo.coin.late.CoinExecutor;
 import parallelism.ParallelServiceReplica;
 

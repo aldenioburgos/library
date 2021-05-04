@@ -13,6 +13,7 @@ sudo rm /usr/bin/java;
 [ ! -d /local/jdk-15.0.2 ] &&  cp -r ~/jdk-15.0.2 /local
 sudo ln -s /local/jdk-15.0.2/bin/java /usr/bin/java;
 java -version
+exit
 EOF
 `
 

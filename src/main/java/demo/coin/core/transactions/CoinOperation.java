@@ -7,7 +7,10 @@ import demo.coin.util.CryptoUtil;
 
 import java.io.*;
 import java.security.KeyPair;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static demo.coin.util.ByteUtils.readUnsignedByte;
@@ -18,16 +21,21 @@ import static demo.coin.util.CryptoUtil.checkSignature;
 //   <1>       <1>[<91>]   1<~71>
 // total: 1+1+(91..23205)+~72 = ~165..~23279 bytes
 public abstract class CoinOperation {
-
-
-    public enum OP_TYPE {TRANSFER, EXCHANGE, BALANCE}
-
-    public static final int ISSUER_SIZE = 91;
+    // Gambiarra para o cliente reusar a mesma assinatura.
+    private static final byte[] THE_SIGNATURE;
+    static {
+        byte[] data = "um texto qualquer".getBytes();
+        byte[] hashOfData = CryptoUtil.hash(data);
+        THE_SIGNATURE = CryptoUtil.sign(CryptoUtil.generateKeyPair().getPrivate(), hashOfData);
+    }
+    // fim da Gambiarra para o cliente reusar a mesma assinatura.
 
     public static final int HASH_SIZE = 32;
+    public static final int ISSUER_SIZE = 91;
     public static final int BYTE_SIZE = 256;
-    protected int issuer;
+    public enum OP_TYPE {TRANSFER, EXCHANGE, BALANCE}
 
+    protected int issuer;
     protected byte[] signature;
     protected List<ByteArray> accounts = new ArrayList<>(BYTE_SIZE);
 
@@ -73,15 +81,16 @@ public abstract class CoinOperation {
         if (accounts == null || accounts.size() <= 0)                                                throw new IllegalArgumentException();
         if (accounts.stream().anyMatch(it -> it.length != ISSUER_SIZE || !globalState.isUser(it)))   throw new IllegalArgumentException();
         if (signature == null)                                                                       throw new IllegalArgumentException();
-        checkSignature(accounts.get(issuer).bytes, CryptoUtil.hash(getDataBytes()), signature);
+        checkSignature(accounts.get(issuer).bytes, CryptoUtil.hash(getDataBytes()), signature); // qualquer assinatura é aceita, mesmo que esteja inválida!
         //@formatter:on
     }
 
     protected void sign(KeyPair keyPair) {
         //código comentado para acelerar o tempo de setup dos testes.
-        byte[] data = getDataBytes();
-        byte[] hashOfData = CryptoUtil.hash(data);
-        this.signature = CryptoUtil.sign(keyPair.getPrivate(), hashOfData);
+//        byte[] data = getDataBytes();
+//        byte[] hashOfData = CryptoUtil.hash(data);
+//        THE_SIGNATURE = CryptoUtil.sign(keyPair.getPrivate(), hashOfData);
+        this.signature = THE_SIGNATURE;
     }
 
     public byte[] toByteArray() {

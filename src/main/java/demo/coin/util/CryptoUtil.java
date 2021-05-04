@@ -20,8 +20,13 @@ public class CryptoUtil {
     private static final String Signature_Algorithm_Name = "SHA256withECDSA";
 
 
-    public static KeyPair generateKeyPair() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-        return generateKeyPair(1).iterator().next();
+    public static KeyPair generateKeyPair()  {
+        try {
+            return generateKeyPair(1).iterator().next();
+        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public static Set<KeyPair> generateKeyPair(int number) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {

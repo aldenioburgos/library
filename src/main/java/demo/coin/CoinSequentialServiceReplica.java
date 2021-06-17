@@ -29,8 +29,13 @@ public class CoinSequentialServiceReplica extends ParallelServiceReplica {
 
     @Override
     protected void createScheduler(int numPartitions) {
-        this.statistics = new ThroughputStatistics(id, 1, "resultsCoinReplica_" + id + "-sequencial.txt", "");
+        this.statistics = new ThroughputStatistics(id, 1, "resultsCoinReplica_" + id + "_1_1.txt", "", this);
         this.scheduler = new CoinSequentialScheduler(id, (SingleExecutable) executor, replier, statistics, SVController);
+    }
+
+    @Override
+    protected void initWorkers(int n, int id) {
+        // não faz nada!
     }
 
     public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
@@ -48,10 +53,5 @@ public class CoinSequentialServiceReplica extends ParallelServiceReplica {
 
         CoinGlobalState globalState = new CoinGlobalState(warmUp);
         new CoinSequentialServiceReplica(id, new CoinExecutor(globalState), null, warmUp.numPartitions);
-    }
-
-    @Override
-    protected void initWorkers(int n, int id) {
-        // não faz nada!
     }
 }

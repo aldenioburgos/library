@@ -34,7 +34,7 @@ public class CoinHybridServiceReplica extends ParallelServiceReplica {
             numPartitions = 1;
         }
         System.out.println("Criou um hibrid scheduler: partitions (early) = " + numPartitions + " workers (late) = " + lateWorkers);
-        statistics = new ThroughputStatistics(id, lateWorkers, "resultsCoinReplica_" + id + "_" + numPartitions + "_" + lateWorkers + ".txt", "");
+        statistics = new ThroughputStatistics(id, lateWorkers, "resultsCoinReplica_" + id + "_" + numPartitions + "_" + lateWorkers/numPartitions + ".txt", "", this);
         scheduler = new CoinHibridScheduler(numPartitions, 100000, statistics);
         subgraphs = createSubGraphs(numPartitions, cd);
         initEarlyWorkers(numPartitions);

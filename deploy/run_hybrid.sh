@@ -1,23 +1,32 @@
 #!/bin/bash
 source ./kill_hybrid.sh
 
+
 wait_replicas_end(){
+   counter=0
    until [ -f ~/finishedReplicas/replica0 ] && [ -f ~/finishedReplicas/replica1 ] && [ -f ~/finishedReplicas/replica2 ] && [ -f ~/finishedReplicas/replica3 ] ;
     do
-      sleep 1s
+      sleep 10s 
       echo waiting replicas end.
+      if [[ $counter -eq 36 ]];
+	then
+	break;
+      fi
+      ((counter++))
     done;
     rm  ~/finishedReplicas/replica0  ~/finishedReplicas/replica1  ~/finishedReplicas/replica2  ~/finishedReplicas/replica3
 }
 
-sleep_3min() {
+sleep_4min() {
   # tempo de execução
   sleep 1m
   echo 1 minute
   sleep 1m
   echo 2 minutes
   sleep 1m
-  echo 3 minutes encerrou
+  echo 3 minutes
+  sleep 30s
+  echo 3:30  encerrou!
 }
 
 
@@ -57,24 +66,24 @@ workloads=('0 0' '0 5' '0 10' '5 10')  #percGlobal percWrite
 for w in "${workloads[@]}" ; do
   particoes=(2 4 6 8)
   for p in "${particoes[@]}" ; do
-    threads=(2 4 6)
+    threads=(1 2 3 4)
     for LATE_WORKERS_PER_PARTITION in "${threads[@]}" ; do
       # servidores
       echo starting replicas
       for i in {0..3} ; do
-        ssh  replica${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinHybridServiceReplica ${i} ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& /local/logs/log_r${i}-p${p}-t${LATE_WORKERS_PER_PARTITION}-e${contadorDeExecucao}.txt ; touch ~/finishedReplicas/replica${i}" &
+        ssh  replica${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinHybridServiceReplica ${i} ${LATE_WORKERS_PER_PARTITION} ./warmup/warmup_p${p}.bin >& /local/logs/log_r${i}-p${p}-t${LATE_WORKERS_PER_PARTITION}-e${contadorDeExecucao}.txt || true; touch ~/finishedReplicas/replica${i} ; echo acabou replica${i}" &
         echo created replica${i}
       done
       sleep 30s
       echo starting clients
       for i in {0..3} ; do
-        ssh  cliente${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinClient ${i} $((4001 + (i*1000))) ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& /local/logs/log_c${i}-p${p}-t${LATE_WORKERS_PER_PARTITION}-e${contadorDeExecucao}.txt &" &
+        ssh  cliente${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinClient ${i} $((4001 + (i*1000))) ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& /local/logs/log_c${i}-p${p}-t${LATE_WORKERS_PER_PARTITION}-e${contadorDeExecucao}.txt" &
         echo created cliente${i}
       done
       # aguarda a execução por 3 minutos
-      sleep_3min
+      sleep_4min
       # mata tudo para começar denovo
-      kill_hybrid
+      kill_clientes
       wait_replicas_end
 
       echo finished hibrid execution ${contadorDeExecucao}
@@ -89,21 +98,22 @@ for w in "${workloads[@]}" ; do
     echo Realizando o teste do mesmo workload para o SMR SEQUENCIAL
     echo starting replicas
     for i in {0..3} ; do
-      ssh  replica${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinSequentialServiceReplica ${i} ./warmup/warmup_p1.bin >& /local/logs/log_r${i}-seq-p1-t1-e${contadorDeExecucao}.txt ; touch ~/finishedReplicas/replica${i}" &
+      ssh  replica${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinSequentialServiceReplica ${i} ./warmup/warmup_p${p}.bin >& /local/logs/log_r${i}-p1-t1-e${contadorDeExecucao}.txt || true ; touch ~/finishedReplicas/replica${i} ; echo acabou a replica${i}" &
       echo created replica${i}
     done
     sleep 30s
     echo starting clients
     for i in {0..3} ; do
-      ssh  cliente${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinClient ${i} $((4001 + (i*1000))) ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p1.bin >& /local/logs/log_c${i}-seq-p1-t1-e${contadorDeExecucao}.txt &" &
+      ssh  cliente${i}  "cd ~/hybridpsmr/deploy; java -classpath psmr.jar demo.coin.CoinClient ${i} $((4001 + (i*1000))) ${NUM_THREADS_CLIENTE} ${w} ./warmup/warmup_p${p}.bin >& /local/logs/log_c${i}-p1-t1-e${contadorDeExecucao}.txt" &
       echo created cliente${i}
       sleep 3s
     done
     # aguarda a execução por 3 minutos
-    sleep_3min
+    sleep_4min
     # mata tudo para começar denovo
-    kill_hybrid
     wait_replicas_end
+    kill_hybrid
+
   fi
   #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -99,13 +99,13 @@ public class CoinGlobalState {
 
         Set<Utxo> oldUtxos = shards[currency].get(owner);
 //        shards[currency].put(owner, oldUtxos.stream().filter(it -> !addresses.contains(it.address)).collect(Collectors.toSet()));
-        shards[currency].put(owner, oldUtxos.stream().filter(it -> it == it).collect(Collectors.toSet())); //Para fins de testes, os utxos não são alterados
+        shards[currency].put(owner, oldUtxos.stream().filter(Objects::nonNull).collect(Collectors.toSet())); //TODO: Para fins de testes, os utxos não são alterados
     }
 
     public void addUtxo(int currency, ByteArray owner, byte[] transactionHash, int outputPosition, long value) {
         Set<Utxo> oldUtxos = shards[currency].get(owner);
         var utxo = new Utxo(transactionHash, outputPosition, value);
-        utxo = oldUtxos.stream().findFirst().get(); //Para fins de testes, os utxos não são adicionados
+        utxo = oldUtxos.stream().findFirst().get(); //TODO:Para fins de testes, os utxos não são adicionados
         oldUtxos.add(utxo);
     }
 

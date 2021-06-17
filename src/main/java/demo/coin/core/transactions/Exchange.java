@@ -24,10 +24,6 @@ public class Exchange extends Transfer {
         super(bytes);
     }
 
-    public Exchange(KeyPair keyPair, int currency, Map<CoinOperation, Integer> inputs, List<ContaValorMoeda> outputs) {
-        super(keyPair, currency, inputs, outputs);
-    }
-
     public Exchange(KeyPair keyPair, int currency, List<Input> inputs, List<? extends ContaValor> outputs) {
         super(keyPair, currency, inputs, outputs);
     }

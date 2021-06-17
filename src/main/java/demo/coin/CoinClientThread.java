@@ -47,7 +47,6 @@ public class CoinClientThread extends Thread {
             int destinyPartition = isGlobal ? selectOtherRandom(numPartitions, sourcePartition) : sourcePartition;
             int groupId = getGroupId(isGlobal, sourcePartition, destinyPartition);
             var request = createOperation(sourcePartition, destinyPartition);
-            System.out.println("A requisição tem "+request.toByteArray().length+" bytes.");
             proxy.invokeParallel(request.toByteArray(), groupId);
             reqNum++;
         }
